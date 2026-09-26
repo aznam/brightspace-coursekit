@@ -1,0 +1,165 @@
+/* ============================================================
+   BRIGHTSPACE HTML FRAMEWORK — assignment.css
+   Composants exclusifs aux pages Assignment
+   ============================================================ */
+
+/* ============================================================
+   HERO — Eyebrow assignment (injecté par assignment.js)
+   ============================================================ */
+.assignment-hero-eyebrow {
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #fdba74;
+  margin-bottom: 14px;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   ASSIGNMENT BAND (sticky sous le hero)
+   ============================================================ */
+.assignment-band {
+  position: sticky;
+  z-index: 950;
+  background: #263244;
+  border-bottom: 2px solid var(--accent);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  user-select: none;
+}
+
+.aband-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 0;
+  padding: 12px 30px;
+  min-height: 52px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.aband-sep { width: 1px; height: 22px; background: #3a4a6b; margin: 0 18px; flex-shrink: 0; }
+.aband-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.aband-item-label { font-size: 0.66em; text-transform: uppercase; letter-spacing: 0.8px; color: #94a3b8; font-weight: 700; }
+.aband-item-value { font-size: 0.8em; color: #e2e8f0; font-weight: 600; white-space: nowrap; }
+.aband-struck { text-decoration: line-through; color: #64748b; font-weight: 400; }
+.aband-ext-date { color: #fdba74; font-weight: 700; font-size: 0.8em; white-space: nowrap; }
+.aband-ext-reason { font-size: 0.85em; color: #94a3b8; font-weight: 400; }
+
+/* ── Barre de progression ── */
+.aband-item-progress { min-width: 130px; }
+.aband-progress { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; }
+.aband-progress-track { width: 120px; height: 5px; background: #334155; border-radius: 3px; overflow: hidden; }
+.aband-progress-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.aband-fill-ok     { background: #22c55e; }
+.aband-fill-warn   { background: #f59e0b; }
+.aband-fill-danger { background: #ef4444; }
+.aband-progress-label { font-size: 0.68em; color: #94a3b8; white-space: nowrap; }
+
+/* ── Badges ── */
+.aband-badge { font-size: 0.73em; font-weight: 700; padding: 4px 11px; border-radius: 20px; letter-spacing: 0.3px; white-space: nowrap; }
+.aband-badge-sub        { background: #334155; color: #e2e8f0; }
+.aband-badge-ai-ok      { background: #14532d; color: #86efac; }
+.aband-badge-ai-warn    { background: #451a03; color: #fdba74; }
+.aband-badge-ai-no      { background: #450a0a; color: #fca5a5; }
+.aband-badge-ai-default { background: #1e3a5f; color: #93c5fd; }
+.aband-badge-bonus {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+/* ── Indicateur expand ── */
+.aband-expand-hint { font-size: 0.7em; color: #475569; letter-spacing: 0.5px; margin-left: 22px; flex-shrink: 0; transition: color 0.2s; white-space: nowrap; }
+.assignment-band:hover .aband-expand-hint, .assignment-band.aband-open .aband-expand-hint { color: var(--accent); }
+
+/* ── Panneau déroulant ── */
+.aband-panel { max-height: 0; overflow: hidden; transition: max-height 0.28s ease, border-top-color 0.28s; border-top: 1px solid transparent; }
+.assignment-band.aband-open .aband-panel { max-height: 240px; border-top-color: #3a4a6b; }
+.aband-panel-inner { display: flex; justify-content: center; align-items: center; gap: 40px; padding: 14px 30px 16px; flex-wrap: wrap; }
+.aband-panel-block { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.aband-panel-block-label { font-size: 0.66em; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; font-weight: 700; }
+.aband-lo-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.aband-lo-tag { font-size: 0.75em; font-weight: 700; padding: 3px 10px; background: var(--accent); color: #ffffff !important; border-radius: 4px; border-bottom: none !important; cursor: help; display: inline; }
+.aband-panel-meta { flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 24px; }
+.aband-meta-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.aband-meta-label { font-size: 0.66em; text-transform: uppercase; letter-spacing: 0.8px; color: #64748b; font-weight: 700; }
+.aband-meta-value { font-size: 0.8em; color: #e2e8f0; font-weight: 600; }
+
+/* ── Décalage du conteneur ── */
+.edtech-wrapper.has-assignment-band .edtech-container { margin-top: 0; padding-top: 30px; }
+@media (max-width: 1000px) { .edtech-wrapper.has-assignment-band .edtech-container { padding-top: 40px; } }
+
+/* ============================================================
+   ASSIGNMENT BAND — Responsive
+   ============================================================ */
+@media (max-width: 1000px) {
+  .aband-strip { justify-content: center; padding: 15px 20px; gap: 15px 0; }
+  .aband-expand-hint { display: none; }
+  .aband-panel-inner { padding: 14px 20px; gap: 24px; }
+  .aband-sep { margin: 0 12px; }
+  .assignment-band { cursor: pointer; }
+}
+
+@media (max-width: 600px) {
+  .aband-strip { flex-direction: row; justify-content: center; padding: 15px 10px; gap: 12px 0; }
+  .aband-sep { margin: 0 8px; }
+  .aband-progress-track { width: 70px; }
+  .aband-item-label { font-size: 0.6em; }
+  .aband-item-value { font-size: 0.75em; }
+  .aband-badge { font-size: 0.7em; padding: 4px 8px; }
+}
+
+/* ============================================================
+   LISTE DE LIVRABLES
+   ============================================================ */
+.assignment-deliverable-list { margin: 20px 0 20px; }
+.assignment-deliverable-item { display: flex; gap: 22px; align-items: flex-start; padding: 20px 10px 20px 20px; border-bottom: 1px solid var(--border); }
+.assignment-deliverable-item:first-of-type{padding-top:0px;}
+.assignment-deliverable-item:last-child { border-bottom: none; padding-bottom:0px; }
+.assignment-deliverable-num { font-size: 2.2em; font-weight: 900; color: var(--border); line-height: 1; min-width: 40px; padding-top: 3px; user-select: none; flex-shrink: 0; }
+.assignment-deliverable-body { flex: 1; }
+.assignment-deliverable-title { font-weight: 800; color: var(--text-dark); font-size: 0.93em; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 4px; }
+.assignment-deliverable-meta { font-size: 0.78em; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.assignment-deliverable-meta-sep { margin: 0 6px; color: var(--border); }
+.assignment-deliverable-desc { font-size: 0.9em; color: #64748b; margin: 0; line-height: 1.65; overflow-wrap: break-word; word-break: break-word;}
+p.assignment-deliverable-desc:last-of-type { margin: 0; }
+.assignment-deliverable-pts { display: inline-block; font-size: 0.72em; font-weight: 700; padding: 2px 9px; background: var(--accent-light); color: var(--accent); border-radius: 20px; margin-left: 10px; vertical-align: middle; letter-spacing: 0.3px; }
+@media (max-width: 600px) { .assignment-deliverable-num { font-size: 1.6em; min-width: 30px; } }
+
+/* ============================================================
+   CARTE SOUMISSION (Sidebar)
+   ============================================================ */
+.assignment-submit-card { border-top-color: var(--accent) !important; }
+.assignment-bonus-value {
+  color: var(--accent);
+  font-weight: 800;
+}
+.submit-struck { display: block; text-decoration: line-through; color: #94a3b8; font-weight: 400; font-size: 0.9em; }
+.submit-ext-date { display: block; color: #c2410c; font-weight: 700; font-size: 0.95em; }
+.submit-ext-reason { font-size: 0.78em; color: #94a3b8; font-style: italic; margin: 6px 0 12px; padding: 8px 12px; background: #f8fafc; border-left: 3px solid var(--border); line-height: 1.5; }
+.btn-submit { display: block; width: 100%; box-sizing: border-box; margin-top: 18px; padding: 14px 20px; background: var(--accent); color: #ffffff; text-decoration: none; text-align: center; font-weight: 800; font-size: 0.88em; text-transform: uppercase; letter-spacing: 0.08em; border: 2px solid var(--accent); box-shadow: 4px 4px 0 rgba(194,65,12,0.22); transition: background 0.15s, box-shadow 0.15s; cursor: pointer; }
+.btn-submit:hover { background: #9a3412; border-color: #9a3412; box-shadow: 2px 2px 0 rgba(194,65,12,0.15); }
+.btn-submit-closed { background: #475569; border-color: #475569; color: #94a3b8; box-shadow: none; cursor: default; pointer-events: none; }
+.btn-submit-closed:hover { background: #475569; border-color: #475569; box-shadow: none; }
+
+/* ============================================================
+   TABLE DE RUBRIQUES D'ÉVALUATION
+   ============================================================ */
+.rubric-table { width: 100%; border-collapse: collapse; margin: 16px 0 28px; font-size: 0.88em; }
+.rubric-table th { background: var(--structure); color: #f1f5f9; padding: 10px 14px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 0.78em; letter-spacing: 0.5px; }
+.rubric-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-main); }
+.rubric-table tr:last-child td { border-bottom: none; }
+.rubric-table tr:nth-child(even) td { background: #f8fafc; }
+.level-badge { display: inline-block; padding: 2px 8px; font-weight: 800; font-size: 0.82em; border-radius: 2px; white-space: nowrap; }
+.level-exceeds { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+.level-meets   { background: #eff6ff; color: #1d4ed8; border: 1px solid #93c5fd; }
+.level-partial { background: #fefce8; color: #a16207; border: 1px solid #fde047; }
+.level-missing { background: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+/* Annule le margin-top négatif du container (conçu pour chevaucher le hero)
+   quand la bande assignment est présente entre le hero et le container */
+.edtech-container.has-assignment-band {
+  margin-top: 30px;
+}

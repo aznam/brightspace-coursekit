@@ -1,0 +1,655 @@
+/* ============================================================
+   BRIGHTSPACE HTML FRAMEWORK — framework.css v1.0
+   Aznam Yacoub — University of Windsor
+   ============================================================
+   Ne pas modifier ce fichier par cours.
+   Personnalisation → brightspace/scripts/course-config.js
+   ============================================================ */
+
+/* ── Variables (surchargeables via course-config.js) ──────── */
+:root {
+  --accent:        #c2410c;
+  --accent-light:  #ffedd5;
+  --structure:     #1e293b;
+  --text-main:     #334155;
+  --text-dark:     #0f172a;
+  --border:        #e2e8f0;
+  --bg-base:       #fafaf9;
+
+  /* Alias compat avec les pages existantes */
+  --accent-terracotta:       var(--accent);
+  --accent-terracotta-light: var(--accent-light);
+  --structure-blue:          var(--structure);
+  --border-light:            var(--border);
+
+  /* Images (injectées par framework.js depuis course-config) */
+  --bg-image:   none;
+  --hero-image: none;
+
+  /* Typographie */
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ── Reset minimal ─────────────────────────────────────────── */
+body { margin: 0; padding: 0; }
+/* *, *::before, *::after { box-sizing: border-box; } */
+
+
+/* ============================================================
+   WRAPPER RACINE
+   ============================================================ */
+.edtech-wrapper {
+  font-family: var(--font-body);
+  color: var(--text-main);
+  font-size: 1em;
+  line-height: 1.6;
+  background:
+    linear-gradient(rgba(250,250,249,0.92), rgba(250,250,249,0.97)),
+    var(--bg-image) no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+
+/* ============================================================
+   BARRE STICKY
+   ============================================================ */
+.edtech-sticky-bar {
+  position: sticky;
+  top: 0;
+  background-color: var(--structure);
+  color: #ffffff;
+  padding: 12px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  border-bottom: 3px solid var(--accent);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.sticky-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.sticky-chapter {
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fdba74;
+  font-weight: 700;
+  border-right: 1px solid #475569;
+  padding-right: 20px;
+}
+
+.sticky-title {
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+/* Menu déroulant */
+.sticky-nav {
+  position: relative;
+  border-left: 1px solid #475569;
+  padding-left: 20px;
+}
+
+.nav-trigger {
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #cbd5e1;
+  cursor: pointer;
+  padding: 0px 0;
+  user-select: none;
+}
+.nav-trigger:hover { color: #ffffff; }
+
+.nav-dropdown {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--structure);
+  border: 1px solid #475569;
+  border-top: 2px solid var(--accent);
+  min-width: 280px;
+  padding: 10px 0;
+  margin-top: 13px;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 2000;
+}
+
+.sticky-nav:hover .nav-dropdown,
+.sticky-nav.open .nav-dropdown {
+  visibility: visible;
+  opacity: 1;
+}
+
+.nav-dropdown a {
+  display: block;
+  padding: 10px 20px;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: all 0.15s;
+}
+.nav-dropdown a:hover {
+  background-color: var(--text-dark);
+  color: #ffffff;
+  border-left: 4px solid var(--accent);
+  padding-left: 16px;
+}
+
+.sticky-module {
+  font-size: 0.85em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.edtech-hero {
+  background:
+    linear-gradient(rgba(15,23,42,0.85), rgba(30,41,59,0.95)),
+    var(--hero-image) center/cover no-repeat;
+  padding: 110px 30px 170px;
+  text-align: center;
+  color: white;
+  border-bottom: 1px solid #475569;
+}
+.edtech-hero h1 {
+  font-size: 2.8em;
+  font-weight: 800;
+  margin: 0 0 15px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.edtech-hero p {
+  font-size: 1.25em;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #e2e8f0;
+  font-weight: 400;
+}
+
+
+/* ============================================================
+   CONTENEUR PRINCIPAL (grille : main + deux zones sidebar)
+   ============================================================ */
+.edtech-container {
+  max-width: 1200px;
+  margin: -90px auto 40px;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: auto max-content max-content 1fr;
+  grid-template-areas:
+    "summary summary  "
+    "main    sb-before"
+    "main    sb-after "
+    "main    .        ";
+  column-gap: 40px;
+  row-gap: 0;
+  padding: 0 20px;
+  position: relative;
+  z-index: auto !important;
+}
+
+/* Variante sans sidebar */
+.edtech-container.no-sidebar {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas: 
+    "summary"
+    "main";
+  max-width: 900px;
+}
+
+/* Zones */
+.main-content    { grid-area: main;      }
+.sidebar-before  { grid-area: sb-before; align-self: start; }
+.sidebar-after   { grid-area: sb-after;  align-self: start; }
+
+
+/* ============================================================
+   BOX CENTRALE DE CONTENU
+   ============================================================ */
+.main-content {
+  background-color: #ffffff;
+  padding: 60px;
+  border: 1px solid var(--border);
+  border-top: 8px solid var(--structure);
+  box-shadow: 8px 8px 0px rgba(30,41,59,0.05);
+}
+
+.main-content h2 {
+  font-size: 1.1em;
+  color: var(--text-dark);
+  margin: 40px 0 15px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.main-content h2:first-child { margin-top: 0; }
+
+.main-content h3 {
+  font-size: 0.9em;
+  color: #475569;
+  margin: 20px 0 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.main-content p { margin-bottom: 20px; margin-top:0px; }
+
+
+/* ============================================================
+   TABLE DES MATIÈRES (inline-toc)
+   ============================================================ */
+.inline-toc {
+  font-size: 0.9em;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 15px 0;
+  margin-bottom: 45px;
+  color: #64748b;
+  line-height: 2;
+}
+.inline-toc strong {
+  color: var(--text-dark);
+  margin-right: 15px;
+  font-size: 0.85em;
+  letter-spacing: 0.5px;
+}
+.inline-toc a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.inline-toc a:hover { text-decoration: underline; }
+.toc-separator { margin: 0 10px; color: #cbd5e1; }
+
+
+/* ============================================================
+   TEXTE HOVERABLE + HOVERBOX (Géré par JS)
+   ============================================================ */
+.hover-trigger {
+  color: var(--accent);
+  font-weight: 700;
+  border-bottom: 2px dashed var(--accent);
+  cursor: help;
+  position: relative;
+  display: inline; 
+  font-style: normal;
+}
+
+@media (hover: none) {
+  .hover-trigger { cursor: pointer; }
+}
+
+.hover-panel {
+  visibility: hidden;
+  opacity: 0;
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 360px;
+  max-width: calc(100vw - 40px);
+  box-sizing: border-box;
+  background: var(--text-dark);
+  color: #f8fafc;
+  padding: 20px;
+  border: 1px solid var(--structure);
+  border-top: 4px solid var(--accent);
+  font-size: 0.9em;
+  font-weight: normal;
+  font-style: normal;
+  text-align: left;
+  line-height: 1.6;
+  z-index: 9999;
+  transition: opacity 0.2s ease-out, visibility 0.2s;
+  pointer-events: none;
+  box-shadow: 6px 6px 0px rgba(0,0,0,0.15);
+}
+
+.hover-panel::before {
+  content: '';
+  position: absolute;
+  top: -25px;
+  bottom: -25px;
+  left: -25px;
+  right: -25px;
+}
+
+.hover-trigger.active .hover-panel {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hover-panel h4 { color: #fdba74; margin: 0 0 10px; font-size: 0.9em; text-transform: uppercase; }
+.hover-panel p { margin: 0 0 8px; color: #e2e8f0; }
+.hover-panel p:last-child { margin-bottom: 0; }
+.hover-panel ul { margin: 6px 0 8px; padding-left: 16px; color: #e2e8f0; }
+.hover-panel li { margin-bottom: 4px; }
+.hover-panel-title { display: block; color: #fdba74; font-size: 0.9em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+.hover-panel-text { display: block; color: #e2e8f0; margin-bottom: 8px; line-height: 1.5; }
+.hover-panel-text:last-child { margin-bottom: 0; }
+
+
+/* ============================================================
+   BOXNOTES (dans les sections)
+   ============================================================ */
+.boxnote {
+  border-radius: 4px;
+  padding: 18px 22px;
+  margin: 16px 0 15px;
+  border: 1px solid;
+}
+.boxnote-title {
+  font-size: 0.85em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.boxnote > div.notice {
+  font-size: 0.8em;
+  color: #94a3b8;
+  border-top: 1px dashed var(--border-light);
+  padding-top: 12px;
+  margin-top: 16px;
+  font-style: italic;
+}
+
+.boxnote > p,
+.boxnote > ul,
+.boxnote > ol { 
+  font-size: 0.9em; 
+  margin-bottom: 8px; 
+  line-height: 1.65; 
+}
+.boxnote > p:last-child,
+.boxnote > ul:last-child,
+.boxnote > ol:last-child { 
+  margin-bottom: 0; 
+}
+.boxnote li {
+  margin-bottom: 4px; /* Un peu d'air entre les puces */
+}
+
+/* Info / bleu */
+.boxnote-info {
+  background: #EBF2FC;
+  border-color: #93BBE8;
+  border-left: 6px solid #185FA5;
+}
+.boxnote-info .boxnote-title, .boxnote-info > p { color: #0C447C; }
+
+/* Avertissement / ambre */
+.boxnote-warning {
+  background: #FAEEDA;
+  border-color: #EF9F27;
+  border-left: 6px solid #854F0B;
+}
+.boxnote-warning .boxnote-title, .boxnote-warning > p { color: #633806; }
+
+/* Succès / vert */
+.boxnote-success {
+  background: #EAF3DE;
+  border-color: #97C459;
+  border-left: 6px solid #3B6D11;
+}
+.boxnote-success .boxnote-title, .boxnote-success > p { color: #3B6D11; }
+
+/* Erreur / rouge */
+.boxnote-error {
+  background: #FCEBEB;
+  border-color: #F09595;
+  border-left: 6px solid #A32D2D;
+}
+.boxnote-error .boxnote-title, .boxnote-error > p { color: #A32D2D; }
+
+/* Important / sombre */
+.boxnote-dark {
+  background: var(--text-dark);
+  border-color: var(--structure);
+  border-left: 6px solid var(--accent);
+}
+.boxnote-dark .boxnote-title { color: #fdba74; }
+.boxnote-dark > p { color: #e2e8f0; margin-bottom: 8px; }
+.boxnote-dark > p:last-child { margin-bottom: 0; }
+
+/* Neutre / gris clair (Hérite du style "Official Description") */
+.boxnote-neutral {
+  background: #f8fafc;
+  border-color: var(--border);
+  border-left: 6px solid var(--structure);
+}
+.boxnote-neutral .boxnote-title { 
+  color: var(--accent);
+  font-size: 0.72em;
+  letter-spacing: 1.5px;
+  margin-bottom: 14px;
+}
+
+.boxnote-neutral > p,
+.boxnote-neutral > ul,
+.boxnote-neutral > ol { 
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   MODIFICATEUR : FLOTTEMENT DES BOXNOTES (ASIDE)
+   ============================================================ */
+.float-right {
+  float: right;
+  width: 38%; /* Sur desktop, on garde les 38% hors padding (comportement d'origine) */
+  margin: 6px 0 20px 30px;
+  clear: right;
+  box-shadow: 4px 4px 0px rgba(30,41,59,0.03);
+}
+
+@media (max-width: 850px) {
+  .float-right {
+    float: none;
+    
+    /* FIX : On laisse la div gérer sa largeur naturellement comme un vrai bloc, 
+       ce qui empêche tout débordement lié au padding ! */
+    width: auto; 
+    
+    /* On annule la marge gauche de 30px qui poussait la boîte en dehors */
+    margin: 25px 0; 
+    
+    display: block;
+    clear: both;
+  }
+}
+
+
+/* ============================================================
+   SIDEBAR / BOX D'INFORMATION (colonne droite)
+   ============================================================ */
+.sidebar-card {
+  background: #ffffff;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--structure);
+  margin-bottom: 25px;
+  box-shadow: 4px 4px 0px rgba(30,41,59,0.05);
+}
+.sidebar-card h3 {
+  margin: 0 0 18px;
+  font-size: 0.85em;
+  color: var(--text-dark);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 800;
+}
+
+/* Lignes de données dans les sidebar-card */
+.fact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.fact-row:last-child { border-bottom: none; }
+.fact-label { color: #64748b; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.5px; }
+.fact-value { color: var(--text-dark); font-weight: 600; text-align: right; }
+
+/* Liens ressources dans les sidebar-card */
+.resource-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 0;
+  color: var(--text-main);
+  text-decoration: none;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9em;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.resource-link:last-child { border-bottom: none; }
+.resource-link:hover {
+  color: var(--accent);
+  padding-left: 10px;
+  border-left: 3px solid var(--accent);
+  background: #f8fafc;
+}
+
+
+/* ============================================================
+   BOX RÉSUMÉ / INFORMATION IMPORTANTE (avant main-content)
+   ============================================================ */
+.summary-box {
+  grid-area: summary;
+  background-color: #ffffff;
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--accent);
+  padding: 22px 28px;
+  margin-bottom: 30px;
+  box-shadow: 4px 4px 0px rgba(30,41,59,0.04);
+}
+.summary-box-title {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+.summary-box p {
+  font-size: 0.9em;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  line-height: 1.65;
+}
+.summary-box p:last-child { margin-bottom: 0; }
+
+
+/* ============================================================
+   ACCORDÉON (details/summary)
+   ============================================================ */
+.fw-accordion {
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--accent);
+  border-radius: 6px;
+  margin: 15px 0 15px;
+  background: #ffffff;
+  box-shadow: 4px 4px 0px rgba(30,41,59,0.04);
+  overflow: visible; 
+}
+.fw-accordion > summary {
+  padding: 14px 20px;
+  font-weight: 700;
+  color: var(--text-dark);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #fffaf5;
+  list-style: none;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.fw-accordion > summary::-webkit-details-marker { display: none; }
+.fw-accordion > summary::before {
+  content: '▶';
+  display: inline-block;
+  margin-right: 8px;
+  transition: transform 0.2s ease;
+}
+.fw-accordion[open] > summary::before { transform: rotate(90deg); }
+.fw-accordion > summary:hover { background-color: var(--accent-light); color: #9a3412; }
+.fw-accordion[open] > summary { border-bottom: 1px solid var(--border); }
+.fw-accordion-body { padding: 20px; }
+
+/* ============================================================
+   OVERRIDE BRIGHTSPACE
+   ============================================================ */
+span.panorama-alternative-formats-button-container { display: none !important; }
+span.pano-wrapper-div { display: contents !important; line-height: inherit !important; }
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1000px) {
+  .edtech-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "summary"
+      "sb-before"
+      "main"
+      "sb-after";
+      
+    /* FIX : On supprime la marge négative pour ne pas coller la sidebar au Hero */
+    margin-top: 0; 
+    
+    /* FIX : On réduit l'espacement vertical pour ne pas laisser un énorme trou 
+       si le "summary" est absent */
+    row-gap: 25px;
+    padding: 20px;
+  }
+  
+  .main-content { padding: 35px 25px; }
+  .sticky-module { display: none; }
+  
+}
+
+@media (max-width: 600px) {
+  .edtech-hero h1 { font-size: 1.9em; }
+  .edtech-hero { padding: 70px 20px 120px; }
+  .hover-panel { width: calc(100vw - 40px); }
+}
+
+
+/* Brightspace override */
+span.panorama-alternative-formats-button-container { display:none !important; }
+span.pano-wrapper-div { display:contents !important; line-height:inherit !important; }

@@ -55,27 +55,33 @@ FRAMEWORK.md           Full reference guide
 
 ### Bootstrap configuration
 
-Each deployment uses a local `bootstrap.js` to locate:
+Each deployment uses two bootstrap files:
 
-- the shared framework;
-- the course-specific `course-config.js`.
+- `bootstrap-config.js` — deployment-specific paths;
+- `bootstrap.js` — generic loader.
 
-Configure these paths once in `bootstrap.js`:
+Configure deployment paths in `bootstrap-config.js`:
 
 ```js
-var CONFIG = {
+window.BRIGHTSPACE_BOOTSTRAP_CONFIG = {
   frameworkBase: './brightspace',
-  courseConfig: './brightspace/scripts/course-config.js'
+  courseConfig: './brightspace/scripts/course-config.js',
+
+  moduleRegistries: [
+    './brightspace/modules.js'
+  ]
 };
 ```
 
-Paths are resolved relative to the location of `bootstrap.js`, not relative to the HTML page.
+Use these fields as follows:
 
-This makes it possible to use the same framework installation across multiple courses during development, while keeping a simple course-local layout in release.
+- `frameworkBase` — path to the shared `brightspace` framework folder. Change this when the framework is stored somewhere else, for example in a shared development directory.
+- `courseConfig` — path to the `course-config.js` file for the course using the framework.
+- `moduleRegistries` — list of additional module registry files used by the course or project. Use `[]` if no extra modules are needed.
+
+Paths are written relative to `bootstrap.js`.
 
 ### Minimal page
-
-Each HTML page declares its page type and, when needed, optional feature modules.
 
 ```html
 <div class="edtech-wrapper">
@@ -100,31 +106,43 @@ Each HTML page declares its page type and, when needed, optional feature modules
   };
 </script>
 
+<script src="bootstrap-config.js"></script>
+
 <script
   src="bootstrap.js"
   data-page-type="course-page">
 </script>
 ```
-
-Optional modules can be added when needed:
+Each page declares its base page type through `data-page-type`. Pages may request optional features with `data-modules`:
 
 ```html
+<script src="bootstrap-config.js"></script>
+
 <script
   src="bootstrap.js"
-  data-page-type="course-page"
-  data-modules="sprite-icon recommended-books">
+  data-page-type="assignment-page"
+  data-modules="quest">
 </script>
 ```
 
-The bootstrap handles framework files, dependencies, and loading order automatically.
+See [`FRAMEWORK.md`](FRAMEWORK.md) for page types, module registration, available modules, configuration objects, components, and advanced usage.
 
-See [`FRAMEWORK.md`](FRAMEWORK.md) for page types, available modules, configuration objects, components, and advanced usage.
+
+## Templates
+
+Ready-to-use HTML templates are provided to help create course content.
+
+They include examples for the supported page types and already contain the expected framework structure, configuration blocks, optional page-specific CSS, and before/after framework script hooks.
+
+Use the template closest to the content you want to create, then adapt its configuration and page content.
+
+See `FRAMEWORK.md` for the available page types, optional modules, and configuration options.
 
 ## Customisation
 
 | Level | Mechanism |
 | --- | --- |
-| Deployment | `bootstrap.js` |
+| Deployment paths | `bootstrap-config.js` |
 | Page type | `data-page-type` |
 | Optional features | `data-modules` |
 | Course | `course-config.js` |

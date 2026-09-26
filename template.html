@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- =========================================================
+       OPTIONAL PAGE-SPECIFIC CSS
+
+       Use data-page-style for CSS that belongs only to this page.
+       The bootstrap moves page-specific styles after the page-type
+       and optional-module stylesheets, so these rules take priority
+       at equal selector specificity.
+       ========================================================= -->
+  <!--
+  <style data-page-style>
+    /* Page-specific CSS overrides go here. */
+  </style>
+  -->
+
+<script src="bootstrap-config.js"></script>
+<script
+    src="bootstrap.js"
+    data-page-type="course-page"
+    data-modules="tabler-icons"
+  ></script>
+</head>
+<body>
+
+  <div class="edtech-wrapper">
+
+    <!-- Shell populated by the base page runtime -->
+    <div id="fw-sticky-bar"><!-- navbar --></div>
+    <div id="fw-hero"><!-- hero --></div>
+
+    <!-- ── MAIN CONTAINER ────────────────────────────
+         Variants :
+           class="edtech-container"            → 2 columns (main + sidebar)
+           class="edtech-container no-sidebar" → 1 full-width column
+
+         Required DOM order : sidebar-before → main-content → sidebar-after
+         Desktop: both sidebar areas are stacked in the right column
+         Mobile: sb-before → main → sb-after (natural DOM order)
+         ─────────────────────────────────────────────────── -->
+    <div class="edtech-container">
+
+      <!-- ── SIDEBAR BEFORE (desktop: right column, top / mobile: before main) -->
+      <!-- Omit this aside if no card should appear before main-content -->
+      <aside class="sidebar-before">
+
+        <div class="sidebar-card">
+          <h3>📋 Course at a Glance</h3>
+          <div class="fact-row">
+            <span class="fact-label">Code</span>
+            <span class="fact-value">Course Code</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-label">Credits</span>
+            <span class="fact-value">3</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-label">Session</span>
+            <span class="fact-value">Fall 2026</span>
+          </div>
+        </div>
+
+      </aside>
+	  
+	  <!-- ── SUMMARY BOX (Optional) ───────────────────────
+           Placed above Main Content, overlapping the Hero. -->
+      <!--
+      <div class="summary-box">
+        <div class="summary-box-title">📋 Summary Box Title</div>
+        <p>This is an optional highlighted box that sits independently above the main content area. It is perfect for crucial policies, immediate action items, or quick summaries.</p>
+      </div>
+      -->
+
+      <!-- ── MAIN CONTENT ──────────────────────────── -->
+      <main class="main-content">
+
+        <!-- Inline table of contents (optional) -->
+        <!--
+        <nav id="fw-inline-toc"></nav>
+        -->
+
+        <!-- ── SECTION 1 ──────────────────────────────── -->
+        <h2 id="section-1">Section Title</h2>
+
+        <p>
+          Paragraph text. You can include
+          <span class="hover-trigger">hoverable terms
+            <span class="hover-panel">
+              <span class="hover-panel-title">💡 Title</span>
+              <span class="hover-panel-text">
+                Explanation text displayed on hover or click.
+                The cursor can move onto this panel without closing it.
+              </span>
+            </span>
+          </span>
+          inline in your prose.
+        </p>
+
+        <!-- Boxnote — info (blue) -->
+        <div class="boxnote boxnote-info">
+          <div class="boxnote-title">ℹ️ Note</div>
+          <p>Content of the info note.</p>
+        </div>
+
+        <!-- Boxnote — warning (amber) -->
+        <!--
+        <div class="boxnote boxnote-warning">
+          <div class="boxnote-title">⚠️ Warning</div>
+          <p>Content of the warning.</p>
+        </div>
+        -->
+
+        <!-- Boxnote — success (green) -->
+        <!--
+        <div class="boxnote boxnote-success">
+          <div class="boxnote-title">✅ Tip</div>
+          <p>Content of the tip.</p>
+        </div>
+        -->
+
+        <!-- Boxnote — error (red) -->
+        <!--
+        <div class="boxnote boxnote-error">
+          <div class="boxnote-title">🚨 Important</div>
+          <p>Content of the error/important note.</p>
+        </div>
+        -->
+
+        <!-- Boxnote — dark (important / highlight) -->
+        <!--
+        <div class="boxnote boxnote-dark">
+          <div class="boxnote-title">🔑 Key Point</div>
+          <p>Content of the key point.</p>
+        </div>
+        -->
+
+        <!-- Accordion (optional) -->
+        <!--
+        <details class="fw-accordion">
+          <summary>Accordion title</summary>
+          <div class="fw-accordion-body">
+            <p>Content revealed when expanded.</p>
+          </div>
+        </details>
+        -->
+
+        <!-- ── SECTION 2 ──────────────────────────────── -->
+        <h2 id="section-2">Another Section</h2>
+
+        <p>More content here.</p>
+
+      </main>
+
+      <!-- ── SIDEBAR AFTER (desktop: right column, bottom / mobile: after main) -->
+      <!-- Omit this aside if no card should appear after main-content -->
+      <aside class="sidebar-after">
+
+        <!-- Useful links card -->
+        <div class="sidebar-card">
+          <h3>🔗 Useful Links</h3>
+          <a href="#" target="_top" class="resource-link">📋 Course Syllabus</a>
+          <a href="#" target="_top" class="resource-link">📊 Evaluation</a>
+        </div>
+
+      </aside>
+
+    </div><!-- /edtech-container -->
+
+  </div><!-- /edtech-wrapper -->
+
+
+  <!-- Page configuration (EDIT for each page) -->
+  <script>
+    window.PAGE_CONFIG = {
+
+      // Displayed in the sticky bar (short: 2–3 words)
+      pageShortTitle: 'The Course',
+
+      // Displayed on the right side of the sticky bar
+      moduleTitle: 'Getting Started',
+
+      // Hero override for this page (null = course default)
+      heroTitle:    null,
+      heroSubtitle: null,
+	  
+	  // Automatic section numbering (H2, menu, ToC)
+      autoNumberSections: false,
+
+
+      // Sections listed in the navigation dropdown
+      // → must match the id="#..." values in the HTML above
+      navSections: [
+        { id: 'section-1', label: 'Section Title' },
+        { id: 'section-2', label: 'Another Section' },
+      ],
+
+    };
+  </script>
+<!-- =========================================================
+       OPTIONAL PAGE-SPECIFIC JAVASCRIPT
+
+       beforeFramework:
+       Runs after the document and inline configuration objects are parsed,
+       but before the base page runtime and optional modules are initialized.
+       Use it only for setup that must exist before framework initialization.
+
+       afterFramework:
+       Runs after the base page runtime and all requested optional modules.
+       Use it for code that depends on generated framework DOM or module APIs.
+       ========================================================= -->
+
+  <!--
+  <script>
+    BRIGHTSPACE.beforeFramework(function (runtime) {
+      // Page-specific setup that must run before framework initialization.
+    });
+  </script>
+  -->
+
+  <!--
+  <script>
+    BRIGHTSPACE.afterFramework(function (runtime) {
+      // Page-specific code that depends on the initialized framework/modules.
+    });
+  </script>
+  -->
+
+</body>
+</html>

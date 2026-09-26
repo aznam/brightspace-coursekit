@@ -1,0 +1,45 @@
+/* ============================================================
+   MODULE SPRITES (Pixels / Icônes graphiques)
+   ============================================================ */
+/* Classe de base : s'aligne avec le texte, hauteur par défaut */
+.sp {
+  display: inline-block;
+  /* width: Calculé automatiquement via l'aspect-ratio en JS */
+  height: 1.25em;
+  
+  vertical-align: middle;
+  flex-shrink: 0;
+
+  /* Préserve le style "Pixel Art" pur sans flou */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* ── Variantes de taille (La largeur s'adaptera toute seule) ── */
+.sp-xs  { height: 0.85em;  }   /* texte de note */
+.sp-sm  { height: 1em;     }   /* inline serré  */
+/* .sp  = 1.25em — taille par défaut             */
+.sp-lg  { height: 1.75em;  }   /* titres h3     */
+.sp-xl  { height: 2.5em;   }   /* titres h2     */
+.sp-2x  { height: 3em;     }   /* cards sidebar */
+.sp-3x  { height: 4em;     }   /* illustrations */
+
+/* ── Affichage bloc (centré, utilisable comme illustration) ─── */
+.sp-block {
+  display: block;
+  margin: 0 auto;
+  height: 4em;
+}
+
+/* ── Utilitaires d'alignement ───────────────────────────────── */
+.sp-top    { vertical-align: top;      }
+.sp-bottom { vertical-align: bottom;   }
+.sp-text   { vertical-align: text-top; }  /* alignement typographique précis */
+
+/* Ajustement spécifique pour les boxnotes */
+.boxnote-title .sp {
+  height: 1.4em;
+  margin-right: 8px;
+  margin-top: -3px;
+}

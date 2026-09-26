@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- =========================================================
+       OPTIONAL PAGE-SPECIFIC CSS
+
+       Use data-page-style for CSS that belongs only to this page.
+       The bootstrap moves page-specific styles after the page-type
+       and optional-module stylesheets, so these rules take priority
+       at equal selector specificity.
+       ========================================================= -->
+  <!--
+  <style data-page-style>
+    /* Page-specific CSS overrides go here. */
+  </style>
+  -->
+
+<script src="bootstrap-config.js"></script>
+<script
+    src="bootstrap.js"
+    data-page-type="printable-document"
+  ></script>
+</head>
+<body>
+
+  <!-- Printable pages are generated here by the printable-document runtime -->
+  <div id="document-root" class="document-root"></div>
+
+  <!-- =========================================================
+       CONTENT SOURCES
+       Each template represents the content of an explicit page.
+       The printable-document runtime injects the header and footer around this content.
+       ========================================================= -->
+
+  <template data-document-source="page-2">
+    <h1>Introduction</h1>
+    <p>Document content goes here.</p>
+
+    <div class="document-note">
+      This component keeps the visual language of the course while remaining print-oriented.
+    </div>
+  </template>
+
+  <template data-document-source="page-3">
+    <h1>Second Section</h1>
+    <p>Additional content goes here.</p>
+  </template>
+
+  <!-- =========================================================
+       CONFIGURATION
+       ========================================================= -->
+
+  <script>
+    window.DOCUMENT_CONFIG = {
+      title: 'Document Title',
+      subtitle: 'Optional subtitle',
+      kicker: 'Course Document',
+      date: '2026-09-23',
+      version: null,
+      locale: 'en-CA',
+      footerText: 'Optional custom footer text',
+
+      // The cover page is mandatory. If no *cover* type
+      // is declared, the printable-document runtime automatically adds one as page 1.
+      // A blank page is automatically added after the cover,
+      // and an "END OF DOCUMENT" page is automatically added at the end.
+      pages: [
+        { type: 'cover' },
+        { type: 'content', id: 'page-2' },
+        { type: 'content', id: 'page-3' },
+      ],
+
+      showPrintToolbar: true,
+    };
+  </script>
+
+  <!-- =========================================================
+       OPTIONAL PAGE-SPECIFIC JAVASCRIPT
+
+       beforeFramework:
+       Runs after the document and inline configuration objects are parsed,
+       but before the base page runtime and optional modules are initialized.
+       Use it only for setup that must exist before framework initialization.
+
+       afterFramework:
+       Runs after the base page runtime and all requested optional modules.
+       Use it for code that depends on generated framework DOM or module APIs.
+       ========================================================= -->
+
+  <!--
+  <script>
+    BRIGHTSPACE.beforeFramework(function (runtime) {
+      // Page-specific setup that must run before framework initialization.
+    });
+  </script>
+  -->
+
+  <!--
+  <script>
+    BRIGHTSPACE.afterFramework(function (runtime) {
+      // Page-specific code that depends on the initialized framework/modules.
+    });
+  </script>
+  -->
+
+</body>
+</html>

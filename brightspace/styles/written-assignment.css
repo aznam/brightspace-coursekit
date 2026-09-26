@@ -1,0 +1,239 @@
+/* ============================================================
+   BRIGHTSPACE HTML FRAMEWORK — written-assignment.css
+   Extension de document.css pour devoirs écrits imprimables.
+   ============================================================ */
+
+:root {
+  --wa-instructor-margin-width: 1.35in;
+  --wa-comment-gap: 0.20in;
+}
+
+/* ---------- Cover assignment ---------- */
+.wa-cover .document-cover-content { padding-top: 0.16in; }
+.wa-cover .document-cover-logo { width: 1.35in; height: 0.82in; margin-bottom: 0.10in; }
+.wa-cover .document-cover-rule { margin: 0.16in 0; }
+.wa-cover .document-cover-title-block { margin: 0.25in 0 0.22in; }
+.wa-cover .document-cover-title { font-size: 20pt; }
+
+.wa-student-box,
+.wa-checklist-box,
+.wa-grading-box {
+  width: 100%;
+  text-align: left;
+  border-top: 3px solid var(--structure);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0.12in 0.16in;
+  margin-top: 0.12in;
+}
+
+.wa-box-title {
+  color: var(--structure);
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  font-size: 8pt;
+  margin-bottom: 0.08in;
+}
+
+.wa-student-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.10in 0.25in;
+}
+
+.wa-field {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: end;
+  gap: 0.08in;
+  font-size: 9pt;
+}
+
+.wa-field-label { font-weight: 700; color: var(--text-dark); }
+.wa-field-line { border-bottom: 1px solid var(--text-main); min-height: 0.20in; }
+
+.wa-checklist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.06in 0.22in;
+}
+
+.wa-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.07in;
+  font-size: 8.5pt;
+  line-height: 1.3;
+}
+
+.wa-checkbox {
+  width: 0.15in;
+  height: 0.15in;
+  border: 1.5px solid var(--text-main);
+  flex: 0 0 auto;
+  margin-top: 0.01in;
+}
+
+.wa-grading-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grading-cols), minmax(0, 1fr));
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-right: 0;
+}
+
+.wa-grading-cell {
+  min-width: 0;
+  min-height: 0.42in;
+  border-right: 1px solid var(--border);
+  padding: 0.06in 0.04in;
+  text-align: center;
+  font-size: 7.5pt;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wa-grading-cell strong { display: block; color: var(--text-dark); margin-bottom: 0.06in; }
+.wa-grading-cell span { display: block; }
+
+/* ---------- Instructions ---------- */
+.wa-instructions-page .document-page-body { font-size: 9pt; }
+
+.wa-instruction-section {
+  margin: 0 0 0.30in;
+  break-inside: avoid;
+}
+
+.wa-instruction-section h2 {
+  margin: 0 0 0.06in;
+  padding: 0.05in 0.08in;
+  background: var(--accent-light);
+  border-left: 4px solid var(--accent);
+  font-size: 10.5pt;
+}
+
+.wa-lo-list {
+  margin: 0;
+  display: grid;
+  gap: 0.2in;
+}
+
+.wa-lo-item {
+  display: grid;
+  grid-template-columns: 0.55in 1fr;
+  gap: 0.10in;
+  align-items: center;
+}
+
+.wa-lo-code {
+  display: inline-block;
+  background: var(--structure);
+  color: #fff;
+  font-size: 8pt;
+  font-weight: 800;
+  text-align: center;
+  padding: 0.03in 0.05in;
+}
+
+.wa-lo-label { font-size: 9pt; }
+
+/* ---------- Pages de contenu avec marge instructeur ---------- */
+.wa-content-page .document-page-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--wa-instructor-margin-width);
+  column-gap: var(--wa-comment-gap);
+  padding-top: 0.13in;
+}
+
+.wa-student-work {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.wa-instructor-margin {
+  border-left: 1px solid var(--border);
+  padding-left: 0.12in;
+  min-width: 0;
+  color: #94a3b8;
+  font-size: 7pt;
+}
+
+.wa-instructor-margin-label {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 800;
+  color: #94a3b8;
+  margin-bottom: 0.08in;
+}
+
+/* ---------- Composants de réponse ---------- */
+.wa-question {
+  margin-bottom: 0.18in;
+  break-inside: avoid;
+}
+
+.wa-question-header {
+  display: grid;
+  grid-template-columns: 0.34in 1fr auto;
+  align-items: center;
+  gap: 0.08in;
+  border-bottom: 2px solid var(--structure);
+  padding-bottom: 0.04in;
+  margin-bottom: 0.08in;
+}
+
+.wa-question-number {
+  width: 0.30in;
+  height: 0.30in;
+  display: grid;
+  place-items: center;
+  background: var(--structure);
+  color: #fff;
+  font-weight: 800;
+  font-size: 9pt;
+}
+
+.wa-question-title { color: var(--text-dark); font-weight: 800; font-size: 10pt; }
+.wa-question-points { color: var(--accent); font-weight: 800; font-size: 9pt; white-space: nowrap; }
+.wa-question-prompt { font-size: 9.5pt; }
+
+.wa-answer-lines {
+  --wa-lines: 6;
+  height: calc(var(--wa-lines) * 0.30in);
+  margin-top: 0.10in;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(0.30in - 1px),
+    #cbd5e1 calc(0.30in - 1px),
+    #cbd5e1 0.30in
+  );
+}
+
+.wa-answer-box {
+  min-height: 1.0in;
+  border: 1px solid #cbd5e1;
+  margin-top: 0.10in;
+}
+
+.wa-sketch-area {
+  min-height: 2.2in;
+  border: 1px solid #cbd5e1;
+  margin-top: 0.10in;
+  background-image:
+    linear-gradient(#eef2f7 1px, transparent 1px),
+    linear-gradient(90deg, #eef2f7 1px, transparent 1px);
+  background-size: 0.20in 0.20in;
+}
+
+.wa-score-box {
+  display: inline-block;
+  min-width: 0.75in;
+  border-bottom: 1px solid var(--text-main);
+  text-align: center;
+}

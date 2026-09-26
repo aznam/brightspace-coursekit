@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- =========================================================
+       OPTIONAL PAGE-SPECIFIC CSS
+
+       Use data-page-style for CSS that belongs only to this page.
+       The bootstrap moves page-specific styles after the page-type
+       and optional-module stylesheets, so these rules take priority
+       at equal selector specificity.
+       ========================================================= -->
+  <!--
+  <style data-page-style>
+    /* Page-specific CSS overrides go here. */
+  </style>
+  -->
+
+<script src="bootstrap-config.js"></script>
+<script
+    src="bootstrap.js"
+    data-page-type="printable-assignment"
+  ></script>
+</head>
+<body>
+
+  <div id="document-root" class="document-root"></div>
+
+  <!-- =========================================================
+       PAGE 2 — INSTRUCTIONS
+       Policy text stays here: no policy
+       is stored in configuration.
+       ========================================================= -->
+  <template data-document-source="assignment-instructions">
+    <h1>Assignment Instructions</h1>
+
+    <section class="wa-instruction-section">
+      <h2>Instructions</h2>
+      <p>Write the assignment-specific instructions here.</p>
+    </section>
+
+    <section class="wa-instruction-section">
+      <h2>Materials / Resources</h2>
+      <p>List permitted or required resources here.</p>
+    </section>
+
+    <section class="wa-instruction-section">
+      <h2>Submission Requirements</h2>
+      <p>Describe what must be submitted and any formatting requirements.</p>
+    </section>
+
+    <!-- Automatically replaced by the LOs from ASSIGNMENT_CONFIG -->
+    <div data-wa-learning-outcomes></div>
+
+    <section class="wa-instruction-section">
+      <h2>Artificial Intelligence</h2>
+      <p>Write the assignment-specific AI rules here.</p>
+    </section>
+
+    <section class="wa-instruction-section">
+      <h2>Academic Integrity</h2>
+      <p>Write the relevant academic-integrity reminder here.</p>
+    </section>
+
+    <section class="wa-instruction-section">
+      <h2>Ethics / Professional Conduct</h2>
+      <p>Write any applicable ethical or professional expectations here.</p>
+    </section>
+
+    <section class="wa-instruction-section">
+      <h2>Additional Rules</h2>
+      <p>Add assignment-specific rules here, or remove this paragraph if none apply.</p>
+    </section>
+  </template>
+
+  <!-- =========================================================
+       PAGE 3 — CONTENT
+       The Instructor Comments margin is added by the module.
+       ========================================================= -->
+  <template data-document-source="questions-1-2">
+    <h1>Questions</h1>
+
+    <section class="wa-question">
+      <div class="wa-question-header">
+        <span class="wa-question-number">1</span>
+        <span class="wa-question-title">Question title</span>
+        <span class="wa-question-points">/ 10</span>
+      </div>
+      <div class="wa-question-prompt">
+        <p>Write the question here.</p>
+      </div>
+      <div class="wa-answer-lines" style="--wa-lines: 7"></div>
+    </section>
+
+    <section class="wa-question">
+      <div class="wa-question-header">
+        <span class="wa-question-number">2</span>
+        <span class="wa-question-title">Question title</span>
+        <span class="wa-question-points">/ 15</span>
+      </div>
+      <div class="wa-question-prompt">
+        <p>Write the question here.</p>
+      </div>
+      <div class="wa-sketch-area"></div>
+    </section>
+  </template>
+
+  <!-- =========================================================
+       CONFIGURATION
+       ========================================================= -->
+
+  <script>
+    window.ASSIGNMENT_CONFIG = {
+      assignmentNumber: 1,
+      assignmentLabel: 'Written Assignment',
+      assignmentType: 'regular',
+      openDate: null,
+      deadline: { date: '2026-10-05T23:59', type: 'hard', extension: null },
+      submissionType: 'individual',
+      groupSize: null,
+      submissionUrl: '#',
+      aiPolicy: 'default', // used by the Web Assignment page; not by the printed text
+      learningOutcomes: [
+        { code: 'LO1', label: 'Describe the relevant course concept.' },
+        { code: 'LO3', label: 'Apply the concept to a concrete problem.' },
+      ],
+      estimatedTime: '2–3 hours',
+      difficulty: 'medium',
+      weight: 10,
+      points: 100,
+      rubricsProvided: false,
+      resources: [],
+    };
+  </script>
+
+  <script>
+    window.DOCUMENT_CONFIG = {
+      title: 'Binary Representation and Arithmetic',
+      subtitle: null,
+      date: '2026-10-05',
+      version: null,
+      locale: 'en-CA',
+      footerText: 'Optional custom footer text',
+      // A blank page is automatically added after the cover,
+      // and an "END OF DOCUMENT" page is automatically added at the end.
+      pages: [
+        { type: 'assignment-cover', className: 'wa-cover' },
+        { type: 'assignment-instructions', id: 'assignment-instructions', className: 'wa-instructions-page' },
+        { type: 'assignment-content', id: 'questions-1-2', className: 'wa-content-page' },
+      ],
+      showPrintToolbar: true,
+    };
+  </script>
+
+  <script>
+    window.WRITTEN_ASSIGNMENT_CONFIG = {
+      // Metadata displayed on the cover
+      materialPermitted: true,   // true | false | custom text
+      duration: '2 hours',
+
+      showStudentSignature: true,
+      submissionChecklist: [
+        'Student information is complete',
+        'All required questions are answered',
+        'Required declarations are complete',
+        'All pages are included and in order',
+      ],
+      gradingArea: true,
+      gradingColumns: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Total'],
+      instructorMargin: {
+        width: '1.35in'
+      }
+    };
+  </script>
+
+  <!-- =========================================================
+       OPTIONAL PAGE-SPECIFIC JAVASCRIPT
+
+       beforeFramework:
+       Runs after the document and inline configuration objects are parsed,
+       but before the base page runtime and optional modules are initialized.
+       Use it only for setup that must exist before framework initialization.
+
+       afterFramework:
+       Runs after the base page runtime and all requested optional modules.
+       Use it for code that depends on generated framework DOM or module APIs.
+       ========================================================= -->
+
+  <!--
+  <script>
+    BRIGHTSPACE.beforeFramework(function (runtime) {
+      // Page-specific setup that must run before framework initialization.
+    });
+  </script>
+  -->
+
+  <!--
+  <script>
+    BRIGHTSPACE.afterFramework(function (runtime) {
+      // Page-specific code that depends on the initialized framework/modules.
+    });
+  </script>
+  -->
+
+</body>
+</html>

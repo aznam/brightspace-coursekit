@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Assignment-specific page overrides.
+       data-page-style ensures these rules are applied after framework/module CSS. -->
+  <style data-page-style>
+
+    /* ── Rubric table ──────────────────────────────────────── */
+    .rubric-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px;
+      font-size: 0.88em;
+    }
+    .rubric-table th {
+      background: var(--structure);
+      color: #f1f5f9;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.78em;
+      letter-spacing: 0.5px;
+    }
+    .rubric-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--text-main);
+    }
+    .rubric-table tr:last-child td { border-bottom: none; }
+    .rubric-table tr:nth-child(even) td { background: #f8fafc; }
+
+    /* Level badges */
+    .level-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-weight: 800;
+      font-size: 0.82em;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+    .level-exceeds { background: #f0fdf4; color: #15803d; border: 1px solid #86efac; }
+    .level-meets   { background: #eff6ff; color: #1d4ed8; border: 1px solid #93c5fd; }
+    .level-partial { background: #fefce8; color: #a16207; border: 1px solid #fde047; }
+    .level-missing { background: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+  </style>
+
+  <script src="bootstrap-config.js"></script>
+  <script
+      src="bootstrap.js"
+      data-page-type="assignment-page"
+      data-modules="tabler-icons"
+    ></script>
+</head>
+<body>
+
+  <div class="edtech-wrapper">
+
+    <!-- Shell populated by the base page runtime — DO NOT MODIFY these ids -->
+    <div id="fw-sticky-bar"></div>
+    <div id="fw-hero"></div>
+
+    <!-- ── Assignment band inserted here by the assignment-page runtime ─────
+         (between #fw-hero and .edtech-container)
+         ──────────────────────────────────────────────────────── -->
+
+    <div class="edtech-container">
+
+      <!-- ── SUMMARY BOX (optional) ──────────────────────────
+           Uncomment to display a constraint or reminder
+           at the top of the page.
+           ──────────────────────────────────────────────────── -->
+      
+      <div class="summary-box">
+        <div class="summary-box-title">📋 Before You Start</div>
+        <p>Read the full instructions before beginning your work. Pay close attention to the submission naming convention and the AI usage policy for this assignment.</p>
+      </div>
+      
+
+      <!-- ── SIDEBAR BEFORE — injected by buildAssignmentSidebar()
+           The "Submit" card is automatically injected from
+           ASSIGNMENT_CONFIG. Add extra cards here
+           that should appear BEFORE the main content on mobile.
+           ──────────────────────────────────────────────────── -->
+      <aside class="sidebar-before">
+        <!-- Submission card automatically inserted by the assignment-page runtime -->
+      </aside>
+
+      <!-- ── MAIN CONTENT ──────────────────────────────── -->
+      <main class="main-content">
+
+        <!-- Inline table of contents
+             Numbers are prefixed automatically when autoNumberSections: true -->
+        <nav class="inline-toc">
+          <strong>In this assignment:</strong>
+          <a href="#section-context">Context</a>
+          <span class="toc-separator">•</span>
+          <a href="#section-instructions">Instructions</a>
+          <span class="toc-separator">•</span>
+          <a href="#section-deliverables">Deliverables</a>
+          <span class="toc-separator">•</span>
+          <a href="#section-submission">Submission</a>
+          <span class="toc-separator">•</span>
+          <a href="#section-evaluation">Evaluation</a>
+          <span class="toc-separator">•</span>
+          <a href="#section-integrity">Academic Integrity</a>
+          <span class="toc-separator">•</span>
+          <a href="#section-references">References</a>
+        </nav>
+
+
+  <!-- Page configuration -->
+
+
+  <!-- Assignment configuration (EDIT for each assignment) -->
+  <script>
+    window.ASSIGNMENT_CONFIG = {
+
+      /* ── Identity ──────────────────────────────────────── */
+      assignmentNumber : 1,
+      assignmentLabel  : 'Assignment',  // 'Assignment' | 'Lab' | 'Project' | 'Quiz'
+
+      /* ── Dates ─────────────────────────────────────────── */
+      openDate : '2026-10-01T00:00',    // null si toujours ouvert
+      deadline : {
+        date      : '2026-10-15T23:59',
+        type      : 'hard',             // 'hard' | 'soft'
+        extension : null,
+        // Exemple d'extension :
+        // extension : { date: '2026-10-17T23:59', reason: 'Extended for reading week' },
+      },
+
+      /* ── Submission ─────────────────────────────────────── */
+      submissionType : 'individual',    // 'individual' | 'group'
+      groupSize      : null,            // e.g. '2–3 students' (for group submissions)
+      submissionUrl  : '#',             // URL du dropbox Brightspace
+
+      /* ── AI policy ───────────────────────────────────── */
+      // 'unrestricted' | 'restricted' | 'forbidden' | 'default'
+      aiPolicy : 'restricted',
+
+      /* ── Pedagogical information (hover panel) ──────── */
+      learningOutcomes : [
+        { code: 'LO1', label: 'Description of Learning Outcome 1.' },
+        { code: 'LO2', label: 'Description of Learning Outcome 2.' },
+      ],
+      estimatedTime   : '6–8 hours',
+      difficulty      : 'medium',       // 'easy' | 'medium' | 'hard'
+      weight          : 15,             // % of the final grade (null if not published)
+      points          : 100,            // raw points (null if not published)
+      rubricsProvided : true,
+
+      /* ── Sidebar resources ─────────────────────────────── */
+      resources : [
+        { label: '📄 Assignment Handout', url: '#' },
+        { label: '📊 Grading Rubric',     url: '#' },
+        { label: '📚 Course Slide Deck',  url: '#' },
+      ],
+
+    };
+  </script>
+
+  <!-- 3. Page configuration (EDIT for each page) -->
+  <script>
+    window.PAGE_CONFIG = {
+
+      // Sticky-bar label (short: 2–3 words)
+      pageShortTitle : 'Assignment 1',
+
+      // Displayed on the right side of the sticky bar
+      moduleTitle : 'Module 2',
+
+      // Hero title and subtitle
+      // The "Assignment N" eyebrow is generated automatically from ASSIGNMENT_CONFIG
+      heroTitle    : 'Assignment Title',
+      heroSubtitle : 'One-line simulation framing — role, project, and stakes.',
+
+      // Automatic section numbering
+      autoNumberSections : true,
+
+      // Navigation menu sections — must match the <h2> ids
+      navSections : [
+        { id: 'section-context',      label: 'Simulation Context'  },
+        { id: 'section-instructions', label: 'Task Instructions'   },
+        { id: 'section-deliverables', label: 'Deliverables'        },
+        { id: 'section-submission',   label: 'Submission'          },
+        { id: 'section-evaluation',   label: 'Evaluation'          },
+        { id: 'section-integrity',    label: 'Academic Integrity'  },
+        { id: 'section-references',   label: 'References'          },
+      ],
+
+    };
+  </script>
+<!-- =========================================================
+       OPTIONAL PAGE-SPECIFIC JAVASCRIPT
+
+       beforeFramework:
+       Runs after the document and inline configuration objects are parsed,
+       but before the base page runtime and optional modules are initialized.
+       Use it only for setup that must exist before framework initialization.
+
+       afterFramework:
+       Runs after the base page runtime and all requested optional modules.
+       Use it for code that depends on generated framework DOM or module APIs.
+       ========================================================= -->
+
+  <!--
+  <script>
+    BRIGHTSPACE.beforeFramework(function (runtime) {
+      // Page-specific setup that must run before framework initialization.
+    });
+  </script>
+  -->
+
+  <!--
+  <script>
+    BRIGHTSPACE.afterFramework(function (runtime) {
+      // Page-specific code that depends on the initialized framework/modules.
+    });
+  </script>
+  -->
+
+</body>
+</html>

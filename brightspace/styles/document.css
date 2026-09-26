@@ -1,0 +1,428 @@
+/* ============================================================
+   BRIGHTSPACE HTML FRAMEWORK — document.css
+   Base imprimable US Letter pour tous les documents du cours.
+   ============================================================ */
+
+:root {
+  --accent: #c2410c;
+  --accent-light: #ffedd5;
+  --structure: #1e293b;
+  --text-main: #334155;
+  --text-dark: #0f172a;
+  --border: #e2e8f0;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --doc-page-width: 8.5in;
+  --doc-page-height: 11in;
+  --doc-margin-top: 0.62in;
+  --doc-margin-right: 0.62in;
+  --doc-margin-bottom: 0.62in;
+  --doc-margin-left: 0.62in;
+  --doc-header-height: 0.50in;
+  --doc-footer-height: 0.38in;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-main);
+  background: #e5e7eb;
+  line-height: 1.45;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ---------- Toolbar écran uniquement ---------- */
+.document-screen-toolbar {
+  width: min(var(--doc-page-width), calc(100vw - 32px));
+  margin: 18px auto;
+  padding: 10px 14px;
+  background: var(--structure);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 0.84rem;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14);
+}
+
+.document-screen-toolbar button {
+  appearance: none;
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.document-screen-note { opacity: 0.85; }
+
+/* ---------- Document ---------- */
+.document-root { padding: 1px 0 28px; }
+
+.document-sheet {
+  position: relative;
+  width: var(--doc-page-width);
+  height: var(--doc-page-height);
+  margin: 24px auto;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.16);
+  overflow: hidden;
+  break-after: page;
+  page-break-after: always;
+}
+
+.document-sheet:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+.document-page-frame {
+  position: absolute;
+  inset: var(--doc-margin-top) var(--doc-margin-right) var(--doc-margin-bottom) var(--doc-margin-left);
+  display: grid;
+  grid-template-rows: var(--doc-header-height) minmax(0, 1fr) var(--doc-footer-height);
+}
+
+.document-page-body {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.15in 0 0.10in;
+}
+
+/* ---------- Header / Footer ---------- */
+.document-header,
+.document-footer {
+  display: flex;
+  align-items: center;
+  color: #64748b;
+  font-size: 8.5pt;
+}
+
+.document-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.08in;
+  justify-content: space-between;
+  gap: 0.20in;
+}
+
+.document-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 0.07in;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 0.20in;
+}
+
+.document-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.12in;
+  min-width: 0;
+}
+
+.document-header-logo {
+  width: 0.36in;
+  height: 0.36in;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.document-header-course {
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.document-header-course strong {
+  display: block;
+  color: var(--text-dark);
+  font-size: 9pt;
+}
+
+.document-header-meta,
+.document-footer-page {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.document-footer-left {
+  min-width: 0;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.document-footer-program {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.document-footer-custom {
+  margin-top: 2px;
+  font-size: 7.5pt;
+  color: #94a3b8;
+}
+
+.document-footer-center {
+  white-space: nowrap;
+  text-align: center;
+  align-self: center;
+}
+
+.document-footer-page {
+  align-self: center;
+}
+
+/* ---------- Cover ---------- */
+.document-cover .document-page-frame {
+  display: block;
+}
+
+.document-cover-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.30in 0.25in 0.15in;
+}
+
+.document-cover-logo {
+  width: 1.65in;
+  height: 1.05in;
+  object-fit: contain;
+  margin-bottom: 0.20in;
+}
+
+.document-cover-institution {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 9.5pt;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.document-cover-institution strong {
+  display: block;
+  color: var(--structure);
+  font-size: 13pt;
+}
+
+.document-cover-rule {
+  width: 0.85in;
+  border: 0;
+  border-top: 4px solid var(--accent);
+  margin: 0.30in 0 0.28in;
+}
+
+.document-cover-course {
+  color: var(--structure);
+  font-size: 11pt;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.document-cover-course-title {
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.document-cover-program {
+  margin-top: 0.20in;
+  color: var(--text-main);
+  font-size: 9.5pt;
+  font-weight: 600;
+}
+
+.document-cover-title-block {
+  margin: auto 0;
+  width: 100%;
+}
+
+.document-cover-kicker {
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 800;
+  font-size: 9pt;
+  margin-bottom: 0.12in;
+}
+
+.document-cover-title {
+  color: var(--text-dark);
+  text-transform: uppercase;
+  font-size: 24pt;
+  line-height: 1.08;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.document-cover-subtitle {
+  margin: 0.16in auto 0;
+  max-width: 6.0in;
+  color: var(--text-main);
+  font-size: 11pt;
+}
+
+.document-cover-meta {
+  width: 100%;
+  border-top: 1px solid var(--border);
+  padding-top: 0.18in;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0.35in;
+  row-gap: 0.08in;
+  text-align: left;
+  font-size: 9pt;
+}
+
+.document-cover-meta-item {
+  display: grid;
+  grid-template-columns: 0.95in 1fr;
+  gap: 0.10in;
+}
+
+.document-cover-meta-label {
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 7.5pt;
+  font-weight: 700;
+}
+
+.document-cover-meta-value { color: var(--text-dark); }
+
+/* ---------- Typographie de contenu ---------- */
+.document-page-body h1,
+.document-page-body h2,
+.document-page-body h3,
+.document-page-body h4 {
+  color: var(--text-dark);
+  break-after: avoid-page;
+  page-break-after: avoid;
+}
+
+.document-page-body h1 {
+  margin: 0 0 0.22in;
+  padding-bottom: 0.10in;
+  border-bottom: 3px solid var(--accent);
+  font-size: 19pt;
+  line-height: 1.15;
+}
+
+.document-page-body h2 {
+  margin: 0.20in 0 0.10in;
+  font-size: 14pt;
+  line-height: 1.2;
+}
+
+.document-page-body h3 {
+  margin: 0.16in 0 0.08in;
+  font-size: 11.5pt;
+}
+
+.document-page-body p,
+.document-page-body li,
+.document-page-body td,
+.document-page-body th { font-size: 9.5pt; }
+
+.document-page-body p { margin: 0 0 0.11in; }
+.document-page-body ul,
+.document-page-body ol { margin: 0.08in 0 0.14in 0.24in; padding: 0; }
+.document-page-body li { margin-bottom: 0.04in; }
+
+.document-page-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.12in 0 0.18in;
+  break-inside: avoid;
+}
+
+.document-page-body th,
+.document-page-body td {
+  border: 1px solid var(--border);
+  padding: 0.07in 0.09in;
+  vertical-align: top;
+}
+
+.document-page-body th {
+  background: var(--structure);
+  color: #fff;
+  text-align: left;
+}
+
+.document-note {
+  border-left: 4px solid var(--accent);
+  background: var(--accent-light);
+  padding: 0.10in 0.13in;
+  margin: 0.12in 0;
+  break-inside: avoid;
+}
+
+.document-figure {
+  margin: 0.15in 0;
+  break-inside: avoid;
+  text-align: center;
+}
+
+.document-figure img { max-width: 100%; max-height: 6.3in; object-fit: contain; }
+.document-figure figcaption { margin-top: 0.06in; color: #64748b; font-size: 8.5pt; }
+
+/* Sources HTML servant à construire les pages : jamais affichées. */
+template[data-document-source] { display: none !important; }
+
+/* ---------- Impression ---------- */
+@page {
+  size: Letter portrait;
+  margin: 0;
+}
+
+
+/* ---------- Pages structurelles automatiques ---------- */
+.document-blank .document-page-frame {
+  padding: 0;
+}
+
+.document-end-page .document-page-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.document-end-message {
+  font-size: 16pt;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--text-dark);
+}
+
+@media print {
+  html, body {
+    width: 8.5in;
+    min-width: 8.5in;
+    background: #fff !important;
+  }
+
+  .document-screen-toolbar { display: none !important; }
+  .document-root { padding: 0; }
+
+  .document-sheet {
+    margin: 0;
+    box-shadow: none;
+    width: 8.5in;
+    height: 11in;
+    overflow: hidden;
+  }
+
+  a, a:visited { color: inherit; text-decoration: none; }
+
+  /* L'URL/date ajoutées par le navigateur ne font pas partie du DOM.
+     Elles doivent être désactivées via l'option "Headers and footers"
+     du dialogue d'impression. */
+}

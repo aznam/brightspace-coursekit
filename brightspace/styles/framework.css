@@ -218,8 +218,8 @@ body { margin: 0; padding: 0; }
 
 /* Zones */
 .main-content    { grid-area: main;      }
-.sidebar-before  { grid-area: sb-before; align-self: start; }
-.sidebar-after   { grid-area: sb-after;  align-self: start; }
+.sidebar-before  { grid-area: sb-before; align-self: start; min-width: 0;}
+.sidebar-after   { grid-area: sb-after;  align-self: start; min-width: 0;}
 
 
 /* ============================================================
@@ -228,6 +228,7 @@ body { margin: 0; padding: 0; }
 .main-content {
   background-color: #ffffff;
   padding: 60px;
+  min-width: 0;
   border: 1px solid var(--border);
   border-top: 8px solid var(--structure);
   box-shadow: 8px 8px 0px rgba(30,41,59,0.05);
@@ -261,11 +262,15 @@ body { margin: 0; padding: 0; }
    TABLE DES MATIÈRES (inline-toc)
    ============================================================ */
 .inline-toc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0;
   font-size: 0.9em;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   padding: 15px 0;
-  margin-bottom: 45px;
+  margin-bottom: 40px;
   color: #64748b;
   line-height: 2;
 }
@@ -274,6 +279,8 @@ body { margin: 0; padding: 0; }
   margin-right: 15px;
   font-size: 0.85em;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 .inline-toc a {
   color: var(--accent);
@@ -636,6 +643,7 @@ span.pano-wrapper-div { display: contents !important; line-height: inherit !impo
        si le "summary" est absent */
     row-gap: 25px;
     padding: 20px;
+    min-width: 0;
   }
   
   .main-content { padding: 35px 25px; }

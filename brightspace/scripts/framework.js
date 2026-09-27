@@ -175,7 +175,7 @@
 
   /* ── Inline table of contents ───────────────────────────── */
   function buildInlineToc() {
-    var toc = document.getElementById('fw-inline-toc');
+    var toc = document.querySelector('.inline-toc');
     if (!toc) return;
 
     var sections = PC.navSections || [];

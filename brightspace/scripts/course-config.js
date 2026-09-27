@@ -9,13 +9,40 @@
   /* ══════════════════════════════════════════════════════
      ▶  Brightspace Course Folder Id
      ══════════════════════════════════════════════════════ */
-  var siteId = 'courseId'; // Example: 227327-COMP8117-1-R-2026F
+  var siteId = null; // Example: '227327-COMP8117-1-R-2026F'
 
   /* ══════════════════════════════════════════════════════
-     ▶  Derived paths (do not modify) 
+     ▶ Derived paths (do not modify)
      ══════════════════════════════════════════════════════ */
-  var root        = '/content/enforced/' + siteId;
-  var brightspace = root        + '/brightspace';
+
+  var root;
+  var brightspace;
+
+  if (siteId) {
+
+    // ── Brightspace production ──────────────────────────
+    root        = '/content/enforced/' + siteId;
+    brightspace = root + '/brightspace';
+
+  } else {
+
+    // ── Portable / local fallback ───────────────────────
+    //
+    // course-config.js is expected at:
+    //   <root>/brightspace/scripts/course-config.js
+    //
+    // document.currentScript.src:
+    //   .../brightspace/scripts/course-config.js
+
+    var configUrl     = new URL(document.currentScript.src);
+    var scriptsUrl    = new URL('.', configUrl);
+    var brightspaceUrl = new URL('../', scriptsUrl);
+    var rootUrl        = new URL('../', brightspaceUrl);
+
+    root        = rootUrl.href.replace(/\/$/, '');
+    brightspace = brightspaceUrl.href.replace(/\/$/, '');
+  }
+  
   var attachments = root        + '/attachments';
   var assets      = brightspace + '/assets';
   var fonts       = brightspace + '/fonts';

@@ -362,6 +362,7 @@ body {
   padding: 0.10in 0.13in;
   margin: 0.12in 0;
   break-inside: avoid;
+  font-size: 0.8em;
 }
 
 .document-figure {

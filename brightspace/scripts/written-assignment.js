@@ -128,20 +128,27 @@
   }
 
   registry.renderers['assignment-instructions'] = function (page, ctx) {
-    var source = ctx.getSourceHtml(page.id || 'assignment-instructions');
-    var loBlock = '<section class="wa-instruction-section">'
-      + '<h2>Learning Outcomes</h2>' + learningOutcomes() + '</section>';
+  var source = ctx.getSourceHtml(page.id || 'assignment-instructions');
 
-    /* Le template peut décider précisément où placer les LO avec ce marqueur. */
-    if (source.indexOf('data-wa-learning-outcomes') !== -1) {
-      var holder = document.createElement('div');
-      holder.innerHTML = source;
-      var marker = holder.querySelector('[data-wa-learning-outcomes]');
-      if (marker) marker.outerHTML = loBlock;
-      return holder.innerHTML;
-    }
-    return source + loBlock;
-  };
+  /* Allow Learning Outcomes to be disabled for a specific instruction page. */
+  if (page.showLearningOutcomes === false) {
+    return source;
+  }
+
+  var loBlock = '<section class="wa-instruction-section">'
+    + '<h2>Learning Outcomes</h2>' + learningOutcomes() + '</section>';
+
+  /* The template can decide precisely where to place the LOs with this marker. */
+  if (source.indexOf('data-wa-learning-outcomes') !== -1) {
+    var holder = document.createElement('div');
+    holder.innerHTML = source;
+    var marker = holder.querySelector('[data-wa-learning-outcomes]');
+    if (marker) marker.outerHTML = loBlock;
+    return holder.innerHTML;
+  }
+
+  return source + loBlock;
+};
 
   registry.renderers['assignment-content'] = function (page, ctx) {
     var body = ctx.getSourceHtml(page.id);

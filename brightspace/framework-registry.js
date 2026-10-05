@@ -88,4 +88,21 @@
     dependsOn: []
   });
 
+  window.BRIGHTSPACE.registerModule('books', {
+    css: [
+      'styles/books.css'
+    ],
+    js: [
+      'scripts/books.js'
+    ],
+    allowedPageTypes: [
+      'course-page',
+      'assignment-page'
+    ],
+    dependsOn: [
+      'tabler-icons'
+    ]
+});
+
+
 })();

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur de liste de pages — Brightspace</title>
+  <style>
+    :root {
+      --ui-bg: #f8fafc;
+      --ui-panel: #ffffff;
+      --ui-border: #dbe3ec;
+      --ui-text: #334155;
+      --ui-dark: #0f172a;
+      --ui-muted: #64748b;
+      --ui-accent: #2563eb;
+      --ui-danger: #b91c1c;
+      --ui-ok: #166534;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--ui-bg); color: var(--ui-text); }
+    .app { max-width: 1440px; margin: 0 auto; }
+    h1 { margin: 0 0 6px; color: var(--ui-dark); font-size: 1.65rem; }
+    .lead { margin: 0 0 24px; color: var(--ui-muted); font-size: .95rem; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+    @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+    .panel { background: var(--ui-panel); border: 1px solid var(--ui-border); border-radius: 10px; padding: 22px; box-shadow: 0 4px 14px rgba(15,23,42,.05); }
+    .panel h2 { margin: 0 0 18px; padding-bottom: 10px; border-bottom: 1px solid var(--ui-border); font-size: 1.05rem; color: var(--ui-dark); }
+    label { display: block; margin: 14px 0 6px; font-size: .82rem; font-weight: 700; color: #475569; }
+    textarea, input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 11px; color: var(--ui-dark); background: #fff; font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    textarea { min-height: 125px; resize: vertical; }
+    input[type="text"] { font-family: inherit; }
+    .compact { min-height: 78px; }
+    .hint { margin-top: 6px; color: var(--ui-muted); font-size: .76rem; line-height: 1.45; }
+    .status { margin: 14px 0 0; padding: 10px 12px; border-radius: 6px; font-size: .8rem; display: none; }
+    .status.error { display: block; background: #fef2f2; color: var(--ui-danger); border: 1px solid #fecaca; }
+    .status.ok { display: block; background: #f0fdf4; color: var(--ui-ok); border: 1px solid #bbf7d0; }
+    .page-entry { border: 1px solid var(--ui-border); border-radius: 8px; padding: 14px; margin-top: 14px; background: #fbfdff; }
+    .page-entry-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+    .page-entry-title { font-weight: 800; color: var(--ui-dark); font-size: .9rem; }
+    .page-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+    .page-fields .full { grid-column: 1 / -1; }
+    @media (max-width: 620px) { .page-fields { grid-template-columns: 1fr; } .page-fields .full { grid-column: auto; } }
+    button { border: 0; border-radius: 6px; padding: 11px 14px; font-weight: 800; cursor: pointer; font-size: .88rem; }
+    .primary { width: 100%; margin-top: 18px; padding: 14px; color: #fff; background: var(--ui-accent); }
+    .secondary { color: var(--ui-dark); background: #e2e8f0; }
+    .danger { color: #991b1b; background: #fee2e2; padding: 7px 9px; font-size: .75rem; }
+    .toolbar { display: flex; gap: 9px; margin-top: 14px; flex-wrap: wrap; }
+    .preview-wrap { width: 100%; border: 1px dashed #cbd5e1; border-radius: 7px; background: #f8fafc; padding: 16px; overflow: hidden; }
+    .output { min-height: 260px; background: #0f172a; color: #e2e8f0; border-color: #0f172a; }
+    .palette-readout { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 7px; }
+    .swatch { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border: 1px solid var(--ui-border); border-radius: 999px; font-size: .72rem; background: #fff; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,.12); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Générateur de liste de pages Brightspace</h1>
+    <p class="lead">Produit un fragment HTML autonome, entièrement inline, destiné au champ de description Brightspace.</p>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>1. Sources et pages</h2>
+
+        <label for="course-config">Contenu de course-config.js</label>
+        <textarea id="course-config" placeholder="Collez ici le contenu complet de course-config.js..."></textarea>
+
+        <div id="palette-readout" class="palette-readout"></div>
+        <div id="source-status" class="status"></div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:22px;">
+          <strong style="color:var(--ui-dark);">Pages du module</strong>
+          <button type="button" class="secondary" onclick="addPage()">+ Ajouter une page</button>
+        </div>
+        <div id="pages"></div>
+
+        <button type="button" class="primary" onclick="generateList()">Générer la description HTML</button>
+      </section>
+
+      <section class="panel">
+        <h2>2. Aperçu et code</h2>
+        <label>Aperçu</label>
+        <div id="preview" class="preview-wrap"><em style="color:#94a3b8; font-size:.9rem;">Le rendu apparaîtra ici.</em></div>
+
+        <label for="output">HTML à coller dans Brightspace</label>
+        <textarea id="output" class="output" readonly></textarea>
+
+        <div class="toolbar">
+          <button type="button" class="secondary" onclick="copyOutput()">Copier le HTML</button>
+          <button type="button" class="secondary" onclick="downloadOutput()">Télécharger .html</button>
+        </div>
+        <div id="copy-status" class="status"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    let pageCounter = 0;
+
+    const REQUIRED_COLORS = ['accent', 'accent-light', 'structure', 'text-main', 'text-dark', 'border'];
+
+    // Valeurs par défaut du framework.css. COURSE_CONFIG.palette reste prioritaire.
+    const DEFAULT_PALETTE = {
+      'accent':       '#c2410c',
+      'accent-light': '#ffedd5',
+      'structure':    '#1e293b',
+      'text-main':    '#334155',
+      'text-dark':    '#0f172a',
+      'border':       '#e2e8f0'
+    };
+
+    const DEFAULT_FONT = '-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif';
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function safeUrl(value) {
+      const v = String(value || '').trim();
+      if (!v) return '#';
+      if (/^(https?:\/\/|\/|#)/i.test(v)) return escapeHtml(v);
+      return '#';
+    }
+
+    function parseCourseConfig(js) {
+      const fakeWindow = {};
+      const code = String(js || '').replace(/\bvar\s+window\s*=\s*[^;]+;/g, '');
+      const executor = new Function('window', code + '\n;return window.COURSE_CONFIG || {};');
+      return executor(fakeWindow) || {};
+    }
+
+    // Extrait uniquement l'objet affecté à window.PAGE_CONFIG afin de ne pas exécuter
+    // les autres scripts inline éventuels de la page.
+    function extractAssignedObject(source, assignmentName) {
+      const marker = 'window.' + assignmentName;
+      const start = source.indexOf(marker);
+      if (start < 0) throw new Error(marker + ' introuvable.');
+
+      let i = source.indexOf('=', start + marker.length);
+      if (i < 0) throw new Error('Affectation de ' + marker + ' introuvable.');
+      i++;
+      while (/\s/.test(source[i] || '')) i++;
+      if (source[i] !== '{') throw new Error(marker + ' ne commence pas par un objet littéral.');
+
+      const objStart = i;
+      let depth = 0;
+      let quote = null;
+      let escaped = false;
+      let lineComment = false;
+      let blockComment = false;
+
+      for (; i < source.length; i++) {
+        const ch = source[i];
+        const next = source[i + 1];
+
+        if (lineComment) {
+          if (ch === '\n') lineComment = false;
+          continue;
+        }
+        if (blockComment) {
+          if (ch === '*' && next === '/') { blockComment = false; i++; }
+          continue;
+        }
+        if (quote) {
+          if (escaped) { escaped = false; continue; }
+          if (ch === '\\') { escaped = true; continue; }
+          if (ch === quote) quote = null;
+          continue;
+        }
+        if (ch === '/' && next === '/') { lineComment = true; i++; continue; }
+        if (ch === '/' && next === '*') { blockComment = true; i++; continue; }
+        if (ch === '"' || ch === "'" || ch === '`') { quote = ch; continue; }
+        if (ch === '{') depth++;
+        if (ch === '}') {
+          depth--;
+          if (depth === 0) return source.slice(objStart, i + 1);
+        }
+      }
+      throw new Error('Objet ' + marker + ' incomplet.');
+    }
+
+    function parsePageConfig(html) {
+      const literal = extractAssignedObject(String(html || ''), 'PAGE_CONFIG');
+      const fakeWindow = {};
+      const executor = new Function('window', 'window.PAGE_CONFIG = ' + literal + '; return window.PAGE_CONFIG;');
+      return executor(fakeWindow) || {};
+    }
+
+    function resolveTheme() {
+      const courseText = document.getElementById('course-config').value;
+      const CC = parseCourseConfig(courseText);
+      const palette = CC.palette || {};
+      const colors = {};
+
+      REQUIRED_COLORS.forEach(function (key) {
+        colors[key] = palette[key] || DEFAULT_PALETTE[key];
+      });
+
+      let font = CC.fontFamily || DEFAULT_FONT;
+      if (CC.fontFamily && !/[,"]/g.test(CC.fontFamily)) {
+        font = '"' + CC.fontFamily + '", ' + DEFAULT_FONT;
+      }
+
+      return { CC, colors, font };
+    }
+
+    function addPage(data) {
+      pageCounter++;
+      const d = data || {};
+      const host = document.getElementById('pages');
+      const box = document.createElement('div');
+      box.className = 'page-entry';
+      box.dataset.pageId = String(pageCounter);
+      box.innerHTML = `
+        <div class="page-entry-head">
+          <div class="page-entry-title">Page <span class="order-label"></span></div>
+          <button type="button" class="danger" onclick="removePage(this)">Supprimer</button>
+        </div>
+        <div class="page-fields">
+          <div class="full">
+            <label>HTML de la page</label>
+            <textarea class="page-html" placeholder="Collez le fichier HTML contenant window.PAGE_CONFIG...">${escapeHtml(d.html || '')}</textarea>
+          </div>
+          <div>
+            <label>Sous-titre de la carte</label>
+            <input class="page-subtitle" type="text" placeholder="Ex. Start Here" value="${escapeHtml(d.subtitle || '')}">
+          </div>
+          <div>
+            <label>Lien Brightspace</label>
+            <input class="page-url" type="text" placeholder="https://brightspace.uwindsor.ca/..." value="${escapeHtml(d.url || '')}">
+          </div>
+          <div class="full">
+            <label>Sous-description</label>
+            <textarea class="page-desc compact" placeholder="Ex. Objectives, competency framework, and course philosophy">${escapeHtml(d.description || '')}</textarea>
+          </div>
+        </div>`;
+      host.appendChild(box);
+      refreshPageNumbers();
+    }
+
+    function removePage(button) {
+      button.closest('.page-entry').remove();
+      refreshPageNumbers();
+    }
+
+    function refreshPageNumbers() {
+      document.querySelectorAll('.page-entry').forEach(function (entry, idx) {
+        entry.querySelector('.order-label').textContent = String(idx + 1).padStart(2, '0');
+      });
+    }
+
+    function setStatus(id, message, type) {
+      const el = document.getElementById(id);
+      el.className = 'status ' + type;
+      el.textContent = message;
+    }
+
+    function clearStatus(id) {
+      const el = document.getElementById(id);
+      el.className = 'status';
+      el.textContent = '';
+    }
+
+    function renderPalette(colors) {
+      const host = document.getElementById('palette-readout');
+      host.innerHTML = REQUIRED_COLORS.map(function (key) {
+        return '<span class="swatch"><span class="dot" style="background:' + escapeHtml(colors[key]) + ';"></span>' + escapeHtml(key) + ': ' + escapeHtml(colors[key]) + '</span>';
+      }).join('');
+    }
+
+    function generateCard(page, index, theme) {
+      const c = theme.colors;
+      const number = String(index + 1).padStart(2, '0');
+      const title = page.PC.pageShortTitle || 'Untitled Page';
+      const subtitle = page.subtitle || '';
+      const description = page.description || '';
+      const url = safeUrl(page.url);
+
+      return `<a rel="noopener" href="${url}" target="_top" style="display:block; width:100%; box-sizing:border-box; text-decoration:none; background:#ffffff; border:1px solid ${escapeHtml(c.border)}; border-left:5px solid ${escapeHtml(c.accent)}; border-radius:6px; padding:16px 18px; margin:0 0 10px 0; color:${escapeHtml(c['text-main'])};">
+  <div style="display:flex; width:100%; box-sizing:border-box; justify-content:space-between; align-items:center; gap:20px;">
+    <div style="min-width:0; flex:1 1 auto;">
+      <div style="font-size:11px; line-height:1.3; font-weight:800; text-transform:uppercase; letter-spacing:1.2px; color:${escapeHtml(c.structure)}; margin:0 0 5px 0;">${number}${subtitle ? ' &middot; ' + escapeHtml(subtitle) : ''}</div>
+      <div style="font-size:16px; line-height:1.35; font-weight:750; color:${escapeHtml(c['text-dark'])}; margin:0 0 4px 0;">${escapeHtml(title)}</div>
+      ${description ? `<div style="font-size:13px; line-height:1.5; color:${escapeHtml(c['text-main'])}; margin:0;">${escapeHtml(description)}</div>` : ''}
+    </div>
+    <div style="flex:0 0 auto; padding-left:10px; font-size:12px; line-height:1.2; font-weight:800; color:${escapeHtml(c.accent)}; white-space:nowrap;">Open &rarr;</div>
+  </div>
+</a>`;
+    }
+
+    function generateList() {
+      clearStatus('source-status');
+      try {
+        const theme = resolveTheme();
+        renderPalette(theme.colors);
+
+        const entries = Array.from(document.querySelectorAll('.page-entry'));
+        if (!entries.length) throw new Error('Ajoutez au moins une page.');
+
+        const pages = entries.map(function (entry, idx) {
+          const html = entry.querySelector('.page-html').value;
+          if (!html.trim()) throw new Error('Page ' + (idx + 1) + ' : HTML manquant.');
+          return {
+            PC: parsePageConfig(html),
+            subtitle: entry.querySelector('.page-subtitle').value.trim(),
+            description: entry.querySelector('.page-desc').value.trim(),
+            url: entry.querySelector('.page-url').value.trim()
+          };
+        });
+
+        const cards = pages.map(function (page, idx) { return generateCard(page, idx, theme); }).join('\n');
+        const finalHTML = `<div style="display:block; width:100%; max-width:none; box-sizing:border-box; margin:0; padding:0; font-family:${escapeHtml(theme.font)}; color:${escapeHtml(theme.colors['text-main'])};">\n${cards}\n</div>`;
+
+        document.getElementById('preview').innerHTML = finalHTML;
+        document.getElementById('output').value = finalHTML;
+        setStatus('source-status', 'Configuration lue correctement. ' + pages.length + ' page(s) générée(s).', 'ok');
+      } catch (err) {
+        document.getElementById('preview').innerHTML = '<em style="color:#b91c1c;">La génération a échoué. Consultez le message à gauche.</em>';
+        document.getElementById('output').value = '';
+        setStatus('source-status', err && err.message ? err.message : String(err), 'error');
+      }
+    }
+
+    async function copyOutput() {
+      clearStatus('copy-status');
+      const output = document.getElementById('output').value;
+      if (!output) return setStatus('copy-status', 'Rien à copier.', 'error');
+      try {
+        await navigator.clipboard.writeText(output);
+        setStatus('copy-status', 'HTML copié.', 'ok');
+      } catch (_) {
+        const area = document.getElementById('output');
+        area.focus();
+        area.select();
+        document.execCommand('copy');
+        setStatus('copy-status', 'HTML copié.', 'ok');
+      }
+    }
+
+    function downloadOutput() {
+      const output = document.getElementById('output').value;
+      if (!output) return setStatus('copy-status', 'Générez d’abord le HTML.', 'error');
+      const blob = new Blob([output], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'brightspace-page-list-description.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    addPage();
+  </script>
+</body>
+</html>

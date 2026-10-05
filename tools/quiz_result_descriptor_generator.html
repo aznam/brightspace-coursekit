@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur de résultats Quiz — Brightspace</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #334155;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    h1 {
+      grid-column: 1 / -1;
+      margin: 0;
+      text-align: center;
+      color: #0f172a;
+      font-size: 1.65rem;
+    }
+    .panel {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 10px rgba(15,23,42,.05);
+    }
+    h2 {
+      margin: 0 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e2e8f0;
+      color: #0f172a;
+      font-size: 1.08rem;
+    }
+    label {
+      display: block;
+      margin: 14px 0 5px;
+      font-size: .84rem;
+      font-weight: 700;
+      color: #475569;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      background: #fff;
+      color: #0f172a;
+      font: inherit;
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .questions-box {
+      margin-top: 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 14px;
+      background: #f8fafc;
+    }
+    .questions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .q-input label {
+      margin: 0 0 4px;
+      font-size: .75rem;
+      text-align: center;
+    }
+    .q-input input {
+      text-align: center;
+      padding: 8px;
+    }
+    .total-preview {
+      margin-top: 12px;
+      font-size: .9rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 13px 15px;
+      border: 0;
+      border-radius: 6px;
+      background: #c2410c;
+      color: #fff;
+      font-size: .95rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.secondary {
+      margin-top: 10px;
+      background: #1e293b;
+    }
+    .preview-box {
+      min-height: 240px;
+      padding: 16px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 5px;
+      background: #f8fafc;
+      overflow-x: auto;
+    }
+    .code-box {
+      min-height: 230px;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .hint {
+      margin-top: 5px;
+      color: #64748b;
+      font-size: .76rem;
+      line-height: 1.45;
+    }
+    .status {
+      min-height: 1.2em;
+      margin-top: 8px;
+      font-size: .82rem;
+      color: #166534;
+    }
+    @media (max-width: 850px) {
+      .container { grid-template-columns: 1fr; }
+      h1 { grid-column: 1; }
+      .row { grid-template-columns: 1fr; }
+      .questions-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Générateur de grille de résultats Quiz Brightspace</h1>
+
+    <section class="panel">
+      <h2>1. Paramètres</h2>
+
+      <label for="input-course">Contenu de course-config.js</label>
+      <textarea id="input-course" placeholder="Copiez-collez le contenu complet de course-config.js..."></textarea>
+
+      <div class="row">
+        <div>
+          <label for="input-number">Numéro du Quiz</label>
+          <input id="input-number" type="text" placeholder="Ex. 1">
+        </div>
+        <div>
+          <label for="input-count">Nombre de questions</label>
+          <input id="input-count" type="number" min="1" max="50" step="1" value="5">
+        </div>
+      </div>
+
+      <label for="input-status">Statut</label>
+      <select id="input-status" onchange="updateStatusMode()" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:5px;background:#fff;color:#0f172a;font:inherit;">
+        <option value="submitted">Soumis / évalué</option>
+        <option value="absent">Absent</option>
+        <option value="no-submission">Pas de soumission</option>
+      </select>
+
+      <button type="button" id="build-points-btn" onclick="buildQuestionInputs()">Créer les champs de points</button>
+
+      <div id="questions-box" class="questions-box">
+        <strong style="font-size:.9rem;color:#0f172a;">Points par question</strong>
+        <div class="hint">Entrez les points obtenus pour chaque question. Le total est calculé automatiquement.</div>
+        <div id="questions-grid" class="questions-grid"></div>
+        <div id="total-preview" class="total-preview">Total : 0 points</div>
+      </div>
+
+      <button type="button" onclick="generateResult()">Générer la grille HTML</button>
+    </section>
+
+    <section class="panel">
+      <h2>2. Aperçu & code</h2>
+
+      <label>Aperçu Brightspace</label>
+      <div id="preview" class="preview-box">
+        <em style="color:#94a3b8;font-size:.9em;">Créez les champs, saisissez les points, puis générez la grille.</em>
+      </div>
+
+      <label for="output-code">Code HTML</label>
+      <textarea id="output-code" class="code-box" readonly></textarea>
+
+      <button type="button" class="secondary" onclick="copyOutput()">Copier le HTML</button>
+      <div id="status" class="status"></div>
+    </section>
+  </div>
+
+<script>
+  const DEFAULT_PALETTE = {
+    'accent': '#c2410c',
+    'accent-light': '#ffedd5',
+    'structure': '#1e293b',
+    'text-main': '#334155',
+    'text-dark': '#0f172a',
+    'border': '#e2e8f0'
+  };
+
+  function parseCourseConfig(source) {
+    if (!source.trim()) return {};
+    const fakeWindow = {};
+    try {
+      new Function('window', source)(fakeWindow);
+      return fakeWindow.COURSE_CONFIG || {};
+    } catch (e) {
+      throw new Error("Impossible de lire course-config.js : " + e.message);
+    }
+  }
+
+  function esc(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function updateStatusMode() {
+    const status = document.getElementById('input-status').value;
+    const isSubmitted = status === 'submitted';
+    document.getElementById('questions-box').style.display = isSubmitted ? 'block' : 'none';
+    document.getElementById('build-points-btn').style.display = isSubmitted ? 'block' : 'none';
+  }
+
+  function buildQuestionInputs() {
+    const count = Math.max(1, Math.min(50, parseInt(document.getElementById('input-count').value || '1', 10)));
+    const grid = document.getElementById('questions-grid');
+    grid.innerHTML = '';
+
+    for (let i = 1; i <= count; i++) {
+      const wrap = document.createElement('div');
+      wrap.className = 'q-input';
+      wrap.innerHTML = '<label for="q-' + i + '">Q' + i + '</label>' +
+        '<input id="q-' + i + '" data-q="' + i + '" type="number" min="0" step="0.01" value="0" oninput="updateTotal()">';
+      grid.appendChild(wrap);
+    }
+    updateTotal();
+  }
+
+  function getPoints() {
+    return Array.from(document.querySelectorAll('[data-q]')).map(function(el) {
+      const n = Number(el.value);
+      return Number.isFinite(n) ? n : 0;
+    });
+  }
+
+  function formatPoint(n) {
+    return Number.isInteger(n) ? String(n) : String(Math.round(n * 100) / 100);
+  }
+
+  function updateTotal() {
+    const points = getPoints();
+    const total = points.reduce(function(a, b) { return a + b; }, 0);
+    document.getElementById('total-preview').textContent = 'Total : ' + formatPoint(total) + ' points';
+  }
+
+  function generateResult() {
+    let CC = {};
+    try {
+      CC = parseCourseConfig(document.getElementById('input-course').value);
+    } catch (e) {
+      alert(e.message);
+      return;
+    }
+
+    const palette = Object.assign({}, DEFAULT_PALETTE, CC.palette || {});
+    const accent = palette['accent'];
+    const structure = palette['structure'];
+    const textMain = palette['text-main'];
+    const textDark = palette['text-dark'];
+    const border = palette['border'];
+
+    const quizNumber = document.getElementById('input-number').value.trim() || '—';
+    const status = document.getElementById('input-status').value;
+    const points = getPoints();
+
+    let resultBody = '';
+
+    if (status === 'submitted') {
+      if (!points.length) {
+        alert('Créez d’abord les champs de points.');
+        return;
+      }
+
+      const total = points.reduce(function(a, b) { return a + b; }, 0);
+      const columnCount = points.length + 1;
+      const cellWidth = (100 / columnCount).toFixed(4) + '%';
+
+      let headerCells = '';
+      let scoreCells = '';
+
+      points.forEach(function(p, i) {
+        headerCells += '<th style="width:' + cellWidth + ';padding:8px 6px;border:0;border-bottom:1px solid ' + border + ';font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:#64748b;text-align:center;">Q' + (i + 1) + '</th>';
+        scoreCells += '<td style="width:' + cellWidth + ';padding:10px 6px;border:0;font-size:14px;font-weight:800;color:' + textDark + ';text-align:center;">' + esc(formatPoint(p)) + '</td>';
+      });
+
+      headerCells += '<th style="width:' + cellWidth + ';padding:8px 6px;border:0;border-bottom:2px solid ' + accent + ';font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:' + accent + ';text-align:center;">Total</th>';
+      scoreCells += '<td style="width:' + cellWidth + ';padding:10px 6px;border:0;font-size:15px;font-weight:900;color:' + accent + ';text-align:center;">' + esc(formatPoint(total)) + '</td>';
+
+      resultBody = '<table style="width:100%;border-collapse:collapse;table-layout:fixed;margin:0;padding:0;">' +
+        '<thead><tr>' + headerCells + '</tr></thead>' +
+        '<tbody><tr>' + scoreCells + '</tr></tbody>' +
+      '</table>';
+    } else {
+      const statusLabel = status === 'absent' ? 'Absent' : 'No Submission';
+      resultBody = '<div style="border:1px solid ' + border + ';border-left:4px solid ' + accent + ';padding:16px 18px;background:#ffffff;">' +
+        '<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:5px;">Status</div>' +
+        '<div style="font-size:17px;font-weight:900;color:' + accent + ';margin-bottom:10px;">' + esc(statusLabel) + '</div>' +
+        '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.7px;color:#64748b;margin-bottom:4px;">Total</div>' +
+        '<div style="font-size:15px;font-weight:900;color:' + textDark + ';">0</div>' +
+      '</div>';
+    }
+
+    const finalHTML = '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;width:100%;max-width:none;box-sizing:border-box;margin-left:-0.5em;color:' + textMain + ';">' +
+      '<div style="background:#ffffff;border:1px solid ' + border + ';border-top:6px solid ' + structure + ';box-sizing:border-box;padding:22px 24px;">' +
+        '<div style="padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid ' + border + ';">' +
+          '<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:' + accent + ';margin-bottom:5px;">Quiz ' + esc(quizNumber) + '</div>' +
+          '<div style="font-size:20px;font-weight:800;line-height:1.25;color:' + textDark + ';">Feedback &amp; Results</div>' +
+        '</div>' +
+        resultBody +
+      '</div>' +
+    '</div>';
+
+    document.getElementById('output-code').value = finalHTML;
+    document.getElementById('preview').innerHTML = finalHTML;
+    document.getElementById('status').textContent = '';
+  }
+
+  async function copyOutput() {
+    const box = document.getElementById('output-code');
+    const status = document.getElementById('status');
+
+    if (!box.value) {
+      status.style.color = '#991b1b';
+      status.textContent = 'Aucun HTML à copier.';
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(box.value);
+    } catch (e) {
+      box.select();
+      document.execCommand('copy');
+    }
+
+    status.style.color = '#166534';
+    status.textContent = 'HTML copié.';
+  }
+
+  buildQuestionInputs();
+  updateStatusMode();
+</script>
+</body>
+</html>

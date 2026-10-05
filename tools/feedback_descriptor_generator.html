@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur de Feedback — Brightspace</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 20px; }
+    .container { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+    h1 { grid-column: 1 / -1; margin: 0; text-align: center; color: #0f172a; font-size: 1.65rem; }
+    .panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; box-shadow: 0 4px 10px rgba(15,23,42,.05); }
+    h2 { margin: 0 0 18px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; color: #0f172a; font-size: 1.08rem; }
+    label { display: block; margin: 14px 0 5px; font-size: .84rem; font-weight: 700; color: #475569; }
+    input, textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; color: #0f172a; font: inherit; }
+    textarea { min-height: 120px; resize: vertical; }
+    #input-course { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .exercise-editor { margin-top: 14px; padding: 14px; border: 1px solid #e2e8f0; border-left: 4px solid #c2410c; border-radius: 5px; background: #f8fafc; }
+    .exercise-editor h3 { margin: 0 0 10px; font-size: .92rem; color: #0f172a; }
+    .exercise-editor textarea { min-height: 130px; font-family: inherit; font-size: 14px; line-height: 1.5; }
+    .hint { margin-top: 5px; color: #64748b; font-size: .76rem; line-height: 1.45; }
+    button { width: 100%; margin-top: 18px; padding: 13px 15px; border: 0; border-radius: 6px; background: #c2410c; color: #fff; font-size: .95rem; font-weight: 800; cursor: pointer; }
+    button.secondary { margin-top: 10px; background: #1e293b; }
+    .preview-box { min-height: 260px; padding: 16px; border: 1px dashed #cbd5e1; border-radius: 5px; background: #f8fafc; overflow-x: auto; }
+    .code-box { min-height: 230px; background: #0f172a; color: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; line-height: 1.45; }
+    .status { min-height: 1.2em; margin-top: 8px; font-size: .82rem; color: #166534; }
+    @media (max-width: 850px) { .container { grid-template-columns: 1fr; } h1 { grid-column: 1; } .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Générateur de Feedback Brightspace</h1>
+
+    <section class="panel">
+      <h2>1. Paramètres</h2>
+      <label for="input-course">Contenu de course-config.js</label>
+      <textarea id="input-course" placeholder="Copiez-collez le contenu complet de course-config.js..."></textarea>
+
+      <div class="row">
+        <div>
+          <label for="input-title">Titre du feedback</label>
+          <input id="input-title" type="text" value="Feedback" placeholder="Ex. Quiz 1 — Feedback">
+        </div>
+        <div>
+          <label for="input-count">Nombre d'exercices</label>
+          <input id="input-count" type="number" min="1" max="50" step="1" value="3">
+        </div>
+      </div>
+
+      <label for="input-general-feedback">Feedback général</label>
+      <textarea id="input-general-feedback" placeholder="Saisissez ici le feedback général applicable à l'ensemble du travail..."></textarea>
+      <div class="hint">Même mise en forme automatique que pour les exercices : paragraphes, listes à puces et listes numérotées.</div>
+
+      <button type="button" onclick="buildExerciseEditors()">Créer les exercices</button>
+      <div id="exercise-editors"></div>
+      <div class="hint">Mise en forme automatique : ligne vide = nouveau paragraphe ; lignes commençant par “-” ou “*” = liste à puces ; lignes commençant par “1.”, “2.”, etc. = liste numérotée.</div>
+      <button type="button" onclick="generateFeedback()">Générer le feedback HTML</button>
+    </section>
+
+    <section class="panel">
+      <h2>2. Aperçu & code</h2>
+      <label>Aperçu Brightspace</label>
+      <div id="preview" class="preview-box"><em style="color:#94a3b8;font-size:.9em;">Saisissez le feedback de chaque exercice puis générez le HTML.</em></div>
+      <label for="output-code">Code HTML</label>
+      <textarea id="output-code" class="code-box" readonly></textarea>
+      <button type="button" class="secondary" onclick="copyOutput()">Copier le HTML</button>
+      <div id="status" class="status"></div>
+    </section>
+  </div>
+
+<script>
+  const DEFAULT_PALETTE = {
+    'accent': '#c2410c',
+    'accent-light': '#ffedd5',
+    'structure': '#1e293b',
+    'text-main': '#334155',
+    'text-dark': '#0f172a',
+    'border': '#e2e8f0'
+  };
+
+  function parseCourseConfig(source) {
+    if (!source.trim()) return {};
+    const fakeWindow = {};
+    try {
+      new Function('window', source)(fakeWindow);
+      return fakeWindow.COURSE_CONFIG || {};
+    } catch (e) {
+      throw new Error('Impossible de lire course-config.js : ' + e.message);
+    }
+  }
+
+  function esc(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function buildExerciseEditors() {
+    const count = Math.max(1, Math.min(50, parseInt(document.getElementById('input-count').value || '1', 10)));
+    const container = document.getElementById('exercise-editors');
+    container.innerHTML = '';
+    for (let i = 1; i <= count; i++) {
+      const block = document.createElement('div');
+      block.className = 'exercise-editor';
+      block.innerHTML = `
+        <h3>Exercice ${i}</h3>
+        <label for="exercise-title-${i}">Titre optionnel</label>
+        <input id="exercise-title-${i}" data-exercise-title="${i}" type="text" placeholder="Ex. Analyse de complexité">
+        <label for="exercise-text-${i}">Feedback</label>
+        <textarea id="exercise-text-${i}" data-exercise-text="${i}" placeholder="Saisissez ici le feedback de l'exercice ${i}..."></textarea>`;
+      container.appendChild(block);
+    }
+  }
+
+  function formatFeedbackText(text, textMain) {
+    const lines = String(text || '').replace(/\r\n/g, '\n').split('\n');
+    let html = '';
+    let paragraph = [];
+    let bullets = [];
+    let numbered = [];
+
+    function flushParagraph() {
+      const value = paragraph.join(' ').trim();
+      if (value) html += '<p style="margin:0 0 12px 0;font-size:14px;line-height:1.65;color:' + textMain + ';">' + esc(value) + '</p>';
+      paragraph = [];
+    }
+    function flushBullets() {
+      if (bullets.length) {
+        html += '<ul style="margin:0 0 14px 20px;padding:0;font-size:14px;line-height:1.65;color:' + textMain + ';">' + bullets.map(item => '<li style="margin:0 0 6px 0;">' + esc(item) + '</li>').join('') + '</ul>';
+      }
+      bullets = [];
+    }
+    function flushNumbered() {
+      if (numbered.length) {
+        html += '<ol style="margin:0 0 14px 20px;padding:0;font-size:14px;line-height:1.65;color:' + textMain + ';">' + numbered.map(item => '<li style="margin:0 0 6px 0;">' + esc(item) + '</li>').join('') + '</ol>';
+      }
+      numbered = [];
+    }
+    function flushAll() { flushParagraph(); flushBullets(); flushNumbered(); }
+
+    lines.forEach(line => {
+      const t = line.trim();
+      if (!t) { flushAll(); return; }
+      const bullet = t.match(/^[-*]\s+(.*)$/);
+      if (bullet) { flushParagraph(); flushNumbered(); bullets.push(bullet[1]); return; }
+      const ordered = t.match(/^\d+[.)]\s+(.*)$/);
+      if (ordered) { flushParagraph(); flushBullets(); numbered.push(ordered[1]); return; }
+      flushBullets(); flushNumbered(); paragraph.push(t);
+    });
+    flushAll();
+    return html || '<p style="margin:0;font-size:14px;line-height:1.65;color:' + textMain + ';font-style:italic;">No feedback provided.</p>';
+  }
+
+  function generateFeedback() {
+    let CC = {};
+    try { CC = parseCourseConfig(document.getElementById('input-course').value); }
+    catch (e) { alert(e.message); return; }
+
+    const palette = Object.assign({}, DEFAULT_PALETTE, CC.palette || {});
+    const accent = palette['accent'];
+    const accentLight = palette['accent-light'];
+    const structure = palette['structure'];
+    const textMain = palette['text-main'];
+    const textDark = palette['text-dark'];
+    const border = palette['border'];
+
+    const title = document.getElementById('input-title').value.trim() || 'Feedback';
+    const generalFeedback = document.getElementById('input-general-feedback').value.trim();
+    const textareas = Array.from(document.querySelectorAll('[data-exercise-text]'));
+    if (!textareas.length) { alert("Créez d'abord les exercices."); return; }
+
+    const generalFeedbackHtml = generalFeedback ? `
+    <div style="margin:0 0 22px 0;border:1px solid ${border};border-left:4px solid ${structure};background:#ffffff;box-sizing:border-box;">
+      <div style="padding:12px 16px;background:#f8fafc;border-bottom:1px solid ${border};">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:${structure};">General Feedback</div>
+      </div>
+      <div style="padding:16px;">${formatFeedbackText(generalFeedback, textMain)}</div>
+    </div>` : '';
+
+    let exercisesHtml = '';
+    textareas.forEach((textarea, index) => {
+      const i = index + 1;
+      const titleInput = document.querySelector('[data-exercise-title="' + i + '"]');
+      const exerciseTitle = titleInput && titleInput.value.trim() ? titleInput.value.trim() : '';
+      const content = formatFeedbackText(textarea.value, textMain);
+      exercisesHtml += `
+    <div style="margin:0 0 18px 0;border:1px solid ${border};border-left:4px solid ${accent};background:#ffffff;box-sizing:border-box;">
+      <div style="padding:12px 16px;background:${accentLight};border-bottom:1px solid ${border};">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:${accent};">Exercise ${i}</div>
+        ${exerciseTitle ? `<div style="margin-top:3px;font-size:15px;font-weight:800;color:${textDark};">${esc(exerciseTitle)}</div>` : ''}
+      </div>
+      <div style="padding:16px;">${content}</div>
+    </div>`;
+    });
+
+    const courseCode = CC.courseCode ? esc(CC.courseCode) : '';
+    const finalHTML = `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;width:100%;max-width:none;box-sizing:border-box;margin-left:-0.5em;color:${textMain};">
+  <div style="background:#ffffff;border:1px solid ${border};border-top:6px solid ${structure};box-sizing:border-box;padding:22px 24px;">
+    <div style="padding-bottom:14px;margin-bottom:20px;border-bottom:1px solid ${border};">
+      ${courseCode ? `<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:${accent};margin-bottom:5px;">${courseCode}</div>` : ''}
+      <div style="font-size:20px;font-weight:800;line-height:1.25;color:${textDark};">${esc(title)}</div>
+    </div>${generalFeedbackHtml}${exercisesHtml}
+  </div>
+</div>`;
+
+    document.getElementById('output-code').value = finalHTML.trim();
+    document.getElementById('preview').innerHTML = finalHTML;
+    document.getElementById('status').textContent = '';
+  }
+
+  async function copyOutput() {
+    const box = document.getElementById('output-code');
+    const status = document.getElementById('status');
+    if (!box.value) { status.style.color = '#991b1b'; status.textContent = 'Aucun HTML à copier.'; return; }
+    try { await navigator.clipboard.writeText(box.value); }
+    catch (e) { box.select(); document.execCommand('copy'); }
+    status.style.color = '#166534'; status.textContent = 'HTML copié.';
+  }
+
+  buildExerciseEditors();
+</script>
+</body>
+</html>

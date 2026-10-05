@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EAGLE Quest Feedback Generator</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #334155;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 24px;
+    }
+    @media(max-width: 900px) {
+      .container { grid-template-columns: 1fr; }
+    }
+    h1 {
+      grid-column: 1 / -1;
+      margin: 0;
+      color: #0f172a;
+      text-align: center;
+    }
+    .subtitle {
+      grid-column: 1 / -1;
+      margin: -12px 0 0 0;
+      color: #64748b;
+      text-align: center;
+      font-size: 0.92em;
+    }
+    .panel {
+      background: #ffffff;
+      padding: 22px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+    }
+    h2 {
+      font-size: 1.05em;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 9px;
+      margin-top: 0;
+      color: #0f172a;
+    }
+    h3 {
+      font-size: 0.93em;
+      margin: 20px 0 8px;
+      color: #0f172a;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.82em;
+      margin-top: 14px;
+      margin-bottom: 5px;
+      color: #475569;
+    }
+    textarea, input, select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 9px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 13px;
+    }
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95em;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .btn-load { background: #2563eb; color: #ffffff; }
+    .btn-load:hover { background: #1d4ed8; }
+    .btn-load:disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; }
+    .btn-generate { background: #c2410c; color: #ffffff; }
+    .btn-copy { background: #1e293b; color: #ffffff; }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .objective {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      gap: 8px;
+      align-items: start;
+      padding: 9px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .objective:last-child { border-bottom: none; }
+    .objective small { color: #64748b; }
+    .artifact-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px;
+      margin-top: 9px;
+      background: #f8fafc;
+    }
+    .artifact-card strong { color: #0f172a; }
+    .level-preview {
+      margin-top: 7px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #475569;
+      background: #ffffff;
+      border-left: 3px solid #94a3b8;
+      padding: 7px 8px;
+    }
+    .preview-box {
+      margin-top: 10px;
+      padding: 14px;
+      border: 1px dashed #cbd5e1;
+      background: #f8fafc;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .code-box {
+      background: #1e293b;
+      color: #e2e8f0;
+      min-height: 180px;
+    }
+    .note {
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 9px 10px;
+      border-left: 4px solid #2563eb;
+      background: #eff6ff;
+      color: #1e3a8a;
+      margin-top: 12px;
+    }
+    .warning {
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 9px 10px;
+      border-left: 4px solid #d97706;
+      background: #fffbeb;
+      color: #92400e;
+      margin-top: 12px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦅 EAGLE Quest Feedback Generator</h1>
+    <div class="subtitle">Quest 1 — generates Brightspace-safe feedback HTML starting with a &lt;div&gt;.</div>
+
+    <div class="panel">
+      <h2>1. Load Quest Data</h2>
+
+      <label>Site configuration (`course-config.js` or text containing `COURSE_CONFIG`)</label>
+      <textarea id="input-course" placeholder="Paste course-config.js here..."></textarea>
+
+      <label>Quest HTML</label>
+      <textarea id="input-quest" placeholder="Paste the Quest 1 HTML containing QUEST_CONFIG here..."></textarea>
+
+      <label>Analytic rubric HTML</label>
+      <textarea id="input-rubric" placeholder="Paste the Quest 1 analytic rubric HTML here..."></textarea>
+
+      <button id="load-data-btn" class="btn-load" type="button">Load Quest &amp; Rubric</button>
+      <div id="load-warning" class="warning"></div>
+
+      <h2 style="margin-top:24px;">2. Attempt</h2>
+
+      <div class="grid2">
+        <div>
+          <label>Current attempt number</label>
+          <input id="attempt-number" type="number" min="1" step="1" value="1" onchange="refreshObjectiveValues()">
+        </div>
+        <div>
+          <label>XP secured in previous attempts</label>
+          <input id="previous-xp" type="number" min="0" step="0.1" value="0">
+        </div>
+      </div>
+
+      <div class="note">
+        Every evaluated attempt awards the configured <strong>Attempt XP</strong>, even when no new sub-objective is validated.
+        Attempt XP does not decay. Quest 1 currently uses <strong>50 Attempt XP</strong> and distributes the remaining <strong>950 XP</strong> across its sub-objectives.
+      </div>
+
+      <label>Last sub-objective validated before this attempt</label>
+      <select id="previous-checkpoint" onchange="refreshObjectiveValues()">
+        <option value="-1">None — starting Quest 1</option>
+      </select>
+
+      <h3>Sub-objectives validated in this attempt</h3>
+      <div id="objective-list">
+        <em style="color:#94a3b8;font-size:0.9em;">Load the Quest HTML first.</em>
+      </div>
+      <div id="sequence-warning" class="warning"></div>
+
+      <h2 style="margin-top:24px;">3. Achievements &amp; Trophy</h2>
+
+      <h3>Achievements earned in previous attempts</h3>
+      <div id="previous-achievement-list">
+        <em style="color:#94a3b8;font-size:0.9em;">Load the Quest HTML first.</em>
+      </div>
+      <div style="font-size:11px;line-height:1.4;color:#64748b;margin-top:6px;">
+        Display only: these XP must already be included in “XP secured in previous attempts”.
+      </div>
+
+      <h3>Achievements earned in this attempt</h3>
+      <div id="achievement-list">
+        <em style="color:#94a3b8;font-size:0.9em;">Load the Quest HTML first.</em>
+      </div>
+
+      <label>Trophy awarded</label>
+      <select id="trophy-select">
+        <option value="">— No trophy awarded —</option>
+      </select>
+
+      <h2 style="margin-top:24px;">4. Overall Assessment</h2>
+      <div class="artifact-card" id="overall-card">
+        <strong>Overall Quest 1 Level</strong>
+        <select id="overall-level" style="margin-top:7px;">
+          <option value="">— Select overall level —</option>
+        </select>
+        <div id="overall-preview" class="level-preview">Load the rubric first.</div>
+      </div>
+
+      <h2 style="margin-top:24px;">5. Current Artifact Levels</h2>
+      <div id="artifact-list">
+        <em style="color:#94a3b8;font-size:0.9em;">Load the rubric first.</em>
+      </div>
+
+      <label>General feedback (optional)</label>
+      <textarea id="general-feedback" style="min-height:72px;" placeholder="Optional short feedback for the student..."></textarea>
+
+      <button class="btn-generate" type="button" onclick="generateFeedback()">Generate Feedback HTML</button>
+    </div>
+
+    <div class="panel">
+      <h2>6. Result &amp; Code</h2>
+
+      <label>Preview</label>
+      <div id="preview" class="preview-box">
+        <em style="color:#94a3b8;font-size:0.9em;">Load the data, enter the attempt results, and generate the feedback.</em>
+      </div>
+
+      <label>HTML to paste in Brightspace feedback</label>
+      <textarea id="output-code" class="code-box" readonly></textarea>
+      <button class="btn-copy" type="button" onclick="copyCode()">Copy HTML</button>
+
+      <div class="note">
+        Generated feedback uses inline styles only and intentionally avoids CSS functions such as
+        <code>rgba()</code>, <code>calc()</code>, <code>min()</code>, gradients, and CSS variables.
+        The generated fragment starts directly with a <code>&lt;div&gt;</code>.
+      </div>
+    </div>
+  </div>
+
+<script>
+  let QUEST = null;
+  let COURSE = {};
+  let RUBRIC = {};
+  let LEVELS = [];
+  let OVERALL = [];
+
+  function escapeHTML(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function extractAssignedObject(source, objectName) {
+    const marker = 'window.' + objectName;
+    const markerIndex = source.indexOf(marker);
+    if (markerIndex === -1) return null;
+
+    const equalsIndex = source.indexOf('=', markerIndex + marker.length);
+    if (equalsIndex === -1) return null;
+
+    const start = source.indexOf('{', equalsIndex + 1);
+    if (start === -1) return null;
+
+    let depth = 0;
+    let quote = null;
+    let escaped = false;
+    let lineComment = false;
+    let blockComment = false;
+
+    for (let i = start; i < source.length; i++) {
+      const ch = source[i];
+      const next = source[i + 1];
+
+      if (lineComment) {
+        if (ch === '\n') lineComment = false;
+        continue;
+      }
+      if (blockComment) {
+        if (ch === '*' && next === '/') { blockComment = false; i++; }
+        continue;
+      }
+      if (quote) {
+        if (escaped) { escaped = false; continue; }
+        if (ch === '\\') { escaped = true; continue; }
+        if (ch === quote) quote = null;
+        continue;
+      }
+
+      if (ch === '/' && next === '/') { lineComment = true; i++; continue; }
+      if (ch === '/' && next === '*') { blockComment = true; i++; continue; }
+      if (ch === '"' || ch === "'" || ch === '`') { quote = ch; continue; }
+
+      if (ch === '{') depth++;
+      if (ch === '}') {
+        depth--;
+        if (depth === 0) {
+          const literal = source.slice(start, i + 1);
+          try {
+            return new Function('return (' + literal + ');')();
+          } catch (e) {
+            console.warn('Cannot parse ' + objectName, e);
+            return null;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function parseCourseConfig(source) {
+    const direct = extractAssignedObject(source, 'COURSE_CONFIG');
+    if (direct) return direct;
+
+    const fakeWindow = {};
+    try {
+      const fakeDocument = {
+        currentScript: { src: 'https://feedback.local/brightspace/scripts/course-config.js' }
+      };
+      new Function('window', 'document', 'URL', source.replace(/var window\s*=\s*.*?;/g, ''))(
+        fakeWindow, fakeDocument, URL
+      );
+      return fakeWindow.COURSE_CONFIG || {};
+    } catch (e) {
+      console.warn('Cannot execute course config', e);
+      return {};
+    }
+  }
+
+  function parseRubric(htmlText) {
+    const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+    const table = doc.querySelector('table');
+    if (!table) return { levels: [], artifacts: {}, overall: [] };
+
+    const headerCells = Array.from(table.querySelectorAll('thead th')).slice(1);
+    const levels = headerCells.map(function(th, i) {
+      const first = th.querySelector('div');
+      const code = first ? first.textContent.trim() : ('L' + i);
+      const divs = th.querySelectorAll('div');
+      const title = divs.length > 1 ? divs[1].textContent.trim() : '';
+      return { code: code, title: title };
+    });
+
+    const artifacts = {};
+    Array.from(table.querySelectorAll('tbody tr')).forEach(function(row) {
+      const th = row.querySelector(':scope > th');
+      if (!th) return;
+
+      // Rubric v12+ places the artifact name in the first direct <div> and
+      // adds aligned-LO badges in a second <div>. Using th.textContent would
+      // therefore produce names such as "Resume Aligned LOs LO B.1 ...",
+      // which no longer match the generator's canonical artifact names.
+      const thDirectDivs = Array.from(th.children).filter(function(el) {
+        return el.tagName === 'DIV';
+      });
+      const name = thDirectDivs.length
+        ? thDirectDivs[0].textContent.trim()
+        : th.textContent.trim();
+      if (!name || name === 'Submission Package') return;
+
+      const alignedLOs = [];
+      if (thDirectDivs.length > 1) {
+        Array.from(thDirectDivs[1].querySelectorAll('span')).forEach(function(span) {
+          const value = span.textContent.trim();
+          if (/^LO\s+[A-Z]\.\d+$/i.test(value)) alignedLOs.push(value);
+        });
+      }
+
+      const cells = Array.from(row.querySelectorAll(':scope > td'));
+      artifacts[name] = cells.map(function(td, index) {
+        const directDivs = Array.from(td.children).filter(function(el) {
+          return el.tagName === 'DIV';
+        });
+
+        let descriptor = '';
+        if (directDivs.length) descriptor = directDivs[0].textContent.trim();
+
+        let loEvidence = '';
+        directDivs.forEach(function(div) {
+          const txt = div.textContent.trim();
+          if (txt.indexOf('LO evidence:') === 0) {
+            loEvidence = txt.replace(/^LO evidence:\s*/, '');
+          }
+        });
+
+        return {
+          level: levels[index] ? levels[index].code : ('L' + index),
+          title: levels[index] ? levels[index].title : '',
+          descriptor: descriptor,
+          loEvidence: loEvidence,
+          alignedLOs: alignedLOs.slice()
+        };
+      });
+    });
+
+    const overall = [];
+    const heading = Array.from(doc.querySelectorAll('div')).find(function(div) {
+      return div.textContent.trim() === 'Overall Assessment Bands';
+    });
+    const overallWrap = heading ? heading.parentElement : null;
+    if (overallWrap) {
+      Array.from(overallWrap.children).forEach(function(box) {
+        const style = (box.getAttribute('style') || '').toLowerCase();
+        if (style.indexOf('border-left:6px solid') === -1) return;
+
+        const children = Array.from(box.children);
+        if (children.length < 2) return;
+        const head = children[0];
+        const spans = head ? head.querySelectorAll('span') : [];
+        const label = spans.length ? spans[0].textContent.trim() : '';
+        const range = spans.length > 1 ? spans[1].textContent.trim() : '';
+        if (!label) return;
+
+        let description = '';
+        let knowledge = '';
+        let action = '';
+        let environment = '';
+        const skills = [];
+
+        children.slice(1).forEach(function(child) {
+          const txt = child.textContent.trim();
+          if (!txt) return;
+          if (txt.indexOf('Knowledge:') === 0) knowledge = txt.replace(/^Knowledge:\s*/, '');
+          else if (txt.indexOf('Action:') === 0) action = txt.replace(/^Action:\s*/, '');
+          else if (txt.indexOf('Environment:') === 0) environment = txt.replace(/^Environment:\s*/, '');
+          else if (txt.indexOf('Skills mobilized:') === 0) {
+            Array.from(child.querySelectorAll('span')).forEach(function(span) {
+              const value = span.textContent.trim();
+              if (value && value !== '—') skills.push(value);
+            });
+          } else if (!description) {
+            description = txt;
+          }
+        });
+
+        overall.push({
+          label: label,
+          range: range,
+          description: description,
+          knowledge: knowledge,
+          action: action,
+          environment: environment,
+          skills: skills
+        });
+      });
+    }
+
+    return { levels: levels, artifacts: artifacts, overall: overall };
+  }
+
+  function formatXP(value) {
+    const n = Number(value) || 0;
+    const rounded = Math.round(n * 10) / 10;
+    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+  }
+
+  function getAttemptXP() {
+    const reward = QUEST && QUEST.reward ? QUEST.reward : {};
+    const configured = Number(reward.attemptXp);
+    return Number.isFinite(configured) && configured >= 0 ? configured : 50;
+  }
+
+  function objectiveMultiplier(attemptNumber) {
+    const decay = QUEST && QUEST.reward && QUEST.reward.decay ? QUEST.reward.decay : {};
+    if (!decay || decay.type !== 'compound') return 1;
+    const rate = Number(decay.rate) || 0;
+    return Math.pow(1 - rate, Math.max(0, attemptNumber - 1));
+  }
+
+  function nextAttemptMultiplier(attemptNumber) {
+    const decay = QUEST && QUEST.reward && QUEST.reward.decay ? QUEST.reward.decay : {};
+    if (!decay || decay.type !== 'compound') return 1;
+    const rate = Number(decay.rate) || 0;
+    return Math.pow(1 - rate, Math.max(0, attemptNumber));
+  }
+
+  function loadData() {
+    const warning = document.getElementById('load-warning');
+    warning.style.display = 'none';
+    warning.textContent = '';
+
+    COURSE = parseCourseConfig(document.getElementById('input-course').value || '');
+
+    const questText = document.getElementById('input-quest').value || '';
+    QUEST = extractAssignedObject(questText, 'QUEST_CONFIG');
+
+    const rubricData = parseRubric(document.getElementById('input-rubric').value || '');
+    LEVELS = rubricData.levels;
+    RUBRIC = rubricData.artifacts;
+    OVERALL = rubricData.overall || [];
+
+    const problems = [];
+    if (!QUEST) problems.push('QUEST_CONFIG could not be read from the Quest HTML.');
+    if (!LEVELS.length || !Object.keys(RUBRIC).length) problems.push('The analytic rubric table could not be read.');
+    if (QUEST && QUEST.reward && Array.isArray(QUEST.subObjectives)) {
+      const configuredPool = Number(QUEST.reward.objectivePoolXp);
+      const actualPool = QUEST.subObjectives.reduce(function(sum, obj) { return sum + (Number(obj.xp) || 0); }, 0);
+      if (Number.isFinite(configuredPool) && Math.abs(configuredPool - actualPool) > 0.001) {
+        problems.push('Objective XP total (' + formatXP(actualPool) + ') does not match reward.objectivePoolXp (' + formatXP(configuredPool) + ').');
+      }
+      const configuredMax = Number(QUEST.reward.maxXp);
+      const configuredAttempt = Number(QUEST.reward.attemptXp);
+      if (Number.isFinite(configuredMax) && Number.isFinite(configuredAttempt) && Math.abs(configuredMax - (actualPool + configuredAttempt)) > 0.001) {
+        problems.push('Quest max XP (' + formatXP(configuredMax) + ') does not equal objective XP + Attempt XP (' + formatXP(actualPool + configuredAttempt) + ').');
+      }
+    }
+
+    if (problems.length) {
+      warning.textContent = problems.join(' ');
+      warning.style.display = 'block';
+    }
+
+    renderCheckpointOptions();
+    renderObjectives();
+    renderPreviousAchievements();
+    renderAchievements();
+    renderTrophies();
+    renderOverall();
+    renderArtifacts();
+  }
+
+  function renderCheckpointOptions() {
+    const select = document.getElementById('previous-checkpoint');
+    select.innerHTML = '<option value="-1">None — starting Quest 1</option>';
+    if (!QUEST || !Array.isArray(QUEST.subObjectives)) return;
+
+    QUEST.subObjectives.forEach(function(obj, index) {
+      const opt = document.createElement('option');
+      opt.value = String(index);
+      opt.textContent = (index + 1) + '. ' + (obj.title || ('Objective ' + (index + 1)));
+      select.appendChild(opt);
+    });
+  }
+
+  function renderObjectives() {
+    const box = document.getElementById('objective-list');
+    box.innerHTML = '';
+    if (!QUEST || !Array.isArray(QUEST.subObjectives)) {
+      box.innerHTML = '<em style="color:#94a3b8;font-size:0.9em;">No sub-objectives found.</em>';
+      return;
+    }
+
+    QUEST.subObjectives.forEach(function(obj, index) {
+      const row = document.createElement('label');
+      row.className = 'objective';
+      row.style.margin = '0';
+      row.dataset.index = String(index);
+
+      const check = document.createElement('input');
+      check.type = 'checkbox';
+      check.className = 'objective-check';
+      check.value = String(index);
+
+      const text = document.createElement('div');
+      text.innerHTML = '<strong>' + escapeHTML(obj.title || ('Objective ' + (index + 1))) + '</strong>'
+        + '<br><small class="objective-xp" data-index="' + index + '"></small>';
+
+      const raw = document.createElement('small');
+      raw.textContent = (obj.xp != null ? obj.xp : 0) + ' base XP';
+
+      row.appendChild(check);
+      row.appendChild(text);
+      row.appendChild(raw);
+      box.appendChild(row);
+    });
+
+    refreshObjectiveValues();
+  }
+
+  function refreshObjectiveValues() {
+    if (!QUEST || !Array.isArray(QUEST.subObjectives)) return;
+
+    const attempt = Math.max(1, parseInt(document.getElementById('attempt-number').value, 10) || 1);
+    const checkpoint = parseInt(document.getElementById('previous-checkpoint').value, 10);
+    const mult = objectiveMultiplier(attempt);
+
+    document.querySelectorAll('.objective').forEach(function(row) {
+      const idx = parseInt(row.dataset.index, 10);
+      const check = row.querySelector('.objective-check');
+      const info = row.querySelector('.objective-xp');
+      const obj = QUEST.subObjectives[idx] || {};
+      const currentValue = (Number(obj.xp) || 0) * mult;
+
+      if (idx <= checkpoint) {
+        check.checked = false;
+        check.disabled = true;
+        row.style.opacity = '0.45';
+        info.textContent = 'Previously validated';
+      } else {
+        check.disabled = false;
+        row.style.opacity = '1';
+        info.textContent = 'Worth ' + formatXP(currentValue) + ' XP in attempt ' + attempt;
+      }
+    });
+  }
+
+  function buildAchievementList(containerId, checkboxClass) {
+    const box = document.getElementById(containerId);
+    box.innerHTML = '';
+
+    if (!QUEST || !Array.isArray(QUEST.achievements) || !QUEST.achievements.length) {
+      box.innerHTML = '<em style="color:#94a3b8;font-size:0.9em;">No achievements found in QUEST_CONFIG.</em>';
+      return;
+    }
+
+    QUEST.achievements.forEach(function(achievement, index) {
+      const row = document.createElement('label');
+      row.className = 'objective';
+      row.style.margin = '0';
+
+      const check = document.createElement('input');
+      check.type = 'checkbox';
+      check.className = checkboxClass;
+      check.value = String(index);
+
+      const text = document.createElement('div');
+      const hiddenTag = achievement.hidden
+        ? ' <span style="font-size:10px;font-weight:800;color:#7c3aed;">HIDDEN</span>'
+        : '';
+      text.innerHTML =
+        '<strong>' + escapeHTML(achievement.name || ('Achievement ' + (index + 1))) + '</strong>' + hiddenTag
+        + '<br><small>' + escapeHTML(achievement.description || '') + '</small>';
+
+      const xp = document.createElement('small');
+      xp.style.fontWeight = '800';
+      xp.style.color = '#c2410c';
+      xp.textContent = '+' + formatXP(achievement.xp || 0) + ' XP';
+
+      row.appendChild(check);
+      row.appendChild(text);
+      row.appendChild(xp);
+      box.appendChild(row);
+    });
+  }
+
+  function renderPreviousAchievements() {
+    buildAchievementList('previous-achievement-list', 'previous-achievement-check');
+  }
+
+  function renderAchievements() {
+    buildAchievementList('achievement-list', 'achievement-check');
+  }
+
+  function renderTrophies() {
+    const select = document.getElementById('trophy-select');
+    select.innerHTML = '<option value="">— No trophy awarded —</option>';
+
+    if (!QUEST || !Array.isArray(QUEST.trophies)) return;
+
+    QUEST.trophies.forEach(function(trophy, index) {
+      const option = document.createElement('option');
+      option.value = String(index);
+      option.textContent = (trophy.name || ('Trophy ' + (index + 1)))
+        + (trophy.criteria ? ' — ' + trophy.criteria : '');
+      select.appendChild(option);
+    });
+  }
+
+  function renderOverall() {
+    const select = document.getElementById('overall-level');
+    const preview = document.getElementById('overall-preview');
+    if (!select || !preview) return;
+
+    select.innerHTML = '<option value="">— Select overall level —</option>';
+
+    if (!OVERALL.length) {
+      preview.textContent = 'No Overall Assessment Bands found in the rubric.';
+      return;
+    }
+
+    OVERALL.forEach(function(item, index) {
+      const option = document.createElement('option');
+      option.value = String(index);
+      option.textContent = item.label + (item.range ? ' — ' + item.range : '');
+      select.appendChild(option);
+    });
+
+    preview.textContent = 'No overall level selected.';
+    select.onchange = function() {
+      const idx = parseInt(select.value, 10);
+      if (Number.isNaN(idx)) {
+        preview.textContent = 'No overall level selected.';
+        return;
+      }
+      const item = OVERALL[idx];
+      preview.textContent = item.description || '';
+    };
+  }
+
+  function renderArtifacts() {
+    const box = document.getElementById('artifact-list');
+    box.innerHTML = '';
+
+    const preferred = ['Resume', 'Cover Letter', 'Video', 'Reflection Report'];
+    const names = preferred.filter(function(name) { return RUBRIC[name]; });
+
+    if (!names.length) {
+      box.innerHTML = '<em style="color:#94a3b8;font-size:0.9em;">No artifact rows found in the rubric.</em>';
+      return;
+    }
+
+    names.forEach(function(name) {
+      const card = document.createElement('div');
+      card.className = 'artifact-card';
+      card.dataset.artifact = name;
+
+      const title = document.createElement('strong');
+      title.textContent = name;
+
+      const select = document.createElement('select');
+      select.className = 'artifact-level';
+      select.style.marginTop = '7px';
+
+      const blank = document.createElement('option');
+      blank.value = '';
+      blank.textContent = '— Select current level —';
+      select.appendChild(blank);
+
+      (RUBRIC[name] || []).forEach(function(item, index) {
+        const opt = document.createElement('option');
+        opt.value = String(index);
+        opt.textContent = item.level + (item.title ? ' — ' + item.title : '');
+        select.appendChild(opt);
+      });
+
+      const preview = document.createElement('div');
+      preview.className = 'level-preview';
+      preview.textContent = 'No level selected.';
+
+      select.onchange = function() {
+        const idx = parseInt(select.value, 10);
+        if (Number.isNaN(idx)) {
+          preview.textContent = 'No level selected.';
+          return;
+        }
+        const item = RUBRIC[name][idx];
+        preview.textContent = item.descriptor || '';
+      };
+
+      card.appendChild(title);
+      card.appendChild(select);
+      card.appendChild(preview);
+      box.appendChild(card);
+    });
+  }
+
+  function validateObjectiveSequence(selected, checkpoint) {
+    if (!selected.length) return true;
+    const sorted = selected.slice().sort(function(a,b) { return a-b; });
+    if (sorted[0] !== checkpoint + 1) return false;
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i] !== sorted[i - 1] + 1) return false;
+    }
+    return true;
+  }
+
+  function generateFeedback() {
+    if (!QUEST || !Array.isArray(QUEST.subObjectives)) {
+      alert('Load the Quest HTML first.');
+      return;
+    }
+
+    const attempt = Math.max(1, parseInt(document.getElementById('attempt-number').value, 10) || 1);
+    const previousXP = Math.max(0, Number(document.getElementById('previous-xp').value) || 0);
+    const checkpoint = parseInt(document.getElementById('previous-checkpoint').value, 10);
+
+    const selected = Array.from(document.querySelectorAll('.objective-check:checked'))
+      .map(function(el) { return parseInt(el.value, 10); })
+      .sort(function(a,b) { return a-b; });
+
+    const seqWarning = document.getElementById('sequence-warning');
+    if (!validateObjectiveSequence(selected, checkpoint)) {
+      seqWarning.textContent = 'Quest 1 resumes from the last validated sub-objective. Current validated objectives should therefore form a consecutive sequence beginning immediately after the previous checkpoint.';
+      seqWarning.style.display = 'block';
+      return;
+    }
+    seqWarning.style.display = 'none';
+
+    const currentMult = objectiveMultiplier(attempt);
+    const nextMult = nextAttemptMultiplier(attempt);
+
+    const selectedPreviousAchievements = Array.from(document.querySelectorAll('.previous-achievement-check:checked'))
+      .map(function(el) { return parseInt(el.value, 10); })
+      .filter(function(index) {
+        return QUEST.achievements && QUEST.achievements[index];
+      });
+
+    const previousAchievements = selectedPreviousAchievements.map(function(index) {
+      const achievement = QUEST.achievements[index];
+      return {
+        name: achievement.name || ('Achievement ' + (index + 1)),
+        description: achievement.description || '',
+        xp: Number(achievement.xp) || 0
+      };
+    });
+
+    const selectedAchievements = Array.from(document.querySelectorAll('.achievement-check:checked'))
+      .map(function(el) { return parseInt(el.value, 10); })
+      .filter(function(index) {
+        return QUEST.achievements && QUEST.achievements[index];
+      });
+
+    const duplicateAchievements = selectedAchievements.filter(function(index) {
+      return selectedPreviousAchievements.indexOf(index) !== -1;
+    });
+    if (duplicateAchievements.length) {
+      alert('An achievement cannot be marked as both previously earned and earned in the current attempt.');
+      return;
+    }
+
+    let achievementXP = 0;
+    const earnedAchievements = selectedAchievements.map(function(index) {
+      const achievement = QUEST.achievements[index];
+      const xp = Number(achievement.xp) || 0;
+      achievementXP += xp;
+      return {
+        name: achievement.name || ('Achievement ' + (index + 1)),
+        description: achievement.description || '',
+        xp: xp
+      };
+    });
+
+    const trophyValue = document.getElementById('trophy-select').value;
+    const trophyIndex = trophyValue === '' ? -1 : parseInt(trophyValue, 10);
+    const awardedTrophy = trophyIndex >= 0 && QUEST.trophies && QUEST.trophies[trophyIndex]
+      ? QUEST.trophies[trophyIndex]
+      : null;
+
+    let earnedThisAttempt = 0;
+    const completedRows = [];
+
+    selected.forEach(function(idx) {
+      const obj = QUEST.subObjectives[idx];
+      const earned = (Number(obj.xp) || 0) * currentMult;
+      earnedThisAttempt += earned;
+      completedRows.push({
+        title: obj.title || ('Objective ' + (idx + 1)),
+        xp: earned
+      });
+    });
+
+    const newCheckpoint = selected.length ? selected[selected.length - 1] : checkpoint;
+    const remaining = QUEST.subObjectives
+      .map(function(obj, idx) { return { obj: obj, idx: idx }; })
+      .filter(function(item) { return item.idx > newCheckpoint; });
+
+    let maxAdditionalNext = 0;
+    remaining.forEach(function(item) {
+      maxAdditionalNext += (Number(item.obj.xp) || 0) * nextMult;
+    });
+
+    const baseEarnedThisAttempt = earnedThisAttempt;
+    const attemptXP = getAttemptXP();
+    const totalEarnedThisAttempt = baseEarnedThisAttempt + achievementXP + attemptXP;
+    const securedTotal = previousXP + totalEarnedThisAttempt;
+
+    // A future evaluated attempt also guarantees the fixed attempt XP.
+    const maxAdditionalNextWithAttempt = remaining.length ? (maxAdditionalNext + getAttemptXP()) : 0;
+    const maxQuestTotalNext = securedTotal + maxAdditionalNextWithAttempt;
+
+    const decay = QUEST.reward && QUEST.reward.decay ? QUEST.reward.decay : {};
+    const decayRate = decay.type === 'compound' ? ((Number(decay.rate) || 0) * 100) : 0;
+
+    const palette = COURSE.palette || {};
+    const cAccent = palette['accent'] || '#c2410c';
+    const cStructure = palette['structure'] || '#1e293b';
+    const cTextMain = palette['text-main'] || '#334155';
+    const cTextDark = palette['text-dark'] || '#0f172a';
+    const cBorder = palette['border'] || '#e2e8f0';
+
+    const title = 'Quest 1 Feedback';
+    const questComplete = remaining.length === 0;
+
+    let objectiveHTML = '';
+    if (completedRows.length) {
+      objectiveHTML = completedRows.map(function(item) {
+        return '<div style="border-top: 1px solid ' + cBorder + '; padding: 9px 0;">'
+          + '<span style="display: inline-block; font-weight: 700; color: ' + cTextDark + ';">✓ ' + escapeHTML(item.title) + '</span>'
+          + '<span style="float: right; font-weight: 800; color: ' + cAccent + ';">+' + formatXP(item.xp) + ' XP</span>'
+          + '<div style="clear: both;"></div>'
+          + '</div>';
+      }).join('');
+    } else {
+      objectiveHTML = '<div style="padding: 9px 0; color: #64748b;">No new sub-objective was validated in this attempt.</div>';
+    }
+
+    let previousAchievementHTML = '';
+    if (previousAchievements.length) {
+      previousAchievementHTML = previousAchievements.map(function(item) {
+        return '<div style="border-top: 1px solid ' + cBorder + '; padding: 9px 0;">'
+          + '<span style="display: inline-block; font-weight: 800; color: ' + cTextDark + ';">✓ ' + escapeHTML(item.name) + '</span>'
+          + '<span style="float: right; font-size: 11px; font-weight: 700; color: #64748b;">Previously earned · +' + formatXP(item.xp) + ' XP</span>'
+          + '<div style="clear: both;"></div>'
+          + (item.description
+              ? '<div style="font-size: 12px; line-height: 1.45; color: #64748b; margin-top: 3px;">' + escapeHTML(item.description) + '</div>'
+              : '')
+          + '</div>';
+      }).join('');
+    } else {
+      previousAchievementHTML = '<div style="padding: 9px 0; color: #64748b;">No achievement recorded from previous attempts.</div>';
+    }
+
+    let achievementHTML = '';
+    if (earnedAchievements.length) {
+      achievementHTML = earnedAchievements.map(function(item) {
+        return '<div style="border-top: 1px solid ' + cBorder + '; padding: 9px 0;">'
+          + '<span style="display: inline-block; font-weight: 800; color: ' + cTextDark + ';">★ ' + escapeHTML(item.name) + '</span>'
+          + '<span style="float: right; font-weight: 800; color: ' + cAccent + ';">+' + formatXP(item.xp) + ' XP</span>'
+          + '<div style="clear: both;"></div>'
+          + (item.description
+              ? '<div style="font-size: 12px; line-height: 1.45; color: #64748b; margin-top: 3px;">' + escapeHTML(item.description) + '</div>'
+              : '')
+          + '</div>';
+      }).join('');
+    } else {
+      achievementHTML = '<div style="padding: 9px 0; color: #64748b;">No achievement awarded in this attempt.</div>';
+    }
+
+    let trophyHTML = '';
+    if (awardedTrophy) {
+      trophyHTML =
+        '<div style="margin-bottom: 16px; padding: 12px 13px; border: 2px solid ' + cAccent + '; border-radius: 5px; background-color: #ffffff;">'
+        + '<div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 4px;">Trophy Awarded</div>'
+        + '<div style="font-size: 17px; font-weight: 900; color: ' + cTextDark + ';">🏆 ' + escapeHTML(awardedTrophy.name || 'EAGLE') + '</div>'
+        + (awardedTrophy.criteria
+            ? '<div style="font-size: 12px; line-height: 1.45; color: ' + cTextMain + '; margin-top: 4px;">' + escapeHTML(awardedTrophy.criteria) + '</div>'
+            : '')
+        + '</div>';
+    }
+
+    let overallHTML = '';
+    const overallSelect = document.getElementById('overall-level');
+    const overallIndex = overallSelect ? parseInt(overallSelect.value, 10) : NaN;
+    if (!Number.isNaN(overallIndex) && OVERALL[overallIndex]) {
+      const overallItem = OVERALL[overallIndex];
+      const skillText = overallItem.skills && overallItem.skills.length
+        ? overallItem.skills.join(' · ')
+        : '—';
+      overallHTML = ''
+        + '<div style="border: 1px solid ' + cBorder + '; border-radius: 5px; padding: 13px; margin-bottom: 16px;">'
+        + '  <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: ' + cTextDark + '; margin-bottom: 8px;">Overall Assessment</div>'
+        + '  <div style="margin-bottom: 8px;">'
+        + '    <span style="display: inline-block; padding: 3px 8px; border: 1px solid ' + cAccent + '; border-radius: 999px; color: ' + cAccent + '; font-size: 11px; font-weight: 800;">'
+        + escapeHTML(overallItem.label) + (overallItem.range ? ' · ' + escapeHTML(overallItem.range) : '') + '</span>'
+        + '  </div>'
+        + '  <div style="font-size: 13px; line-height: 1.5; color: ' + cTextMain + '; margin-bottom: 9px;">' + escapeHTML(overallItem.description) + '</div>'
+        + (overallItem.knowledge ? '<div style="font-size: 12px; line-height: 1.45; color: ' + cTextMain + '; margin-top: 4px;"><strong style="color:' + cTextDark + ';">Knowledge:</strong> ' + escapeHTML(overallItem.knowledge) + '</div>' : '')
+        + (overallItem.action ? '<div style="font-size: 12px; line-height: 1.45; color: ' + cTextMain + '; margin-top: 4px;"><strong style="color:' + cTextDark + ';">Action:</strong> ' + escapeHTML(overallItem.action) + '</div>' : '')
+        + (overallItem.environment ? '<div style="font-size: 12px; line-height: 1.45; color: ' + cTextMain + '; margin-top: 4px;"><strong style="color:' + cTextDark + ';">Environment:</strong> ' + escapeHTML(overallItem.environment) + '</div>' : '')
+        + '<div style="font-size: 11px; line-height: 1.45; color: #64748b; margin-top: 8px;"><strong style="color:' + cTextDark + ';">Skills mobilized:</strong> ' + escapeHTML(skillText) + '</div>'
+        + '</div>';
+    } else {
+      overallHTML = '<div style="border: 1px solid ' + cBorder + '; border-radius: 5px; padding: 13px; margin-bottom: 16px;"><div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: ' + cTextDark + '; margin-bottom: 6px;">Overall Assessment</div><div style="font-size: 12px; color: #64748b;">No overall level was selected.</div></div>';
+    }
+
+    let artifactHTML = '';
+    document.querySelectorAll('#artifact-list .artifact-card').forEach(function(card) {
+      const name = card.dataset.artifact;
+      const select = card.querySelector('.artifact-level');
+      const idx = parseInt(select.value, 10);
+      if (Number.isNaN(idx)) return;
+
+      const item = RUBRIC[name][idx];
+      artifactHTML += ''
+        + '<div style="border-top: 1px solid ' + cBorder + '; padding: 11px 0;">'
+        + '  <div style="display: inline-block; vertical-align: top; width: 30%; font-weight: 800; color: ' + cTextDark + ';">' + escapeHTML(name) + '</div>'
+        + '  <div style="display: inline-block; vertical-align: top; width: 66%;">'
+        + '    <span style="display: inline-block; padding: 2px 7px; border: 1px solid ' + cAccent + '; border-radius: 999px; color: ' + cAccent + '; font-size: 11px; font-weight: 800;">'
+        + escapeHTML(item.level) + (item.title ? ' · ' + escapeHTML(item.title) : '') + '</span>'
+        + (item.alignedLOs && item.alignedLOs.length
+            ? '    <div style="margin-top: 6px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; color: #64748b;">Aligned LOs: ' + escapeHTML(item.alignedLOs.join(' · ')) + '</div>'
+            : '')
+        + '    <div style="margin-top: 6px; font-size: 13px; line-height: 1.5; color: ' + cTextMain + ';">' + escapeHTML(item.descriptor) + '</div>'
+        + '  </div>'
+        + '</div>';
+    });
+
+    if (!artifactHTML) {
+      artifactHTML = '<div style="padding: 9px 0; color: #64748b;">No artifact level was selected.</div>';
+    }
+
+    const general = document.getElementById('general-feedback').value.trim();
+    const generalHTML = general
+      ? '<div style="margin-top: 18px; border-left: 4px solid ' + cAccent + '; background-color: #f8fafc; padding: 11px 13px;">'
+        + '<div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: ' + cAccent + '; margin-bottom: 5px;">General Feedback</div>'
+        + '<div style="font-size: 13px; line-height: 1.55; color: ' + cTextMain + ';">' + escapeHTML(general).replace(/\n/g, '<br>') + '</div>'
+        + '</div>'
+      : '';
+
+    const nextMessage = questComplete
+      ? '<span style="font-weight: 800; color: #166534;">Quest complete</span>'
+      : '<span style="font-weight: 800; color: ' + cTextDark + ';">' + formatXP(maxAdditionalNextWithAttempt) + ' XP</span>';
+
+    const decayNote = questComplete
+      ? 'All Quest 1 sub-objectives are validated.'
+      : (decay.type === 'compound'
+          ? 'Remaining unvalidated sub-objectives are worth ' + formatXP(maxAdditionalNext)
+            + ' XP in Attempt ' + (attempt + 1) + ' after the ' + formatXP(decayRate) + '% compound decay. Secured XP is preserved.'
+          : 'Remaining unvalidated sub-objectives are still available in the next attempt.');
+
+    const finalHTML =
+'<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; border: 1px solid ' + cBorder + '; border-top: 6px solid ' + cStructure + '; border-radius: 6px; background-color: #ffffff; padding: 22px; color: ' + cTextMain + '; max-width: 100%; box-sizing: border-box; margin-left: -0.5em;">'
++ '  <div style="border-bottom: 1px solid ' + cBorder + '; padding-bottom: 13px; margin-bottom: 16px;">'
++ '    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.4px; color: ' + cAccent + '; margin-bottom: 5px;">EAGLE · Quest 1 · Attempt ' + attempt + '</div>'
++ '    <div style="font-size: 21px; font-weight: 800; color: ' + cTextDark + ';">' + title + '</div>'
++ '  </div>'
+
++ '  <div style="margin-bottom: 18px;">'
++ '    <div style="display: inline-block; vertical-align: top; min-width: 135px; margin-right: 22px; margin-bottom: 10px;">'
++ '      <span style="display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.7px; color: #64748b; font-weight: 800; margin-bottom: 4px;">Previous Secured XP</span>'
++ '      <span style="font-size: 18px; font-weight: 800; color: ' + cTextDark + ';">' + formatXP(previousXP) + '</span>'
++ '    </div>'
++ '    <div style="display: inline-block; vertical-align: top; min-width: 135px; margin-right: 22px; margin-bottom: 10px;">'
++ '      <span style="display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.7px; color: #64748b; font-weight: 800; margin-bottom: 4px;">Earned This Attempt</span>'
++ '      <span style="font-size: 18px; font-weight: 800; color: ' + cAccent + ';">+' + formatXP(totalEarnedThisAttempt) + '</span>'
++ '      <span style="display: block; font-size: 10px; color: #64748b; margin-top: 2px;">'
++ formatXP(baseEarnedThisAttempt) + ' objective XP + '
++ formatXP(attemptXP) + ' attempt XP + '
++ formatXP(achievementXP) + ' achievement XP</span>'
++ '    </div>'
++ '    <div style="display: inline-block; vertical-align: top; min-width: 135px; margin-right: 22px; margin-bottom: 10px;">'
++ '      <span style="display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.7px; color: #64748b; font-weight: 800; margin-bottom: 4px;">Total Secured XP</span>'
++ '      <span style="font-size: 18px; font-weight: 800; color: ' + cTextDark + ';">' + formatXP(securedTotal) + '</span>'
++ '    </div>'
++ '    <div style="display: inline-block; vertical-align: top; min-width: 155px; margin-bottom: 10px;">'
++ '      <span style="display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.7px; color: #64748b; font-weight: 800; margin-bottom: 4px;">Max XP Next Attempt</span>'
++        nextMessage
++ '    </div>'
++ '  </div>'
+
++ '  <div style="border: 1px solid ' + cBorder + '; border-radius: 5px; padding: 0 13px; margin-bottom: 16px;">'
++ '    <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: ' + cTextDark + '; padding: 11px 0 7px 0;">Validated This Attempt</div>'
++      objectiveHTML
++ '  </div>'
+
++ '  <div style="border: 1px solid ' + cBorder + '; border-radius: 5px; padding: 0 13px; margin-bottom: 16px;">'
++ '    <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: ' + cTextDark + '; padding: 11px 0 5px 0;">Achievements</div>'
++ '    <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: #64748b; padding: 7px 0 2px 0;">Previously Earned</div>'
++      previousAchievementHTML
++ '    <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.7px; color: ' + cAccent + '; padding: 10px 0 2px 0;">Earned This Attempt</div>'
++      achievementHTML
++ '  </div>'
++      trophyHTML
++      overallHTML
++ '  <div style="border: 1px solid ' + cBorder + '; border-radius: 5px; padding: 0 13px; margin-bottom: 14px;">'
++ '    <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: ' + cTextDark + '; padding: 11px 0 7px 0;">Current Artifact Levels</div>'
++      artifactHTML
++ '  </div>'
+
++ '  <div style="font-size: 12px; line-height: 1.5; color: #64748b; padding: 9px 11px; border-left: 3px solid ' + cBorder + '; background-color: #f8fafc;">'
++      escapeHTML(decayNote)
++ (questComplete ? '' : ' Maximum possible Quest total after the next attempt: <strong style="color: ' + cTextDark + ';">' + formatXP(maxQuestTotalNext) + ' XP</strong>.')
++ '  </div>'
++      generalHTML
++ '</div>';
+
+    document.getElementById('preview').innerHTML = finalHTML;
+    document.getElementById('output-code').value = finalHTML;
+  }
+
+  function copyCode() {
+    const box = document.getElementById('output-code');
+    if (!box.value) return;
+    navigator.clipboard.writeText(box.value).then(function() {
+      const btn = document.querySelector('.btn-copy');
+      const old = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      setTimeout(function() { btn.textContent = old; }, 1200);
+    }).catch(function() {
+      box.focus();
+      box.select();
+      document.execCommand('copy');
+    });
+  }
+
+  // Keep Load explicitly active. Using an event listener avoids environments
+  // that suppress inline onclick handlers when the file is opened locally.
+  document.addEventListener('DOMContentLoaded', function() {
+    const loadBtn = document.getElementById('load-data-btn');
+    if (loadBtn) {
+      loadBtn.disabled = false;
+      loadBtn.addEventListener('click', loadData);
+    }
+  });
+</script>
+</body>
+</html>

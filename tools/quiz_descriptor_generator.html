@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur de description Quiz — Brightspace</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:#f8fafc; color:#334155; margin:0; padding:20px; }
+    .container { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+    h1 { grid-column:1/-1; margin:0; text-align:center; color:#0f172a; }
+    .panel { background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:24px; box-shadow:0 4px 10px rgba(15,23,42,.05); }
+    h2 { margin:0 0 18px; padding-bottom:10px; border-bottom:2px solid #e2e8f0; color:#0f172a; font-size:1.08rem; }
+    label { display:block; margin:14px 0 5px; font-size:.84rem; font-weight:700; color:#475569; }
+    input,select,textarea { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:5px; background:#fff; color:#0f172a; font:inherit; }
+    textarea { min-height:105px; resize:vertical; }
+    #input-course { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; }
+    #input-instructions { min-height:180px; }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .check { display:flex; gap:9px; align-items:flex-start; margin-top:16px; padding:11px 12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:5px; }
+    .check input { width:auto; margin-top:3px; }
+    .check label { margin:0; cursor:pointer; }
+    button { width:100%; margin-top:20px; padding:13px 15px; border:0; border-radius:6px; background:#c2410c; color:#fff; font-size:.95rem; font-weight:800; cursor:pointer; }
+    button.secondary { margin-top:10px; background:#1e293b; }
+    .preview-box { min-height:250px; padding:16px; border:1px dashed #cbd5e1; border-radius:5px; background:#f8fafc; overflow-x:auto; }
+    .code-box { min-height:220px; background:#0f172a; color:#e2e8f0; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:11px; line-height:1.45; }
+    .hint { margin-top:5px; color:#64748b; font-size:.76rem; line-height:1.45; }
+    .status { min-height:1.2em; margin-top:8px; font-size:.82rem; color:#166534; }
+    @media (max-width:820px) { .container{grid-template-columns:1fr;} h1{grid-column:1;} .row{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Générateur de description Quiz Brightspace</h1>
+
+  <div class="panel">
+    <h2>1. Paramètres d'entrée</h2>
+
+    <label for="input-course">Contenu de course-config.js</label>
+    <textarea id="input-course" placeholder="Copiez-collez le contenu complet de course-config.js..."></textarea>
+
+    <div class="row">
+      <div><label for="input-number">Numéro du Quiz</label><input id="input-number" type="text" placeholder="Ex. 1"></div>
+      <div><label for="input-questions">Nombre de questions</label><input id="input-questions" type="number" min="1" step="1" placeholder="Ex. 20"></div>
+    </div>
+
+    <div class="row">
+      <div><label for="input-time">Temps alloué</label><input id="input-time" type="text" placeholder="Ex. 30 minutes"></div>
+      <div>
+        <label for="input-ai">Politique IA</label>
+        <select id="input-ai">
+          <option value="default">Default course policy</option>
+          <option value="unrestricted">AI Unrestricted</option>
+          <option value="restricted">AI Restricted</option>
+          <option value="forbidden">AI Forbidden</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="check">
+      <input id="input-integrity" type="checkbox" checked>
+      <label for="input-integrity">Afficher un rappel de conformité aux règles d'intégrité académique</label>
+    </div>
+
+    <label for="input-integrity-text">Texte du rappel d'intégrité académique</label>
+    <textarea id="input-integrity-text">By taking this quiz, you are expected to comply with the University's academic integrity requirements and all course rules governing authorized resources and assistance.</textarea>
+
+    <label for="input-instructions">Instructions</label>
+    <textarea id="input-instructions" placeholder="Ex. Read each question carefully.&#10;&#10;- Answer all questions.&#10;- Submit before the timer expires."></textarea>
+    <div class="hint">Les lignes commençant par « - » ou « * » sont converties en liste. Les autres blocs deviennent des paragraphes.</div>
+
+    <button onclick="generateQuiz()">Générer la description HTML</button>
+  </div>
+
+  <div class="panel">
+    <h2>2. Résultat & code</h2>
+    <label>Aperçu Brightspace</label>
+    <div id="preview" class="preview-box"><em style="color:#94a3b8;font-size:.9em;">Remplissez les champs puis cliquez sur Générer.</em></div>
+    <label for="output-code">Code HTML</label>
+    <textarea id="output-code" class="code-box" readonly></textarea>
+    <button class="secondary" onclick="copyOutput()">Copier le HTML</button>
+    <div id="status" class="status"></div>
+  </div>
+</div>
+
+<script>
+const DEFAULT_PALETTE = {
+  'accent':'#c2410c','accent-light':'#ffedd5','structure':'#1e293b','text-main':'#334155','text-dark':'#0f172a','border':'#e2e8f0'
+};
+function parseCourseConfig(source){
+  if(!source.trim()) return {};
+  const fakeWindow={};
+  try { new Function('window', source)(fakeWindow); return fakeWindow.COURSE_CONFIG||{}; }
+  catch(e){ throw new Error('Impossible de lire course-config.js : '+e.message); }
+}
+function esc(value){ return String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function instructionsToHtml(text,textMain){
+  const lines=String(text||'').replace(/\r\n/g,'\n').split('\n');
+  let html='',para=[],items=[];
+  const flushPara=()=>{ const v=para.join(' ').trim(); if(v) html+='<p style="margin:0 0 12px 0;line-height:1.65;color:'+textMain+';">'+esc(v)+'</p>'; para=[]; };
+  const flushList=()=>{ if(items.length) html+='<ul style="margin:0 0 14px 20px;padding:0;color:'+textMain+';line-height:1.65;">'+items.map(x=>'<li style="margin:0 0 6px 0;">'+esc(x)+'</li>').join('')+'</ul>'; items=[]; };
+  lines.forEach(line=>{ const t=line.trim(); if(!t){flushPara();flushList();return;} const m=t.match(/^[-*]\s+(.*)$/); if(m){flushPara();items.push(m[1]);} else {flushList();para.push(t);} });
+  flushPara(); flushList();
+  return html||'<p style="margin:0;color:'+textMain+';font-style:italic;">No additional instructions.</p>';
+}
+function generateQuiz(){
+  let CC={};
+  try{ CC=parseCourseConfig(document.getElementById('input-course').value); }
+  catch(e){ alert(e.message); return; }
+  const palette=Object.assign({},DEFAULT_PALETTE,CC.palette||{});
+  const accent=palette['accent'], accentLight=palette['accent-light'], structure=palette['structure'], textMain=palette['text-main'], textDark=palette['text-dark'], border=palette['border'];
+  const quizNumber=document.getElementById('input-number').value.trim()||'—';
+  const questionCount=document.getElementById('input-questions').value.trim()||'—';
+  const timeAllowed=document.getElementById('input-time').value.trim()||'—';
+  const aiValue=document.getElementById('input-ai').value;
+  const integrityEnabled=document.getElementById('input-integrity').checked;
+  const integrityText=document.getElementById('input-integrity-text').value.trim();
+  const instructions=document.getElementById('input-instructions').value;
+  const aiMap={
+    default:{label:'Default course policy',bg:'#dbeafe',text:'#1e40af'},
+    unrestricted:{label:'AI Unrestricted',bg:'#dcfce7',text:'#166534'},
+    restricted:{label:'AI Restricted',bg:'#ffedd5',text:'#9a3412'},
+    forbidden:{label:'AI Forbidden',bg:'#fee2e2',text:'#991b1b'}
+  };
+  const ai=aiMap[aiValue]||aiMap.default;
+  const courseCode=CC.courseCode?esc(CC.courseCode):'';
+  const eyebrow=courseCode?courseCode+' · Quiz '+esc(quizNumber):'Quiz '+esc(quizNumber);
+  const instructionsHtml=instructionsToHtml(instructions,textMain);
+  const integrityHtml=integrityEnabled?`<div style="margin-top:20px;padding:15px 16px;background:${accentLight};border-left:4px solid ${accent};box-sizing:border-box;"><div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:${accent};margin-bottom:6px;">Academic Integrity</div><div style="font-size:13px;line-height:1.6;color:${textMain};">${esc(integrityText||'You are expected to comply with all applicable academic integrity requirements and course rules.')}</div></div>`:'';
+  const finalHTML=`<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;width:100%;max-width:none;box-sizing:border-box;margin-left:-0.5em;color:${textMain};">
+  <div style="background:#ffffff;border:1px solid ${border};border-top:6px solid ${structure};box-sizing:border-box;padding:24px;">
+    <div style="padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid ${border};">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:${accent};margin-bottom:5px;">${eyebrow}</div>
+      <div style="font-size:22px;font-weight:800;line-height:1.25;color:${textDark};">Quiz ${esc(quizNumber)}</div>
+    </div>
+    <div style="margin:0 0 20px 0;">
+      <div style="display:inline-block;vertical-align:top;min-width:120px;margin:0 22px 12px 0;"><div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#64748b;margin-bottom:5px;">Questions</div><div style="font-size:14px;font-weight:700;color:${textDark};">${esc(questionCount)}</div></div>
+      <div style="display:inline-block;vertical-align:top;min-width:120px;margin:0 22px 12px 0;"><div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#64748b;margin-bottom:5px;">Time Allowed</div><div style="font-size:14px;font-weight:700;color:${textDark};">${esc(timeAllowed)}</div></div>
+      <div style="display:inline-block;vertical-align:top;margin:0 0 12px 0;"><div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#64748b;margin-bottom:5px;">AI Policy</div><span style="display:inline-block;padding:4px 9px;border-radius:999px;background:${ai.bg};color:${ai.text};font-size:12px;font-weight:800;">${esc(ai.label)}</span></div>
+    </div>
+    <div><div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:${structure};margin-bottom:10px;">Instructions</div>${instructionsHtml}</div>
+    ${integrityHtml}
+  </div>
+</div>`;
+  document.getElementById('output-code').value=finalHTML.trim();
+  document.getElementById('preview').innerHTML=finalHTML;
+  document.getElementById('status').textContent='';
+}
+async function copyOutput(){
+  const box=document.getElementById('output-code'), status=document.getElementById('status');
+  if(!box.value){status.style.color='#991b1b';status.textContent='Aucun HTML à copier.';return;}
+  try{await navigator.clipboard.writeText(box.value);}catch(e){box.select();document.execCommand('copy');}
+  status.style.color='#166534';status.textContent='HTML copié.';
+}
+</script>
+</body>
+</html>

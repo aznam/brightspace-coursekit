@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur de Carte Assignment (Brightspace)</title>
+  <style>
+    /* Styles pour l'interface du générateur (pas pour le code généré) */
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    @media(max-width: 800px) { .container { grid-template-columns: 1fr; } }
+    .panel { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+    h1 { grid-column: 1 / -1; margin-top: 0; color: #0f172a; text-align: center; }
+    h2 { font-size: 1.1em; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0; }
+    label { display: block; font-weight: 600; font-size: 0.85em; margin-top: 15px; margin-bottom: 5px; color: #475569; }
+    textarea, input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: monospace; font-size: 13px; }
+    textarea { height: 120px; resize: vertical; }
+    button { display: block; width: 100%; padding: 15px; background: #c2410c; color: white; border: none; border-radius: 6px; font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.2s; }
+    button:hover { background: #9a3412; }
+    .preview-box { margin-top: 15px; padding: 20px; border: 1px dashed #cbd5e1; background: #f8fafc; border-radius: 4px; }
+    .code-box { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 12px; height: 150px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📝 Générateur de Carte Assignment Brightspace</h1>
+    
+    <!-- Colonne Gauche : Inputs -->
+    <div class="panel">
+      <h2>1. Paramètres d'entrée</h2>
+      
+      <label>Contenu de `course-config.js`</label>
+      <textarea id="input-course" placeholder="Copiez-collez tout le contenu de course-config.js ici..."></textarea>
+      
+      <label>Contenu de la page HTML de l'Assignment</label>
+      <textarea id="input-html" placeholder="Copiez-collez le code HTML contenant PAGE_CONFIG et ASSIGNMENT_CONFIG..."></textarea>
+      
+      <label>Description de l'objectif (1 ou 2 phrases)</label>
+      <textarea id="input-desc" style="height: 60px;" placeholder="Ex: Ce devoir vous demande d'appliquer la méthode agile sur un scénario industriel..."></textarea>
+      
+      <label>Lien cible vers l'Assignment (URL)</label>
+      <input type="text" id="input-url" placeholder="https://brightspace.uwindsor.ca/..." value="#">
+      
+      <button onclick="generer()">Générer la Carte HTML 🚀</button>
+    </div>
+    
+    <!-- Colonne Droite : Résultats -->
+    <div class="panel">
+      <h2>2. Résultat & Code</h2>
+      
+      <label>Aperçu (rendu final dans Brightspace)</label>
+      <div id="preview" class="preview-box">
+        <em style="color:#94a3b8; font-size: 0.9em;">Remplissez les champs et cliquez sur générer.</em>
+      </div>
+
+      <label>Code HTML (à copier dans l'éditeur de description)</label>
+      <textarea id="output-code" class="code-box" readonly placeholder="Le code HTML final apparaîtra ici..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    function extractAssignedObject(source, objectName) {
+      const marker = 'window.' + objectName;
+      const markerIndex = source.indexOf(marker);
+      if (markerIndex === -1) return null;
+
+      const equalsIndex = source.indexOf('=', markerIndex + marker.length);
+      if (equalsIndex === -1) return null;
+
+      const start = source.indexOf('{', equalsIndex + 1);
+      if (start === -1) return null;
+
+      let depth = 0;
+      let quote = null;
+      let escaped = false;
+      let lineComment = false;
+      let blockComment = false;
+
+      for (let i = start; i < source.length; i++) {
+        const ch = source[i];
+        const next = source[i + 1];
+
+        if (lineComment) {
+          if (ch === '\n') lineComment = false;
+          continue;
+        }
+        if (blockComment) {
+          if (ch === '*' && next === '/') { blockComment = false; i++; }
+          continue;
+        }
+        if (quote) {
+          if (escaped) { escaped = false; continue; }
+          if (ch === '\\') { escaped = true; continue; }
+          if (ch === quote) quote = null;
+          continue;
+        }
+
+        if (ch === '/' && next === '/') { lineComment = true; i++; continue; }
+        if (ch === '/' && next === '*') { blockComment = true; i++; continue; }
+        if (ch === '"' || ch === "'" || ch === '`') { quote = ch; continue; }
+
+        if (ch === '{') depth++;
+        if (ch === '}') {
+          depth--;
+          if (depth === 0) {
+            const literal = source.slice(start, i + 1);
+            try {
+              return new Function('return (' + literal + ');')();
+            } catch (e) {
+              console.warn('Impossible de lire ' + objectName, e);
+              return null;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    function parseConfigs(courseJS, htmlStr) {
+      const fakeWindow = {};
+
+      // Le course-config peut rester exécutable : il est autonome et écrit
+      // directement dans window.COURSE_CONFIG.
+      try {
+        // Certaines configs portables calculent leurs chemins via
+        // document.currentScript.src lorsque siteId est null.
+        // On fournit uniquement ce contexte minimal afin de laisser
+        // course-config.js atteindre window.COURSE_CONFIG sans modifier
+        // la structure du HTML généré par ce générateur.
+        const fakeDocument = {
+          currentScript: {
+            src: 'https://descriptor.local/brightspace/scripts/course-config.js'
+          }
+        };
+        new Function('window', 'document', 'URL', courseJS.replace(/var window\s*=\s*.*?;/g, ''))(
+          fakeWindow, fakeDocument, URL
+        );
+      } catch (e) {
+        console.warn("Impossible d'exécuter course-config.js", e);
+      }
+
+      // IMPORTANT : on n'exécute plus tous les scripts inline de la page.
+      // Les pages récentes contiennent des scripts dépendant du framework
+      // (ex. BRIGHTSPACE.afterFramework), ce qui peut interrompre le parsing.
+      // On extrait uniquement les deux objets de configuration nécessaires.
+      fakeWindow.ASSIGNMENT_CONFIG = extractAssignedObject(htmlStr, 'ASSIGNMENT_CONFIG') || {};
+      fakeWindow.PAGE_CONFIG = extractAssignedObject(htmlStr, 'PAGE_CONFIG') || {};
+
+      return fakeWindow;
+    }
+
+    function formatDateTime(isoStr) {
+      if (!isoStr) return "N/A";
+      const d = new Date(isoStr);
+      return d.toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' }) + ' ' + 
+             d.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function generer() {
+      const courseJS = document.getElementById('input-course').value;
+      const htmlStr = document.getElementById('input-html').value;
+      const description = document.getElementById('input-desc').value;
+      const url = document.getElementById('input-url').value;
+
+      // 1. Extraction des données
+      const configs = parseConfigs(courseJS, htmlStr);
+      const CC = configs.COURSE_CONFIG || {};
+      const AC = configs.ASSIGNMENT_CONFIG || {};
+      const PC = configs.PAGE_CONFIG || {};
+
+      // 2. Variables de palette par défaut (fallback si non définies)
+      const cAccent    = (CC.palette && CC.palette['accent'])       ? CC.palette['accent']       : '#c2410c';
+      const cStructure = (CC.palette && CC.palette['structure'])    ? CC.palette['structure']    : '#1e293b';
+      const cTextMain  = (CC.palette && CC.palette['text-main'])    ? CC.palette['text-main']    : '#334155';
+      const cTextDark  = (CC.palette && CC.palette['text-dark'])    ? CC.palette['text-dark']    : '#0f172a';
+      const cBorder    = (CC.palette && CC.palette['border'])       ? CC.palette['border']       : '#e2e8f0';
+      const bgCard     = '#ffffff';
+
+      // 3. Extraction des métadonnées Assignment
+      const title = PC.heroTitle || 'Assignment';
+      const labelNumber = `${AC.assignmentLabel || 'Assignment'} ${AC.assignmentNumber || ''}`;
+      
+      // Dates et extensions
+      const dl = AC.deadline || {};
+      const typeLabel = dl.type === 'hard' ? '🔴 Hard Deadline' : '🟡 Soft Deadline';
+      const hasExt = dl.extension && dl.extension.date;
+      
+      let deadlineHTML = '';
+      if (dl.date) {
+        if (hasExt) {
+          deadlineHTML = `
+            <span style="text-decoration: line-through; color: #94a3b8; display: block; font-size: 13px;">${formatDateTime(dl.date)}</span>
+            <span style="color: ${cAccent}; font-weight: bold; display: block; font-size: 13px;">${formatDateTime(dl.extension.date)}</span>
+            ${dl.extension.reason ? `<span style="font-size: 12px; color: #64748b; font-style: italic;">(${dl.extension.reason})</span>` : ''}
+          `;
+        } else {
+          deadlineHTML = `<span style="font-weight: bold; font-size: 13px; color: ${cTextDark};">${formatDateTime(dl.date)}</span>`;
+        }
+      } else {
+        deadlineHTML = `<span style="color: #64748b;">No deadline</span>`;
+      }
+
+      // Type de soumission
+      const subType = AC.submissionType === 'group' 
+        ? `👥 Group ${AC.groupSize ? `(${AC.groupSize})` : ''}` 
+        : '👤 Individual';
+
+      // Type d'assignment : regular | bonus
+      const assignmentType = AC.assignmentType === 'bonus' ? 'bonus' : 'regular';
+      const gradingHTML = assignmentType === 'bonus'
+        ? `<span style="display: inline-block; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; background-color: ${cAccent}; color: #ffffff; white-space: nowrap;">+ Bonus</span>`
+        : `<span style="font-size: 13px; font-weight: 600; color: ${cTextDark};">Regular</span>`;
+
+      // Poids (Weight)
+      const weightHTML = AC.weight != null ? `<span style="font-weight: bold; color: ${cTextDark};">${AC.weight}%</span>` : 'N/A';
+
+      // Politique IA
+      const aiStyles = {
+        unrestricted: { bg: '#dcfce7', text: '#166534', label: '🤖 AI Unrestricted' },
+        restricted:   { bg: '#ffedd5', text: '#9a3412', label: '⚠️ AI Restricted' },
+        forbidden:    { bg: '#fee2e2', text: '#991b1b', label: '🚫 AI Forbidden' },
+        default:      { bg: '#dbeafe', text: '#1e40af', label: 'ℹ️ Default Policy' }
+      };
+      const aiPolicy = aiStyles[AC.aiPolicy] || aiStyles['default'];
+
+      // 4. Construction de la structure HTML avec Inline-Styles Strict
+      const finalHTML = `
+<!-- Assignment Card Generated HTML -->
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border: 1px solid ${cBorder}; border-top: 6px solid ${cStructure}; border-radius: 6px; background-color: ${bgCard}; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); color: ${cTextMain}; max-width: 100%; box-sizing: border-box; margin-left: -0.5em;">
+
+  <!-- Header -->
+  <div style="border-bottom: 1px solid ${cBorder}; padding-bottom: 15px; margin-bottom: 20px;">
+    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: ${cAccent}; margin-bottom: 6px;">
+      ${labelNumber}
+    </div>
+    <div style="font-size: 22px; font-weight: 700; color: ${cTextDark}; margin: 0;">
+      ${title}
+    </div>
+  </div>
+
+  <!-- Description -->
+  <p style="font-size: 14px; line-height: 1.6; margin: 0 0 25px 0; color: ${cTextMain};">
+    ${description}
+  </p>
+
+  <!-- Meta Data (Inline Blocks for broad LMS compatibility) -->
+  <div style="margin-bottom: 25px;">
+    
+    <!-- Deadline -->
+    <div style="display: inline-block; vertical-align: top; min-width: 160px; margin-right: 20px; margin-bottom: 15px;">
+      <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;">
+        ${typeLabel}
+      </span>
+      ${deadlineHTML}
+    </div>
+
+    <!-- Type -->
+    <div style="display: inline-block; vertical-align: top; min-width: 120px; margin-right: 20px; margin-bottom: 15px;">
+      <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;">
+        Submission
+      </span>
+      <span style="font-size: 13px; font-weight: 600; color: ${cTextDark};">${subType}</span>
+    </div>
+
+    <!-- Grading -->
+    <div style="display: inline-block; vertical-align: top; min-width: 90px; margin-right: 20px; margin-bottom: 15px;">
+      <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;">
+        Grading
+      </span>
+      ${gradingHTML}
+    </div>
+
+    <!-- Weight -->
+    <div style="display: inline-block; vertical-align: top; min-width: 80px; margin-right: 20px; margin-bottom: 15px;">
+      <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;">
+        Weight
+      </span>
+      <span style="font-size: 13px;">${weightHTML}</span>
+    </div>
+
+    <!-- AI Policy -->
+    <div style="display: inline-block; vertical-align: top; margin-bottom: 15px;">
+      <span style="display: block; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;">
+        AI Policy
+      </span>
+      <span style="display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; background-color: ${aiPolicy.bg}; color: ${aiPolicy.text}; white-space: nowrap;">
+        ${aiPolicy.label}
+      </span>
+    </div>
+
+  </div>
+
+  <!-- Button -->
+  <a href="${url}" target="_top" style="display: inline-block; padding: 14px 24px; background-color: ${cAccent}; color: #ffffff; text-decoration: none; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; border: 2px solid ${cAccent}; transition: background 0.2s;">
+    View Assignment Instructions &rarr;
+  </a>
+
+</div>
+`;
+
+      // 5. Affichage
+      document.getElementById('preview').innerHTML = finalHTML;
+      document.getElementById('output-code').value = finalHTML.trim();
+    }
+  </script>
+</body>
+</html>

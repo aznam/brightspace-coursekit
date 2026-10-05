@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rubric → Brightspace Descriptor Converter</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #334155;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    
+    h1 {
+      grid-column: 1 / -1;
+      margin: 0;
+      color: #0f172a;
+      text-align: center;
+    }
+    .subtitle {
+      grid-column: 1 / -1;
+      margin: -12px 0 0 0;
+      color: #64748b;
+      text-align: center;
+      font-size: 0.92em;
+    }
+    .panel {
+      background: #ffffff;
+      padding: 22px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+    }
+    h2 {
+      font-size: 1.05em;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 9px;
+      margin-top: 0;
+      color: #0f172a;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.82em;
+      margin-top: 14px;
+      margin-bottom: 5px;
+      color: #475569;
+    }
+    textarea, input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 9px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 13px;
+    }
+    textarea {
+      min-height: 105px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95em;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .btn-generate { background: #c2410c; color: #ffffff; }
+    .btn-copy { background: #1e293b; color: #ffffff; }
+    .preview-box {
+      margin-top: 10px;
+      padding: 14px;
+      border: 1px dashed #cbd5e1;
+      background: #f8fafc;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .code-box {
+      background: #1e293b;
+      color: #e2e8f0;
+      min-height: 150px;
+    }
+    .note {
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 9px 10px;
+      border-left: 4px solid #2563eb;
+      background: #eff6ff;
+      color: #1e3a8a;
+      margin-top: 12px;
+    }
+    .warning {
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 9px 10px;
+      border-left: 4px solid #d97706;
+      background: #fffbeb;
+      color: #92400e;
+      margin-top: 12px;
+      display: none;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media(max-width: 700px) {
+      .row { grid-template-columns: 1fr; }
+    }
+
+    .rubric-select-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 1100px;
+      width: 100%;
+      font-size: 12px;
+    }
+    .rubric-select-table th,
+    .rubric-select-table td {
+      border-right: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 6px;
+      vertical-align: top;
+    }
+    .rubric-select-table th {
+      background: #f8fafc;
+      color: #0f172a;
+      font-weight: 800;
+    }
+    .rubric-select-table tr:first-child th { border-top: 1px solid #e2e8f0; }
+    .rubric-select-table th:first-child,
+    .rubric-select-table td:first-child { border-left: 1px solid #e2e8f0; }
+    .level-cell {
+      display: block;
+      width: 100%;
+      min-height: 88px;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      line-height: 1.35;
+    }
+    .level-cell strong {
+      display: block;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+    .level-cell.selected {
+      border: 2px solid #c2410c;
+      background: #fff7ed;
+    }
+    .level-cell .mini {
+      display: block;
+      margin-top: 5px;
+      font-size: 10px;
+      color: #64748b;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Rubric Cell Converter</h1>
+    <div class="subtitle">Paste → select cells → copy Brightspace HTML.</div>
+
+    <div class="panel">
+      <h2>Source</h2>
+
+      <label>Course config</label>
+      <textarea id="input-course" placeholder="Paste course-config.js here..."></textarea>
+
+      <label>Rubric</label>
+      <textarea id="input-rubric" placeholder="Paste the rubric HTML here..."></textarea>
+<button class="btn-generate" type="button" onclick="loadRubric()">Load</button>
+      <div id="warning" class="warning"></div>
+
+      <div id="selection-section" style="display:none;">
+        <h2 style="margin-top:20px;">Select</h2>
+        <div class="note">
+          Select one item only: either an <strong>Overall</strong> band or one artifact-level cell.
+        </div>
+
+        <div id="overall-selection-wrap" style="display:none;margin-top:14px;">
+          <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px;">Overall</div>
+          <div id="overall-selection" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:8px;"></div>
+        </div>
+
+        <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin:16px 0 6px;">Artifact cells</div>
+        <div id="selection-grid" style="overflow-x:auto;"></div>
+        <button class="btn-generate" type="button" onclick="generateDescriptor()">Generate</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Output</h2>
+
+      <label>Preview</label>
+      <div id="preview" class="preview-box">
+        <em style="color:#94a3b8;font-size:0.9em;">Paste the course config and rubric, then generate.</em>
+      </div>
+
+      <label>Brightspace HTML</label>
+      <textarea id="output-code" class="code-box" readonly></textarea>
+
+      <div id="copy-status" style="margin-top:8px;font-size:12px;color:#64748b;min-height:18px;"></div>
+      <button class="btn-copy" type="button" onclick="copyCode()">Copy again</button>
+</div>
+  </div>
+
+<script>
+  let LOADED_COURSE = {};
+  let LOADED_RUBRIC = null;
+  let SELECTED_ITEM = null;
+
+  function escapeHTML(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function extractAssignedObject(source, objectName) {
+    const marker = 'window.' + objectName;
+    const markerIndex = source.indexOf(marker);
+    if (markerIndex === -1) return null;
+
+    const equalsIndex = source.indexOf('=', markerIndex + marker.length);
+    if (equalsIndex === -1) return null;
+
+    const start = source.indexOf('{', equalsIndex + 1);
+    if (start === -1) return null;
+
+    let depth = 0;
+    let quote = null;
+    let escaped = false;
+    let lineComment = false;
+    let blockComment = false;
+
+    for (let i = start; i < source.length; i++) {
+      const ch = source[i];
+      const next = source[i + 1];
+
+      if (lineComment) {
+        if (ch === '\n') lineComment = false;
+        continue;
+      }
+      if (blockComment) {
+        if (ch === '*' && next === '/') { blockComment = false; i++; }
+        continue;
+      }
+      if (quote) {
+        if (escaped) { escaped = false; continue; }
+        if (ch === '\\') { escaped = true; continue; }
+        if (ch === quote) quote = null;
+        continue;
+      }
+
+      if (ch === '/' && next === '/') { lineComment = true; i++; continue; }
+      if (ch === '/' && next === '*') { blockComment = true; i++; continue; }
+      if (ch === '"' || ch === "'" || ch === '`') { quote = ch; continue; }
+
+      if (ch === '{') depth++;
+      if (ch === '}') {
+        depth--;
+        if (depth === 0) {
+          const literal = source.slice(start, i + 1);
+          try {
+            return new Function('return (' + literal + ');')();
+          } catch (e) {
+            console.warn('Cannot parse ' + objectName, e);
+            return null;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function parseCourseConfig(source) {
+    const direct = extractAssignedObject(source, 'COURSE_CONFIG');
+    if (direct) return direct;
+
+    const fakeWindow = {};
+    try {
+      const fakeDocument = {
+        currentScript: {
+          src: 'https://descriptor.local/brightspace/scripts/course-config.js'
+        }
+      };
+      new Function('window', 'document', 'URL', source.replace(/var window\s*=\s*.*?;/g, ''))(
+        fakeWindow, fakeDocument, URL
+      );
+      return fakeWindow.COURSE_CONFIG || {};
+    } catch (e) {
+      console.warn('Cannot execute course-config.js', e);
+      return {};
+    }
+  }
+
+  function directDivs(element) {
+    return Array.from(element.children).filter(function(el) {
+      return el.tagName === 'DIV';
+    });
+  }
+
+  function parseRubric(htmlText) {
+    const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+    const table = doc.querySelector('table');
+    if (!table) return null;
+
+    const headers = Array.from(table.querySelectorAll('thead th')).slice(1).map(function(th, index) {
+      const divs = th.querySelectorAll('div');
+      return {
+        code: divs.length ? divs[0].textContent.trim() : ('L' + index),
+        title: divs.length > 1 ? divs[1].textContent.trim() : ''
+      };
+    });
+
+    const overalls = [];
+    const overallHeading = Array.from(doc.querySelectorAll('div')).find(function(div) {
+      return div.textContent.trim() === 'Overall Assessment Bands';
+    });
+
+    if (overallHeading && overallHeading.parentElement) {
+      Array.from(overallHeading.parentElement.children).forEach(function(box) {
+        if (box === overallHeading) return;
+
+        const style = box.getAttribute('style') || '';
+        if (!/border-left\s*:\s*6px\s+solid/i.test(style)) return;
+
+        const children = Array.from(box.children);
+        if (children.length < 2) return;
+
+        const headSpans = Array.from(children[0].querySelectorAll(':scope > span'));
+        const label = headSpans[0] ? headSpans[0].textContent.trim() : '';
+        const score = headSpans[1] ? headSpans[1].textContent.trim() : '';
+        if (!label || !score) return;
+
+        const summary = children[1] ? children[1].textContent.trim() : '';
+        let knowledge = '';
+        let action = '';
+        let environment = '';
+        const skills = [];
+
+        children.slice(2).forEach(function(div) {
+          const text = div.textContent.trim();
+          if (/^Knowledge:/i.test(text)) {
+            knowledge = text.replace(/^Knowledge:\s*/i, '');
+          } else if (/^Action:/i.test(text)) {
+            action = text.replace(/^Action:\s*/i, '');
+          } else if (/^Environment:/i.test(text)) {
+            environment = text.replace(/^Environment:\s*/i, '');
+          } else if (/^Skills mobilized:/i.test(text)) {
+            Array.from(div.querySelectorAll('span')).forEach(function(span) {
+              const token = span.textContent.trim();
+              if (/^[A-Z][A-Z0-9_-]{1,15}$/.test(token)) {
+                skills.push({ label: token, style: span.getAttribute('style') || '' });
+              }
+            });
+          }
+        });
+
+        const colorMatch = style.match(/border-left\s*:\s*6px\s+solid\s+([^;]+)/i);
+        overalls.push({
+          label: label,
+          score: score,
+          color: colorMatch ? colorMatch[1].trim() : '#94a3b8',
+          summary: summary,
+          knowledge: knowledge,
+          action: action,
+          environment: environment,
+          skills: skills
+        });
+      });
+    }
+
+    const artifacts = [];
+
+    Array.from(table.querySelectorAll('tbody tr')).forEach(function(row) {
+      const th = row.querySelector(':scope > th');
+      if (!th) return;
+
+      const artifactName = th.textContent.trim();
+      if (!artifactName || artifactName === 'Submission Package') return;
+
+      const levels = Array.from(row.querySelectorAll(':scope > td')).map(function(td, index) {
+        const divs = directDivs(td);
+
+        let expectation = divs.length ? divs[0].textContent.trim() : '';
+        let example = '';
+        let loEvidence = '';
+        const skills = [];
+
+        divs.forEach(function(div) {
+          const text = div.textContent.trim();
+
+          if (text.indexOf('Literal example') === 0) {
+            const code = div.querySelector('code');
+            example = code ? code.textContent.trim() : text.replace(/^Literal example\s*/i, '');
+          }
+
+          if (text.indexOf('LO evidence:') === 0) {
+            loEvidence = text.replace(/^LO evidence:\s*/i, '');
+          }
+
+          Array.from(div.querySelectorAll('span')).forEach(function(span) {
+            const token = span.textContent.trim();
+            if (/^[A-Z][A-Z0-9_-]{1,15}$/.test(token)) {
+              skills.push({
+                label: token,
+                style: span.getAttribute('style') || ''
+              });
+            }
+          });
+        });
+
+        return {
+          code: headers[index] ? headers[index].code : ('L' + index),
+          title: headers[index] ? headers[index].title : '',
+          expectation: expectation,
+          example: example,
+          loEvidence: loEvidence,
+          skills: skills.filter(function(skill, pos, arr) {
+            return arr.findIndex(function(other) { return other.label === skill.label; }) === pos;
+          })
+        };
+      });
+
+      artifacts.push({
+        name: artifactName,
+        levels: levels
+      });
+    });
+
+    return {
+      headers: headers,
+      artifacts: artifacts,
+      overalls: overalls
+    };
+  }
+
+
+  function loadRubric() {
+    const warning = document.getElementById('warning');
+    warning.style.display = 'none';
+    warning.textContent = '';
+
+    const courseSource = document.getElementById('input-course').value || '';
+    const rubricSource = document.getElementById('input-rubric').value || '';
+
+    LOADED_COURSE = parseCourseConfig(courseSource);
+    LOADED_RUBRIC = parseRubric(rubricSource);
+    SELECTED_ITEM = null;
+
+    if (!LOADED_RUBRIC || !LOADED_RUBRIC.artifacts.length) {
+      warning.textContent = 'No compatible rubric table could be found.';
+      warning.style.display = 'block';
+      document.getElementById('selection-section').style.display = 'none';
+      return;
+    }
+
+    renderOverallSelection();
+    renderSelectionGrid();
+    document.getElementById('selection-section').style.display = 'block';
+  }
+
+  function clearSelectionUI() {
+    document.querySelectorAll('.level-cell, .overall-choice').forEach(function(item) {
+      item.classList.remove('selected');
+      item.setAttribute('aria-pressed', 'false');
+    });
+  }
+
+  function renderOverallSelection() {
+    const wrap = document.getElementById('overall-selection-wrap');
+    const host = document.getElementById('overall-selection');
+    host.innerHTML = '';
+
+    if (!LOADED_RUBRIC.overalls || !LOADED_RUBRIC.overalls.length) {
+      wrap.style.display = 'none';
+      return;
+    }
+
+    wrap.style.display = 'block';
+
+    LOADED_RUBRIC.overalls.forEach(function(overall, index) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'level-cell overall-choice';
+      button.setAttribute('aria-pressed', 'false');
+      button.style.minHeight = '82px';
+      button.style.borderTop = '4px solid ' + overall.color;
+
+      const excerpt = overall.summary.length > 145
+        ? overall.summary.slice(0, 142) + '…'
+        : overall.summary;
+
+      button.innerHTML =
+        '<strong style="color:' + overall.color + ';">' + escapeHTML(overall.label) + '</strong>'
+        + '<span style="display:block;font-size:11px;font-weight:800;color:#64748b;margin-bottom:5px;">'
+        + escapeHTML(overall.score) + '</span>'
+        + escapeHTML(excerpt);
+
+      button.addEventListener('click', function() {
+        const same = SELECTED_ITEM
+          && SELECTED_ITEM.type === 'overall'
+          && SELECTED_ITEM.index === index;
+
+        clearSelectionUI();
+
+        if (same) {
+          SELECTED_ITEM = null;
+          return;
+        }
+
+        SELECTED_ITEM = { type: 'overall', index: index };
+        button.classList.add('selected');
+        button.setAttribute('aria-pressed', 'true');
+        generateAndCopy();
+      });
+
+      host.appendChild(button);
+    });
+  }
+
+  function renderSelectionGrid() {
+    const host = document.getElementById('selection-grid');
+    host.innerHTML = '';
+
+    const table = document.createElement('table');
+    table.className = 'rubric-select-table';
+
+    const thead = document.createElement('thead');
+    const hr = document.createElement('tr');
+
+    const artifactHead = document.createElement('th');
+    artifactHead.textContent = 'Artifact';
+    artifactHead.style.minWidth = '155px';
+    artifactHead.style.position = 'sticky';
+    artifactHead.style.left = '0';
+    artifactHead.style.zIndex = '2';
+    hr.appendChild(artifactHead);
+
+    LOADED_RUBRIC.headers.forEach(function(level) {
+      const th = document.createElement('th');
+      th.style.minWidth = '126px';
+      th.innerHTML = '<strong>' + escapeHTML(level.code) + '</strong>'
+        + (level.title
+          ? '<div style="font-size:10px;margin-top:3px;color:#64748b;">' + escapeHTML(level.title) + '</div>'
+          : '');
+      hr.appendChild(th);
+    });
+
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+
+    LOADED_RUBRIC.artifacts.forEach(function(artifact, artifactIndex) {
+      const tr = document.createElement('tr');
+
+      const th = document.createElement('th');
+      th.textContent = artifact.name;
+      th.style.position = 'sticky';
+      th.style.left = '0';
+      th.style.zIndex = '1';
+      tr.appendChild(th);
+
+      artifact.levels.forEach(function(level, levelIndex) {
+        const td = document.createElement('td');
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'level-cell';
+        button.dataset.artifactIndex = String(artifactIndex);
+        button.dataset.levelIndex = String(levelIndex);
+        button.setAttribute('aria-pressed', 'false');
+
+        const excerpt = level.expectation.length > 150
+          ? level.expectation.slice(0, 147) + '…'
+          : level.expectation;
+
+        const thisLevelColor = levelColor(level.code);
+        button.style.borderTop = '4px solid ' + thisLevelColor;
+
+        button.innerHTML =
+          '<strong style="color:' + thisLevelColor + ';">' + escapeHTML(level.code) + '</strong>'
+          + escapeHTML(excerpt)
+          + (level.skills && level.skills.length
+            ? '<span class="mini">' + escapeHTML(level.skills.map(function(skill) { return skill.label; }).join(' · ')) + '</span>'
+            : '');
+
+        button.addEventListener('click', function() {
+          const sameCell = SELECTED_ITEM
+            && SELECTED_ITEM.type === 'cell'
+            && SELECTED_ITEM.artifactIndex === artifactIndex
+            && SELECTED_ITEM.levelIndex === levelIndex;
+
+          clearSelectionUI();
+
+          if (sameCell) {
+            SELECTED_ITEM = null;
+            return;
+          }
+
+          SELECTED_ITEM = {
+            type: 'cell',
+            artifactIndex: artifactIndex,
+            levelIndex: levelIndex
+          };
+
+          button.classList.add('selected');
+          button.setAttribute('aria-pressed', 'true');
+          generateAndCopy();
+        });
+
+        td.appendChild(button);
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    host.appendChild(table);
+  }
+
+  function levelColor(levelCode) {
+    const colors = {
+      L0: '#cd2026',
+      L1: '#cd2026',
+      L2: '#fd4e9d',
+      L3: '#e87511',
+      L4: '#e87511',
+      L5: '#ffdf61',
+      L6: '#8ad934',
+      L7: '#29a6ff',
+      L8: '#29a6ff',
+      L9: '#8982ff',
+      L10: '#8982ff'
+    };
+    return colors[String(levelCode || '').toUpperCase()] || '#94a3b8';
+  }
+
+  function skillBadge(skill, border, textDark) {
+    const sourceStyle = skill && skill.style ? String(skill.style) : '';
+    const safeStyle = sourceStyle
+      .replace(/(?:^|;)\s*(?:position|left|right|top|bottom|z-index|width|min-width|max-width|height|min-height|max-height|transform|float|display)\s*:[^;]*/gi, '');
+
+    return '<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 6px;border-radius:999px;'
+      + 'font-size:10px;font-weight:800;'
+      + (safeStyle ? safeStyle + ';' : 'border:1px solid ' + border + ';background-color:#f8fafc;color:' + textDark + ';')
+      + '">' + escapeHTML(skill.label || '') + '</span>';
+  }
+
+  async function copyGeneratedHTML() {
+    const box = document.getElementById('output-code');
+    const status = document.getElementById('copy-status');
+    if (!box || !box.value) return;
+
+    let copied = false;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(box.value);
+        copied = true;
+      } catch (e) {
+        copied = false;
+      }
+    }
+
+    if (!copied) {
+      try {
+        box.focus();
+        box.select();
+        copied = document.execCommand('copy');
+      } catch (e) {
+        copied = false;
+      }
+    }
+
+    if (status) {
+      status.textContent = copied
+        ? 'Copied automatically ✓'
+        : 'Automatic copy was blocked by the browser. Use “Copy again”.';
+    }
+  }
+
+  function generateAndCopy() {
+    const generated = generateDescriptor();
+    if (generated !== false) {
+      copyGeneratedHTML();
+    }
+  }
+
+  function generateDescriptor() {
+    const warning = document.getElementById('warning');
+    warning.style.display = 'none';
+    warning.textContent = '';
+
+    if (!LOADED_RUBRIC || !LOADED_RUBRIC.artifacts.length) {
+      warning.textContent = 'Load the rubric before generating the descriptor.';
+      warning.style.display = 'block';
+      return false;
+    }
+
+    if (!SELECTED_ITEM) {
+      warning.textContent = 'Select one Overall band or one rubric cell.';
+      warning.style.display = 'block';
+      return false;
+    }
+
+    const palette = (LOADED_COURSE && LOADED_COURSE.palette) || {};
+    const cTextMain = palette['text-main'] || '#334155';
+    const cTextDark = palette['text-dark'] || '#0f172a';
+    const cBorder = palette['border'] || '#e2e8f0';
+
+    let finalHTML = '';
+
+    if (SELECTED_ITEM.type === 'overall') {
+      const overall = LOADED_RUBRIC.overalls[SELECTED_ITEM.index];
+
+      if (!overall) {
+        warning.textContent = 'The selected Overall band could not be read.';
+        warning.style.display = 'block';
+        return false;
+      }
+
+      const skillsHTML = overall.skills && overall.skills.length
+        ? overall.skills.map(function(skill) {
+            return skillBadge(skill, cBorder, cTextDark);
+          }).join('')
+        : '<span style="color:#94a3b8;">—</span>';
+
+      finalHTML =
+        '<div style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;'
+        + 'border:1px solid ' + cBorder + ';border-left:6px solid ' + overall.color + ';'
+        + 'border-radius:6px;background-color:#ffffff;padding:14px 16px;color:' + cTextMain + ';'
+        + 'max-width:100%;box-sizing:border-box;">'
+        + '<div style="margin-bottom:6px;">'
+        + '<span style="display:inline-block;font-size:16px;font-weight:900;color:' + overall.color + ';margin-right:8px;">'
+        + escapeHTML(overall.label) + '</span>'
+        + '<span style="display:inline-block;font-size:11px;font-weight:800;color:#64748b;">'
+        + escapeHTML(overall.score) + '</span>'
+        + '</div>'
+        + '<div style="font-size:13px;line-height:1.5;color:' + cTextDark + ';margin-bottom:8px;">'
+        + escapeHTML(overall.summary) + '</div>'
+        + '<div style="font-size:12px;line-height:1.45;color:' + cTextMain + ';margin-top:3px;"><strong style="color:' + cTextDark + ';">Knowledge:</strong> '
+        + escapeHTML(overall.knowledge) + '</div>'
+        + '<div style="font-size:12px;line-height:1.45;color:' + cTextMain + ';margin-top:3px;"><strong style="color:' + cTextDark + ';">Action:</strong> '
+        + escapeHTML(overall.action) + '</div>'
+        + '<div style="font-size:12px;line-height:1.45;color:' + cTextMain + ';margin-top:3px;"><strong style="color:' + cTextDark + ';">Environment:</strong> '
+        + escapeHTML(overall.environment) + '</div>'
+        + '<div style="font-size:12px;line-height:1.45;color:' + cTextMain + ';margin-top:7px;"><strong style="color:' + cTextDark + ';margin-right:5px;">Skills mobilized:</strong>'
+        + skillsHTML + '</div>'
+        + '</div>';
+    } else {
+      const artifact = LOADED_RUBRIC.artifacts[SELECTED_ITEM.artifactIndex];
+      const level = artifact && artifact.levels
+        ? artifact.levels[SELECTED_ITEM.levelIndex]
+        : null;
+
+      if (!level) {
+        warning.textContent = 'The selected rubric cell could not be read.';
+        warning.style.display = 'block';
+        return false;
+      }
+
+      const lvlColor = levelColor(level.code);
+      let details = '';
+
+      if (level.example) {
+        details +=
+          '<div style="margin-top:8px;padding:8px 9px;border-left:3px solid ' + cBorder
+          + ';background-color:#f8fafc;color:' + cTextMain + ';font-size:12px;line-height:1.5;">'
+          + '<span style="display:block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:#64748b;margin-bottom:3px;">Example</span>'
+          + '<span style="font-family:ui-monospace,SFMono-Regular,Consolas,monospace;">'
+          + escapeHTML(level.example) + '</span></div>';
+      }
+
+      if (level.loEvidence) {
+        details +=
+          '<div style="margin-top:8px;padding:8px 9px;border-left:3px solid #2563eb;background-color:#eff6ff;color:#1e3a8a;font-size:12px;line-height:1.5;">'
+          + '<strong>LO evidence:</strong> ' + escapeHTML(level.loEvidence) + '</div>';
+      }
+
+      let skillsHTML = '';
+      if (level.skills && level.skills.length) {
+        skillsHTML =
+          '<div style="margin-top:8px;">'
+          + level.skills.map(function(skill) {
+            return skillBadge(skill, cBorder, cTextDark);
+          }).join('')
+          + '</div>';
+      }
+
+      finalHTML =
+        '<div style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;'
+        + 'border:1px solid ' + cBorder + ';border-left:6px solid ' + lvlColor + ';'
+        + 'border-radius:6px;background-color:#ffffff;padding:14px;color:' + cTextMain + ';'
+        + 'max-width:100%;box-sizing:border-box;">'
+        + '<div style="font-size:13px;line-height:1.55;font-weight:700;color:' + cTextDark + ';">'
+        + escapeHTML(level.expectation) + '</div>'
+        + details
+        + skillsHTML
+        + '</div>';
+    }
+
+    document.getElementById('preview').innerHTML = finalHTML;
+    document.getElementById('output-code').value = finalHTML;
+    return true;
+  }
+
+  function copyCode() {
+    copyGeneratedHTML();
+  }
+</script>
+</body>
+</html>

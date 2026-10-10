@@ -1,0 +1,11 @@
+{
+  "id": "collapse-box",
+  "element": "collapse-box",
+  "renderer": "collapse-box",
+  "styles": [
+    "collapse-box.css"
+  ],
+  "scripts": [
+    "renderer.js"
+  ]
+}

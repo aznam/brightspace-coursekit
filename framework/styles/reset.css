@@ -1,0 +1,7 @@
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; padding: 0; }
+img, svg { max-width: 100%; }
+button, input, textarea, select { font: inherit; }
+span.panorama-alternative-formats-button-container { display: none !important; }
+span.pano-wrapper-div { display: contents !important; line-height: inherit !important; }

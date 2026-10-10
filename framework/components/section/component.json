@@ -1,0 +1,11 @@
+{
+  "id": "section",
+  "element": "section",
+  "renderer": "section",
+  "styles": [
+    "section.css"
+  ],
+  "scripts": [
+    "renderer.js"
+  ]
+}

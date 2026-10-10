@@ -1,0 +1,10 @@
+.ck-hoverbox { position:relative; display:inline; font-style:normal; }
+.ck-hoverbox__trigger { color:var(--ck-accent); font-weight:700; text-decoration-line:underline; text-decoration-style:dashed; text-decoration-thickness:2px; text-underline-offset:.16em; cursor:help; }
+.ck-hoverbox__panel { visibility:hidden; opacity:0; position:fixed; inset:auto auto auto auto; width:22.5rem; max-width:calc(100vw - 2.5rem); padding:1.25rem; background:var(--ck-text-dark); color:#f8fafc; border:1px solid var(--ck-structure); border-top:4px solid var(--ck-accent); font-size:.9rem; font-weight:400; text-align:left; line-height:1.6; z-index:9999; pointer-events:none; box-shadow:6px 6px 0 rgba(0,0,0,.15); transition:opacity .15s ease, visibility .15s; }
+.ck-hoverbox__panel::before { content:''; position:absolute; inset:-1.25rem; }
+.ck-hoverbox.is-active .ck-hoverbox__panel { visibility:visible; opacity:1; pointer-events:auto; }
+.ck-hoverbox__panel-title { display:block; margin:0 0 .6rem; color:#fdba74; font-size:.85rem; text-transform:uppercase; font-weight:800; }
+.ck-hoverbox__panel-body { display:flex; flex-direction:column; gap:.5rem; }
+.ck-hoverbox__panel-body > * { margin:0; }
+.ck-hoverbox__panel-body ul, .ck-hoverbox__panel-body ol { padding-left:var(--ck-list-indent); }
+@media (hover:none) { .ck-hoverbox__trigger { cursor:pointer; } }

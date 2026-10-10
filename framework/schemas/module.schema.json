@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CourseKit module manifest",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "version",
+    "namespace"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "namespace": {
+      "type": "string"
+    },
+    "components": {
+      "type": "array"
+    },
+    "pages": {
+      "type": "array"
+    },
+    "styles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scripts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "schemas": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dependsOn": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

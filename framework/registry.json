@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "pageTypes": {
+    "course-page": {
+      "namespace": "urn:coursekit:page",
+      "definition": "pages/course-page/page.json",
+      "styles": [
+        "styles/tokens.css",
+        "styles/reset.css",
+        "pages/course-page/course-page.css"
+      ],
+      "scripts": [
+        "pages/course-page/course-page.js"
+      ],
+      "components": [
+        "navbar",
+        "hero",
+        "side",
+        "central-content",
+        "inline-toc",
+        "section",
+        "collapse-box",
+        "hoverbox",
+        "infobox",
+        "picture-with-legend",
+        "picture-without-legend"
+      ]
+    }
+  },
+  "modules": {},
+  "schemas": {
+    "course": "schemas/course.schema.json",
+    "module": "schemas/module.schema.json",
+    "component": "schemas/component.schema.json",
+    "urn:coursekit:page": "schemas/course-page.xsd"
+  }
+}

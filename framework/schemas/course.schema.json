@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CourseKit course configuration",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "version",
+    "siteId",
+    "course",
+    "paths",
+    "customPaths",
+    "resources"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer"
+    },
+    "siteId": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ]
+    },
+    "course": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "section": {
+          "type": "string"
+        },
+        "term": {
+          "type": "string"
+        },
+        "year": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "palette": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "backgroundImage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "properties": {
+        "assets": {
+          "type": "string"
+        },
+        "attachments": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      }
+    },
+    "customPaths": {
+      "type": "object",
+      "properties": {
+        "styles": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scripts": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fonts": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "styles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scripts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fonts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "family",
+              "source"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "family": {
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "online",
+                  "local"
+                ]
+              },
+              "url": {
+                "type": "string"
+              },
+              "location": {
+                "enum": [
+                  "course",
+                  "framework"
+                ]
+              },
+              "cssVariable": {
+                "type": "string"
+              },
+              "fallback": {
+                "type": "string"
+              },
+              "files": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "file"
+                  ],
+                  "properties": {
+                    "file": {
+                      "type": "string"
+                    },
+                    "format": {
+                      "type": "string"
+                    },
+                    "weight": {
+                      "type": [
+                        "integer",
+                        "string"
+                      ]
+                    },
+                    "style": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "icons": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    },
+    "learningOutcomes": {
+      "type": "array"
+    },
+    "variables": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean"
+        ]
+      }
+    }
+  }
+}

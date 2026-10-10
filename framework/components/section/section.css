@@ -1,0 +1,14 @@
+.ck-section { margin:0; min-width:0; scroll-margin-top: calc(var(--ck-navbar-offset, 4rem) + var(--ck-space-md)); }
+.ck-section__title { margin:0 0 var(--ck-space-md); padding-bottom:.4rem; color:var(--ck-text-dark); border-bottom:2px solid var(--ck-border); font-size:1.1rem; line-height:1.35; font-weight:800; letter-spacing:-.01em; text-transform:uppercase; }
+.ck-section[data-level="2"] > .ck-section__title { margin-bottom:var(--ck-space-sm); border-bottom:0; padding-bottom:0; color:#475569; font-size:.95rem; letter-spacing:.025rem; }
+.ck-section[data-level="3"] > .ck-section__title { font-size:.9rem; text-transform:none; color:var(--ck-text-dark); }
+.ck-section__content { display:flex; flex-direction:column; gap:var(--ck-prose-gap); min-width:0; }
+.ck-section__content > * { margin-block:0; }
+.ck-section__content > .ck-section { margin-top:calc(var(--ck-subsection-gap) - var(--ck-prose-gap)); }
+.ck-section__content p { margin:0; }
+.ck-section__content ul, .ck-section__content ol { margin:0; padding-left:var(--ck-list-indent); }
+.ck-section__content li { margin:0; padding-left:.1rem; }
+.ck-section__content li + li { margin-top:.35rem; }
+.ck-section__content li > ul, .ck-section__content li > ol { margin-top:.35rem; }
+.ck-section__content blockquote { margin:0; padding:.75rem 1rem; border-left:4px solid var(--ck-border); color:#475569; }
+.ck-section__content a { color:var(--ck-accent); }

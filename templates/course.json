@@ -1,0 +1,34 @@
+{
+  "$schema": "framework/schemas/course.schema.json",
+  "version": 2,
+  "siteId": null,
+  "course": {
+    "code": "",
+    "title": "",
+    "section": "",
+    "term": "",
+    "year": null
+  },
+  "variables": {},
+  "theme": {
+    "palette": {},
+    "backgroundImage": null
+  },
+  "paths": {
+    "assets": "assets/",
+    "attachments": "attachments/",
+    "content": "content/"
+  },
+  "customPaths": {
+    "styles": null,
+    "scripts": null,
+    "fonts": null
+  },
+  "resources": {
+    "styles": [],
+    "scripts": [],
+    "fonts": []
+  },
+  "icons": {},
+  "learningOutcomes": []
+}

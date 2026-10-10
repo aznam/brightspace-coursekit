@@ -1,0 +1,12 @@
+{
+  "id": "hoverbox",
+  "element": "hoverbox",
+  "renderer": "hoverbox",
+  "styles": [
+    "hoverbox.css"
+  ],
+  "scripts": [
+    "renderer.js",
+    "hoverbox.js"
+  ]
+}

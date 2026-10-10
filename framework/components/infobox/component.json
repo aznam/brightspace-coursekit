@@ -1,0 +1,11 @@
+{
+  "id": "infobox",
+  "element": "infobox",
+  "renderer": "infobox",
+  "styles": [
+    "infobox.css"
+  ],
+  "scripts": [
+    "renderer.js"
+  ]
+}

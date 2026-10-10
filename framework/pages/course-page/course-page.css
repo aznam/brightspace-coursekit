@@ -1,0 +1,64 @@
+.ck-page {
+  min-height: 100vh;
+  overflow-x: clip;
+  font-family: var(--ck-font-body);
+  color: var(--ck-text-main);
+  line-height: 1.6;
+  background-color: var(--ck-bg-base);
+  background-image: var(--ck-page-background, none);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.ck-page__layout {
+  width: min(100% - 2.5rem, 75rem);
+  margin: -5.625rem auto 2.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 21.25rem;
+  grid-template-areas: "main sidebar";
+  column-gap: 2.5rem;
+  align-items: start;
+  position: relative;
+}
+
+.ck-page__sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+  align-self: start;
+  align-items: stretch;
+}
+
+.ck-page__layout--no-side {
+  grid-template-columns: minmax(0, 56.25rem);
+  grid-template-areas: "main";
+  justify-content: center;
+}
+
+@media (max-width: 62.5rem) {
+  .ck-page__layout,
+  .ck-page__layout--no-side {
+    width: min(100% - 2rem, 56.25rem);
+    margin-top: 1.25rem;
+    grid-template-columns: minmax(0,1fr);
+    grid-template-areas:
+      "side-before"
+      "main"
+      "side-after";
+    row-gap: 1.5rem;
+  }
+
+  .ck-page__sidebar {
+    display: contents;
+  }
+}
+
+@media (max-width: 37.5rem) {
+  .ck-page__layout,
+  .ck-page__layout--no-side {
+    width: min(100% - 1rem, 56.25rem);
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "hero",
+  "element": "hero",
+  "renderer": "hero",
+  "styles": [
+    "hero.css"
+  ],
+  "scripts": [
+    "renderer.js"
+  ]
+}

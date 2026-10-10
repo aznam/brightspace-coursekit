@@ -1,0 +1,7 @@
+{
+  "id": "course-page",
+  "element": "page",
+  "namespace": "urn:coursekit:page",
+  "renderer": "course-page",
+  "description": "Standard composable course page."
+}

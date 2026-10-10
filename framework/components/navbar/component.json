@@ -1,0 +1,12 @@
+{
+  "id": "navbar",
+  "element": "navbar",
+  "renderer": "navbar",
+  "styles": [
+    "navbar.css"
+  ],
+  "scripts": [
+    "renderer.js",
+    "navbar.js"
+  ]
+}

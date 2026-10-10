@@ -1,0 +1,1 @@
+(function(){'use strict';var C=window.BRIGHTSPACE.components;C.registerRenderer('example-component',function(xml,ctx){var el=document.createElement('div');el.className='example-component';C.styleRef(el,xml);C.renderChildren(xml,el,ctx);return el;});})();

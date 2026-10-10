@@ -1,0 +1,11 @@
+{
+  "id": "picture",
+  "abstract": true,
+  "renderer": "picture",
+  "styles": [
+    "picture.css"
+  ],
+  "scripts": [
+    "renderer.js"
+  ]
+}

@@ -1,170 +1,313 @@
-# Brightspace HTML Kit
+# Brightspace CourseKit (Development)
 
-A lightweight, dependency-free framework for building consistent, responsive course pages hosted in D2L Brightspace.
+**A declarative, component-based framework for creating and maintaining course content in D2L Brightspace.**
 
 Developed at the School of Computer Science, University of Windsor.
 
-## Why this kit
+This repository contains the **dev branch** of Brightspace CourseKit.
 
-Brightspace lets instructors upload full HTML pages into a course's content folder (`/content/enforced/<course-id>/`). In practice, each page ends up carrying its own copy of the styles, layout, and scripts. Over a semester, pages drift apart visually, small fixes have to be repeated across dozens of files, and moving a course to a new offering means editing every page by hand.
+## Overview
 
-This kit separates what is shared from what is specific:
+CourseKit follows a **Model–View–Presenter (MVP)** architecture implemented through a component-oriented rendering system.
 
-- **One shared framework** (CSS + JS) defines the layout, components, and behaviours for every course.
-- **One configuration file per course** sets the identity: code, title, colours, font, hero images, emojis, sprites.
-- **Each HTML page contains only its own content.** The navigation bar, hero banner, and interactive behaviours are injected at runtime.
+The architecture separates three responsibilities:
 
-The result: zero style discrepancy between pages, a new course set up by editing a single file, and pages that can be written (or generated) by focusing on content alone.
+- **Model:** Course configuration in JSON and page content in XML.
+- **Presenter:** The framework engine that interprets content, resolves dependencies, and renders components.
+- **View:** Generated HTML, component styles, and interactive behaviours.
 
-The framework is modular by design and produces HTML content fully compatible with Brightspace. It also provides tools to generate HTML descriptors for Brightspace sections that do not accept full HTML pages, while keeping the same visual style as the main course content.
+This separation allows course content to evolve independently from its presentation, while keeping pages visually consistent and reusable.
+
+**The current version supports standard course pages (`course-page`).** Additional page types and modules can be introduced through the framework's extension system.
 
 ## Features
 
-- Sticky navigation bar with course code, page title, section dropdown, and module label
-- Hero banner with course-level defaults, overridable per page
-- Two-column layout (content + sidebar) with a single-column variant
-- Mobile-aware sidebar ordering (cards before or after the main content), driven by DOM order with no JavaScript
-- Optional summary box and inline table of contents
-- Automatic section numbering across headings, ToC, and navbar menu
-- Six boxnote styles (info, warning, success, error, dark, neutral) with a float-right modifier
-- Hoverable terms with explanation panels, clamped to the viewport, usable on touch devices
-- Accordions based on native `<details>`
-- Sidebar cards: generic, key/value facts, resource links
-- Sprite sheet support for pixel-art icons with automatic aspect ratio
-- Portable asset references (`data-asset`, `data-bg-asset`) so pages survive course copies
-- No horizontal scrolling at any breakpoint
+- Declarative XML pages rendered dynamically.
+- Reusable, independently styled and responsive components.
+- Navigation bars, hero banners, sidebars, sections, tables of contents, information boxes, collapsible content, hoverboxes, and images.
+- Course-level and page-level variables.
+- Customizable themes, styles, scripts, and multiple local or online fonts.
+- Component inheritance and reusable modules.
+- Custom component styling through `style-ref`.
+- Automatic resource and schema resolution.
+- Minimal HTTP server for local development.
+- Example course and module templates.
+- Local development tools and optional tools deployable on GA-restricted Brightspace pages.
 
 ## Repository structure
 
-```
-bootstrap.js           Locates the framework and the course configuration
-brightspace/
-├── assets/            Page images (body.avif, hero.avif, sprites/…)
-├── fonts/             Local fonts (optional)
-├── scripts/
-│   ├── course-config.js   Course-specific settings (the only file to edit per course)
-│   └── framework.js       Shared behaviours (do not modify)
-└── styles/
-    └── framework.css      Shared styles (do not modify)
-attachments/           Downloadable course documents
-template.html          Starting point for a standard page
-FRAMEWORK.md           Full reference guide
-```
-
-## Getting started
-
-### Bootstrap configuration
-
-Each deployment uses two bootstrap files:
-
-- `bootstrap-config.js` — deployment-specific paths;
-- `bootstrap.js` — generic loader.
-
-Configure deployment paths in `bootstrap-config.js`:
-
-```js
-window.BRIGHTSPACE_BOOTSTRAP_CONFIG = {
-  frameworkBase: './brightspace',
-  courseConfig: './brightspace/scripts/course-config.js',
-
-  moduleRegistries: [
-    './brightspace/modules.js'
-  ]
-};
+```text
+/
+├── bootstrap-config.js       # Generic bootstrap configuration
+├── course.json               # Generic course template
+├── module.json               # Generic module template
+│
+├── framework/                # Shared CourseKit runtime
+│   ├── bootstrap.js
+│   ├── registry.json
+│   ├── components/
+│   ├── pages/
+│   ├── scripts/
+│   ├── styles/
+│   ├── fonts/
+│   └── schemas/
+│
+├── example-course/           # Working example
+│   ├── bootstrap-config.js
+│   ├── course.json
+│   ├── page.html
+│   ├── content/
+│   ├── assets/
+│   ├── attachments/
+│   ├── fonts/
+│   ├── scripts/
+│   ├── styles/
+│   └── modules/
+│
+├── templates/                # Reusable templates
+└── tools/
+    ├── local/                # Local development tools
+    └── deployed/             # Optional GA-restricted tools
 ```
 
-Use these fields as follows:
+The `framework/` directory contains the reusable rendering system. Course-specific content and resources are kept within individual course directories.
 
-- `frameworkBase` — path to the shared `brightspace` framework folder. Change this when the framework is stored somewhere else, for example in a shared development directory.
-- `courseConfig` — path to the `course-config.js` file for the course using the framework.
-- `moduleRegistries` — list of additional module registry files used by the course or project. Use `[]` if no extra modules are needed.
+## Installation and local development
 
-Paths are written relative to `bootstrap.js`.
+**Requirements:** Python 3 and a modern web browser.
 
-### Minimal page
+The repository includes a minimal HTTP development server based on the Python standard library. No additional Python packages are required to run the server.
+
+### 1. Get CourseKit
+
+Clone the `dev` branch:
+
+```bash
+git clone --branch dev https://github.com/aznam/brigthspace-coursekit.git
+```
+
+Alternatively, download and extract the repository.
+
+### 2. Start the development server
+
+From the repository root, run the script matching your operating system.
+
+**Windows**
+
+```bat
+start-server.bat
+```
+
+**PowerShell**
+
+```powershell
+.\start-server.ps1
+```
+
+**Linux / macOS**
+
+```bash
+./start-server.sh
+```
+
+The server runs in the background.
+
+### 3. Open the example course
+
+Open the following URL:
+
+http://127.0.0.1:8000/example-course/page.html
+
+During development, keep **Disable cache** enabled in the browser's developer tools if changes to CSS or JavaScript do not appear immediately.
+
+### 4. Stop the server
+
+Use the corresponding script:
+
+- `stop-server.bat`
+- `stop-server.ps1`
+- `stop-server.sh`
+
+## Creating your own course
+
+The `example-course/` directory is a working example and the recommended starting point.
+
+1. Copy `example-course/` into a new course directory.
+2. Edit `course.json` to define the course identity, visual theme, fonts, variables, and resources.
+3. Configure `bootstrap-config.js` to locate the framework, course root, and course configuration.
+4. Create or modify XML files under `content/`.
+5. Create HTML host pages that identify the XML content to render.
+6. Preview your pages through the local HTTP server.
+
+The XML files are the source of truth for instructional content. HTML host pages only initialize CourseKit and identify the content to display.
+
+### Configuring the bootstrap
+
+Each course has its own `bootstrap-config.js`.
+
+Only three paths are configured:
+
+```javascript
+// USER CONFIGURATION
+const frameworkPath = '../framework/';
+const courseRoot = './';
+const courseConfig = 'course.json';
+```
+
+| Parameter | Purpose |
+|---|---|
+| `frameworkPath` | Location of the shared CourseKit framework |
+| `courseRoot` | Root directory of the course |
+| `courseConfig` | Course configuration file, relative to the course root |
+
+These paths are resolved relative to `bootstrap-config.js`.
+
+The configuration script automatically loads `framework/bootstrap.js`. The framework then handles its own registry, components, schemas, styles, and scripts.
+
+**Users do not need to configure these internal resources manually.**
+
+### Creating an HTML page
+
+Each HTML host must indicate where its `bootstrap-config.js` is located and which XML file it should render.
+
+For example, a page located in the course root can use:
 
 ```html
-<div class="edtech-wrapper">
-  <div id="fw-sticky-bar"></div>
-  <div id="fw-hero"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <div class="edtech-container no-sidebar">
-    <main class="main-content">
-      <h2 id="section-intro">Introduction</h2>
-      <p>Page content.</p>
-    </main>
-  </div>
-</div>
-
-<script>
-  window.PAGE_CONFIG = {
-    pageShortTitle: 'Welcome',
-    moduleTitle: 'Getting Started',
-    navSections: [
-      { id: 'section-intro', label: 'Introduction' }
-    ],
-  };
-</script>
-
-<script src="bootstrap-config.js"></script>
-
-<script
-  src="bootstrap.js"
-  data-page-type="course-page">
-</script>
-```
-Each page declares its base page type through `data-page-type`. Pages may request optional features with `data-modules`:
-
-```html
-<script src="bootstrap-config.js"></script>
-
-<script
-  src="bootstrap.js"
-  data-page-type="assignment-page"
-  data-modules="quest">
-</script>
+  <script
+    src="./bootstrap-config.js"
+    data-content="content/course-page.xml">
+  </script>
+</head>
+<body></body>
+</html>
 ```
 
-See [`FRAMEWORK.md`](FRAMEWORK.md) for page types, module registration, available modules, configuration objects, components, and advanced usage.
+If the HTML page is stored elsewhere, adjust the `src` attribute so it points to the course's `bootstrap-config.js`.
 
+The `data-content` attribute identifies the XML document relative to the course root.
 
-## Templates
+CourseKit determines the page type from the XML namespace and the framework registry. It is not necessary to declare the page type separately in the HTML host.
 
-Ready-to-use HTML templates are provided to help create course content.
+### Editing course content
 
-They include examples for the supported page types and already contain the expected framework structure, configuration blocks, optional page-specific CSS, and before/after framework script hooks.
+Course pages are composed of XML elements representing reusable components.
 
-Use the template closest to the content you want to create, then adapt its configuration and page content.
+For example:
 
-See `FRAMEWORK.md` for the available page types, optional modules, and configuration options.
+```xml
+<page xmlns="urn:coursekit:page" title="${page-label}">
 
-## Customisation
+  <variables>
+    <var name="page-label">The Course</var>
+  </variables>
 
-| Level | Mechanism |
-| --- | --- |
-| Deployment paths | `bootstrap-config.js` |
-| Page type | `data-page-type` |
-| Optional features | `data-modules` |
-| Course | `course-config.js` |
-| Page | `window.PAGE_CONFIG` |
-| Assignment | `window.ASSIGNMENT_CONFIG` |
-| Document | `window.DOCUMENT_CONFIG` |
+  <navbar page-title="${page-label}"/>
 
-Shared framework CSS and JavaScript files are not edited per course.
+  <hero>
+    <title>${course-title}</title>
+    <subtitle>Course introduction</subtitle>
+  </hero>
 
-## Documentation
+  <central-content>
+    <inline-toc/>
 
-`FRAMEWORK.md` is the complete reference: component markup, configuration options, responsive behaviour, and a generation checklist. It is also written to serve as context for LLM-assisted page generation.
+    <section id="overview">
+      <title>Overview</title>
+      <p>Welcome to the course.</p>
+    </section>
+  </central-content>
 
-## Compatibility
+</page>
+```
 
-- Full pages target Brightspace hosted HTML content (pages with `<head>`, scripts, and stylesheets).
-- Section descriptors target the sanitised Brightspace editor, which strips scripts and CSS variables; they reproduce the framework's look with inline styles only.
-- Plain ES5 JavaScript, no build step, no dependencies. Tabler Icons and Google Fonts are optional CDN includes.
+CourseKit interprets this content and renders the corresponding HTML and styles.
+
+Variables can be defined in `course.json` or within a page. Page variables take precedence over course variables.
+
+The example at `example-course/content/course-page.xml` demonstrates the available standard-page components.
+
+## Customizing a course
+
+Each course can provide additional resources without modifying the shared framework.
+
+| Directory | Purpose |
+|---|---|
+| `content/` | XML page content |
+| `assets/` | Images and visual resources |
+| `attachments/` | Downloadable documents |
+| `fonts/` | Custom font files |
+| `styles/` | Course-specific stylesheets |
+| `scripts/` | Course-specific JavaScript |
+| `modules/` | Additional component and page libraries |
+
+Custom CSS, JavaScript, and fonts are registered through the `resources` configuration in `course.json`.
+
+CourseKit supports multiple font families, including locally hosted fonts and online stylesheets.
+
+Components can also be customized through their supported attributes and `style-ref`, allowing course-specific presentation without changing framework files.
+
+### Resources and modules
+
+**Resources** are individual stylesheets, scripts, or fonts added to a particular course.
+
+**Modules** are reusable libraries that can provide components, page types, styles, scripts, schemas, and dependencies.
+
+A module template is available under `templates/module/`.
+
+## Schema resolution
+
+CourseKit resolves framework and course resources automatically, independently of the location of the HTML host page.
+
+When resolving a schema, the framework follows this priority:
+
+1. A course-specific schema, if available.
+2. The corresponding framework schema.
+3. An explicit error if neither exists.
+
+Course-specific schemas can be placed in the course's `schemas/` directory or declared in `course.json`.
+
+This allows courses to customize supported XML definitions while retaining the framework's default schemas as fallbacks.
+
+## Brightspace deployment
+
+CourseKit is designed to load XML content and its associated resources directly in Brightspace.
+
+Set `siteId` in the deployed course's `course.json`. Course-owned resources can then be resolved under:
+
+```text
+/content/enforced/<siteId>/
+```
+
+Deploy the required framework files, course configuration, HTML host pages, XML content, and associated course resources.
+
+**Do not deploy:**
+
+- Local HTTP server files and start/stop scripts.
+- `tools/local/`.
+
+Tools under `tools/deployed/` may be hosted separately on Brightspace pages with access restricted to GA users.
+
+## Development status and disclaimer
+
+**CourseKit is experimental software under active development.**
+
+A substantial portion of the source code was generated by **GPT Astra (OpenAI)** and has **not been fully reviewed, verified, or optimized**.
+
+Consequently, the project may contain bugs, incomplete implementations, inefficient code, or unexpected behaviours.
+
+Users and contributors should review and test the software before relying on it, particularly in production environments.
 
 ## Author
 
-Aznam Yacoub, School of Computer Science, University of Windsor.
+Aznam Yacoub  
+School of Computer Science  
+University of Windsor
 
 ## License
 
@@ -176,4 +319,4 @@ You may use, modify, and redistribute this software for any noncommercial purpos
 
 Any copy or derivative work must include the license terms (or their URL) and the following notice:
 
-Required Notice: Copyright © 2026 Aznam Yacoub (https://github.com/aznam/brigthspace-coursekit)
+**Required Notice:** Copyright © 2026 Aznam Yacoub (https://github.com/aznam/brigthspace-coursekit)

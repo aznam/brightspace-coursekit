@@ -1,0 +1,18 @@
+{
+  "$schema": "../../framework/schemas/module.schema.json",
+  "id": "my-module",
+  "name": "My Module",
+  "version": "1.0.0",
+  "namespace": "urn:coursekit:my-module",
+  "components": [
+    {
+      "id": "example-component",
+      "definition": "components/example-component/component.json"
+    }
+  ],
+  "pages": [],
+  "styles": [],
+  "scripts": [],
+  "schemas": [],
+  "dependsOn": []
+}

@@ -3,7 +3,7 @@
   var C = window.BRIGHTSPACE.components;
 
   function pageVariables(root) {
-    var courseData = window.COURSE_DATA || {};
+    var courseData = window.BRIGHTSPACE.config.get();
     var courseVars = courseData.variables || {};
     var out = {};
 
@@ -51,7 +51,7 @@
     return out;
   }
 
-  window.BRIGHTSPACE.renderCoursePage = function (xmlText, options) {
+  window.BRIGHTSPACE.renderCoursePage = async function (xmlText, options) {
     options = options || {};
     var doc = new DOMParser().parseFromString(xmlText, 'application/xml');
     var parseError = doc.querySelector('parsererror');
@@ -64,8 +64,14 @@
     var numbered = C.boolAttr(rootXml, 'number-sections', false);
     var ctx = { page: rootXml, variables: vars, numbered: numbered, navSections: sectionInfo(rootXml, numbered), sectionDepth: 0 };
     var page = document.createElement('div'); page.className = 'ck-page';
-    var background = window.COURSE_CONFIG && window.COURSE_CONFIG.backgroundImage;
-    if (background) page.style.setProperty('--ck-page-background', 'linear-gradient(rgba(250,250,249,.92), rgba(250,250,249,.97)), url("' + background + '")');
+    var backgroundAttr = rootXml.getAttribute('background');
+    var background = backgroundAttr === null ? window.BRIGHTSPACE.config.get('theme.backgroundImage', '') : backgroundAttr;
+    if (background && background !== 'none') {
+      // Explicit background was already resolved by xml-resource-manager.
+      // Theme defaults must be resolved by the same provider, on demand.
+      if (backgroundAttr === null) background = await window.BRIGHTSPACE.resources.resolve('assets', background);
+      page.style.setProperty('--ck-page-background', 'linear-gradient(rgba(250,250,249,.92), rgba(250,250,249,.97)), url("' + background + '")');
+    }
 
     var layout = document.createElement('div'); layout.className = 'ck-page__layout';
     var sidebar = document.createElement('div'); sidebar.className = 'ck-page__sidebar';
@@ -95,9 +101,11 @@
     var host = options.root || document.getElementById('brightspace-root') || document.body;
     host.innerHTML = ''; host.appendChild(page);
     var title = C.attr(rootXml, 'title', '');
-    var courseCode = window.COURSE_CONFIG && window.COURSE_CONFIG.courseCode || '';
+    var courseCode = window.BRIGHTSPACE.config.get('course.code', '');
     document.title = [courseCode, title].filter(Boolean).join(' - ');
     C.runBehaviors(page, ctx);
     return page;
   };
+  window.BRIGHTSPACE.pageRenderers = window.BRIGHTSPACE.pageRenderers || {};
+  window.BRIGHTSPACE.pageRenderers['course-page'] = window.BRIGHTSPACE.renderCoursePage;
 })();

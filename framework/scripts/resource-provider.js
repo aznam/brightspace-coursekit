@@ -37,6 +37,10 @@
     }
     async function resolve(type,path,extra) {
       var list = candidates(type,path,extra);
+      // Remote URLs and embedded resources cannot reliably be probed with HEAD (CORS).
+      // Explicit URLs are authoritative and never participate in fallback.
+      if (/^(?:https?:|data:|blob:)/i.test(path) && new URL(path, hostBase).origin !== new URL(hostBase).origin) return list[0];
+      if (/^(?:data:|blob:)/i.test(path)) return list[0];
       for (var i=0;i<list.length;i++) if (await available(list[i])) return list[i];
       throw new Error('[CourseKit resources] '+type+' not found: '+path+' (checked '+list.join(', ')+')');
     }

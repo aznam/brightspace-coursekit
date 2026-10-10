@@ -27,12 +27,7 @@
   }
   function styleRef(el, xml) { var s = attr(xml, 'style-ref', null); if (s) el.setAttribute('data-style-ref', s); }
 
-  function resolveAsset(path) {
-    if (!path) return '';
-    if (/^(?:https?:|data:|blob:|\/)/i.test(path)) return path;
-    var base = window.COURSE_CONFIG && window.COURSE_CONFIG.paths && window.COURSE_CONFIG.paths.assets;
-    return base ? new URL(path, base.replace(/\/$/, '') + '/').href : path;
-  }
+  function resolveAsset(path) { return path || ''; }
 
   function renderGenericNode(node, parent, ctx) {
     if (node.nodeType === 3) { parent.appendChild(document.createTextNode(interpolate(node.nodeValue))); return; }
@@ -58,7 +53,7 @@
     if (name === 'a') {
       var href = attr(node, 'href', '#');
       el.href = href;
-      var target = attr(node, 'target', null); if (target) el.target = target;
+      var target = attr(node, 'target', null); window.BRIGHTSPACE.links.apply(el, target);
     }
     if (name === 'span') { var role = attr(node, 'role', null); if (role) el.setAttribute('data-role', role); }
     Array.prototype.forEach.call(node.childNodes, function (n) { renderGenericNode(n, el, ctx); });

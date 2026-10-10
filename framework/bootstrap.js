@@ -1,4 +1,3 @@
-
 (function () {
   'use strict';
   var script=document.currentScript;
@@ -43,28 +42,70 @@
       siteId:siteId,
       courseCode:data.course&&data.course.code||'', courseTitle:data.course&&data.course.title||'',
       palette:theme.palette||{}, icons:data.icons||{}, variables:data.variables||{},
-      backgroundImage:theme.backgroundImage?new URL(theme.backgroundImage,dir(activeCourseBase,p.assets||'assets/')).href:'',
+      backgroundImage:'',
       resources:data.resources||{styles:[],scripts:[],fonts:[]},
       paths:{root:activeCourseBase.replace(/\/$/,''),assets:resolveCourseDirectory(activeCourseBase,p.assets||'assets/'),attachments:resolveCourseDirectory(activeCourseBase,p.attachments||'attachments/'),content:resolveCourseDirectory(activeCourseBase,p.content||'content/'),styles:resolveCourseDirectory(activeCourseBase,c.styles),scripts:resolveCourseDirectory(activeCourseBase,c.scripts),fonts:resolveCourseDirectory(activeCourseBase,c.fonts),framework:frameworkBase.replace(/\/$/,'')}
     };
     applyPalette(data);
   }
-  function resolveCustom(kind,file){var base=window.COURSE_CONFIG.paths[kind];if(!base)throw new Error('[CourseKit bootstrap] Custom '+kind+' directory disabled, but '+file+' was requested.');return new URL(file,base+'/').href;}
-  function loadFonts(){var fonts=(window.COURSE_CONFIG.resources&&window.COURSE_CONFIG.resources.fonts)||[];var css=[];fonts.forEach(function(font){if(font.source==='online'){if(font.url){var l=document.createElement('link');l.rel='stylesheet';l.href=font.url;document.head.appendChild(l);}}else if(font.source==='local'){var base=font.location==='framework'?new URL('fonts/',frameworkBase).href:window.COURSE_CONFIG.paths.fonts;if(!base)throw new Error('[CourseKit bootstrap] Local course font requested but customPaths.fonts is disabled.');(font.files||[]).forEach(function(f){css.push('@font-face{font-family:"'+font.family.replace(/"/g,'')+'";src:url("'+new URL(f.file,base.replace(/\/$/,'')+'/').href+'") format("'+(f.format||'woff2')+'");font-weight:'+(f.weight||400)+';font-style:'+(f.style||'normal')+';font-display:swap;}');});}if(font.cssVariable){document.documentElement.style.setProperty(font.cssVariable,'"'+font.family+'", '+(font.fallback||'sans-serif'));}});if(css.length){var st=document.createElement('style');st.textContent=css.join('\n');document.head.appendChild(st);}}
-  // Resolve page XML relative to the host HTML first, then the active course root.
-  // Absolute URLs and root-relative paths are requested only once.
-  async function resolveContent(content, courseRoot) {
-    var local = new URL(content, document.baseURI).href;
-    var course = new URL(content, courseRoot).href;
-    var candidates = local === course ? [local] : [local, course];
-    for (var i = 0; i < candidates.length; i++) {
-      var response = await fetch(candidates[i], {credentials: 'same-origin', cache: 'no-store'});
-      if (response.ok) return {url: candidates[i], text: await response.text()};
-      if (response.status !== 404) {
-        throw new Error('[CourseKit bootstrap] Cannot load '+candidates[i]+' (HTTP '+response.status+').');
+  // Course-owned resources: host HTML first, then their configured course folder.
+  // Framework component resources are deliberately excluded from this fallback.
+  async function loadFonts(){
+    var fonts=(window.COURSE_CONFIG.resources&&window.COURSE_CONFIG.resources.fonts)||[];
+    var css=[];
+    for(var i=0;i<fonts.length;i++){
+      var font=fonts[i];
+      if(font.source==='online'){
+        if(font.url)await loadCss(await window.BRIGHTSPACE.resources.resolve('styles',font.url));
+      }else if(font.source==='local'){
+        for(var j=0;j<(font.files||[]).length;j++){
+          var f=font.files[j];
+          var url=font.location==='framework'
+            ?new URL(f.file,new URL('fonts/',frameworkBase)).href
+            :await window.BRIGHTSPACE.resources.resolve('fonts',f.file);
+          css.push('@font-face{font-family:"'+font.family.replace(/"/g,'')+'";src:url("'+url+'") format("'+(f.format||'woff2')+'");font-weight:'+(f.weight||400)+';font-style:'+(f.style||'normal')+';font-display:swap;}');
+        }
       }
+      if(font.cssVariable)document.documentElement.style.setProperty(font.cssVariable,'"'+font.family+'", '+(font.fallback||'sans-serif'));
     }
-    throw new Error('[CourseKit bootstrap] XML content not found: '+content+' (checked '+candidates.join(', ')+').');
+    if(css.length){var style=document.createElement('style');style.textContent=css.join('\n');document.head.appendChild(style);}
+  }
+  async function resolveXmlReferences(xml){
+    var doc=new DOMParser().parseFromString(xml,'application/xml');
+    if(doc.getElementsByTagName('parsererror').length)throw new Error('[CourseKit bootstrap] Invalid XML content.');
+    // Apply the same course/page variable rules as the course-page presenter,
+    // before resolving resource references. Do not change the original text content.
+    var values=Object.create(null);
+    Object.keys(courseData.course||{}).forEach(function(key){var value=courseData.course[key];if(value!=null&&typeof value!=='object')values['course.'+key]=value;});
+    Object.keys(courseData.variables||{}).forEach(function(key){
+      if(key==='course'||key.indexOf('course.')===0)throw new Error('[CourseKit variables] Reserved variable: '+key);
+      values[key]=courseData.variables[key];
+    });
+    function interpolate(value){return value.replace(/\$\{([A-Za-z_][A-Za-z0-9_.-]*)\}/g,function(_,name){
+      if(!Object.prototype.hasOwnProperty.call(values,name))throw new Error('[CourseKit variables] Unknown variable ${'+name+'}.');
+      return String(values[name]);
+    });}
+    var blocks=Array.from(doc.documentElement.children).filter(function(n){return n.localName==='variables';});
+    blocks.forEach(function(block){Array.from(block.children).forEach(function(n){
+      if(n.localName!=='var')return;
+      var name=n.getAttribute('name');
+      if(!name||name==='course'||name.indexOf('course.')===0)throw new Error('[CourseKit variables] Invalid variable name: '+name);
+      values[name]=interpolate(n.textContent.trim());
+    });});
+    // Elements carrying course-level references use explicit categories.
+    var refs=[['hero','image','assets'],['picture-with-legend','src','assets'],
+      ['picture-without-legend','src','assets'],['a','href','attachments'],['link','href','attachments']];
+    var elements=Array.from(doc.getElementsByTagName('*'));
+    for(var i=0;i<elements.length;i++){
+      var el=elements[i];
+      var rule=refs.find(function(r){return r[0]===el.localName;});
+      if(!rule||!el.hasAttribute(rule[1]))continue;
+      var raw=el.getAttribute(rule[1]);
+      raw=interpolate(raw);
+      if(raw.startsWith('#')||raw.startsWith('mailto:')||raw.startsWith('tel:'))continue;
+      el.setAttribute(rule[1],await window.BRIGHTSPACE.resources.resolve(rule[2],raw));
+    }
+    return new XMLSerializer().serializeToString(doc);
   }
   async function readJsonAbsolute(url){var r=await fetch(url,{credentials:'same-origin'});if(!r.ok)throw new Error('[CourseKit bootstrap] Cannot read '+url);return r.json();}
   async function loadComponentDefinition(id){
@@ -102,40 +143,22 @@
       // Course-specific schemas take precedence over framework defaults.
       // This API is asynchronous because existence must be checked over HTTP.
       var schemaCache=Object.create(null);
-      async function existsSchema(url){
-        var response=await fetch(url,{method:'HEAD',credentials:'same-origin',cache:'no-store'});
-        if(response.ok)return true;
-        if(response.status===404)return false;
-        if(response.status===405||response.status===501){
-          var check=await fetch(url,{method:'GET',credentials:'same-origin',cache:'no-store'});
-          if(check.ok)return true;
-          if(check.status===404)return false;
-          throw new Error('[CourseKit schema] Cannot check '+url+' (HTTP '+check.status+').');
-        }
-        throw new Error('[CourseKit schema] Cannot check '+url+' (HTTP '+response.status+').');
-      }
       window.BRIGHTSPACE.resolveSchema=async function(name){
         if(!name||typeof name!=='string')throw new Error('[CourseKit schema] Schema name must be a nonempty string.');
         if(schemaCache[name])return schemaCache[name];
         var frameworkPath=(registry.schemas||{})[name];
         var coursePath=(courseData.schemas||{})[name];
-        var candidates=[];
-        if(coursePath){
-          candidates.push(new URL(coursePath,activeCourseBase).href);
-        }else if(frameworkPath){
-          // A local file of the same name overrides the framework schema.
-          var filename=new URL(frameworkPath,frameworkBase).pathname.split('/').pop();
-          candidates.push(new URL('schemas/'+filename,activeCourseBase).href);
-        }
-        if(frameworkPath)candidates.push(new URL(frameworkPath,frameworkBase).href);
-        if(!candidates.length)throw new Error('[CourseKit schema] Unknown schema: '+name);
-        for(var i=0;i<candidates.length;i++){
-          if(await existsSchema(candidates[i])){
-            schemaCache[name]=candidates[i];
-            return candidates[i];
-          }
-        }
-        throw new Error('[CourseKit schema] Schema not found locally or in framework: '+name+' (checked '+candidates.join(', ')+').');
-      };window.BRIGHTSPACE.resources=window.BRIGHTSPACE.resourcesFactory.create(activeCourseBase);loadFonts();if(!contentLogical)throw new Error('[CourseKit bootstrap] No XML content specified. Use data-content or ?content=.');var resolvedContent=await resolveContent(contentLogical,activeCourseBase);var xml=resolvedContent.text;var pageType=pageTypeFromXml(xml,registry);var pt=registry.pageTypes&&registry.pageTypes[pageType];if(!pt)throw new Error('[CourseKit bootstrap] Unknown page type '+pageType);await loadAll((pt.styles||[]).map(function(p){return new URL(p,frameworkBase).href;}),loadCss);await loadScript(new URL('scripts/component-engine.js',frameworkBase).href);var defs=[];for(var i=0;i<(pt.components||[]).length;i++)defs.push(await loadComponentDefinition(pt.components[i]));window.BRIGHTSPACE.components.setDefinitions(definitions);var styleUrls=[],scriptUrls=[];Object.keys(definitions).forEach(function(id){var d=definitions[id];styleUrls=styleUrls.concat(d.__styleUrls||[]);scriptUrls=scriptUrls.concat(d.__scriptUrls||[]);});await loadAll(unique(styleUrls),loadCss);await loadAll((pt.scripts||[]).filter(function(p){ return p !== 'scripts/component-engine.js'; }).map(function(p){return new URL(p,frameworkBase).href;}),loadScript);await loadAll(unique(scriptUrls),loadScript);var res=window.COURSE_CONFIG.resources||{};await loadAll((res.styles||[]).map(function(f){return resolveCustom('styles',f);}),loadCss);if(pageType==='course-page')window.BRIGHTSPACE.renderCoursePage(xml,{root:document.getElementById('brightspace-root')||document.body});await loadAll((res.scripts||[]).map(function(f){return resolveCustom('scripts',f);}),loadScript);window.dispatchEvent(new CustomEvent('coursekit:ready'));})
+        if(!frameworkPath&&!coursePath)throw new Error('[CourseKit schema] Unknown schema: '+name);
+        // Prefer the host HTML directory, then the course's schema directory,
+        // then the framework-declared schema. A course mapping replaces the
+        // default local filename but does not bypass the host-first policy.
+        var localName=coursePath||(frameworkPath ? new URL(frameworkPath,frameworkBase).pathname.split('/').pop() : null);
+        var resolved=await window.BRIGHTSPACE.resources.resolve('schemas',localName,{
+          frameworkPath:frameworkPath||null
+        });
+        schemaCache[name]=resolved;
+        return resolved;
+      };
+      window.BRIGHTSPACE.resources=window.BRIGHTSPACE.resourcesFactory.create(activeCourseBase,{hostBase:document.baseURI,frameworkBase:frameworkBase,paths:window.COURSE_CONFIG.paths});await loadFonts();if(courseData.theme&&courseData.theme.backgroundImage){window.COURSE_CONFIG.backgroundImage=await window.BRIGHTSPACE.resources.resolve('assets',courseData.theme.backgroundImage);}if(!contentLogical)throw new Error('[CourseKit bootstrap] No XML content specified. Use data-content or ?content=.');var xml=await window.BRIGHTSPACE.resources.readText('content',contentLogical);var pageType=pageTypeFromXml(xml,registry);var pt=registry.pageTypes&&registry.pageTypes[pageType];if(!pt)throw new Error('[CourseKit bootstrap] Unknown page type '+pageType);await loadAll((pt.styles||[]).map(function(p){return new URL(p,frameworkBase).href;}),loadCss);await loadScript(new URL('scripts/component-engine.js',frameworkBase).href);var defs=[];for(var i=0;i<(pt.components||[]).length;i++)defs.push(await loadComponentDefinition(pt.components[i]));window.BRIGHTSPACE.components.setDefinitions(definitions);var styleUrls=[],scriptUrls=[];Object.keys(definitions).forEach(function(id){var d=definitions[id];styleUrls=styleUrls.concat(d.__styleUrls||[]);scriptUrls=scriptUrls.concat(d.__scriptUrls||[]);});await loadAll(unique(styleUrls),loadCss);await loadAll((pt.scripts||[]).filter(function(p){ return p !== 'scripts/component-engine.js'; }).map(function(p){return new URL(p,frameworkBase).href;}),loadScript);await loadAll(unique(scriptUrls),loadScript);var res=window.COURSE_CONFIG.resources||{};for(var i=0;i<(res.styles||[]).length;i++)await loadCss(await window.BRIGHTSPACE.resources.resolve('styles',res.styles[i]));if(pageType==='course-page')window.BRIGHTSPACE.renderCoursePage(await resolveXmlReferences(xml),{root:document.getElementById('brightspace-root')||document.body});for(var i=0;i<(res.scripts||[]).length;i++)await loadScript(await window.BRIGHTSPACE.resources.resolve('scripts',res.scripts[i]));window.dispatchEvent(new CustomEvent('coursekit:ready'));})
     .catch(function(error){console.error(error);var root=document.getElementById('brightspace-root')||document.body;var pre=document.createElement('pre');pre.textContent=error.stack||error.message||String(error);pre.style.whiteSpace='pre-wrap';pre.style.padding='1rem';root.appendChild(pre);window.dispatchEvent(new CustomEvent('coursekit:error',{detail:error}));});
 })();

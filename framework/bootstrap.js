@@ -1,3 +1,4 @@
+
 (function () {
   'use strict';
   var script=document.currentScript;
@@ -50,6 +51,21 @@
   }
   function resolveCustom(kind,file){var base=window.COURSE_CONFIG.paths[kind];if(!base)throw new Error('[CourseKit bootstrap] Custom '+kind+' directory disabled, but '+file+' was requested.');return new URL(file,base+'/').href;}
   function loadFonts(){var fonts=(window.COURSE_CONFIG.resources&&window.COURSE_CONFIG.resources.fonts)||[];var css=[];fonts.forEach(function(font){if(font.source==='online'){if(font.url){var l=document.createElement('link');l.rel='stylesheet';l.href=font.url;document.head.appendChild(l);}}else if(font.source==='local'){var base=font.location==='framework'?new URL('fonts/',frameworkBase).href:window.COURSE_CONFIG.paths.fonts;if(!base)throw new Error('[CourseKit bootstrap] Local course font requested but customPaths.fonts is disabled.');(font.files||[]).forEach(function(f){css.push('@font-face{font-family:"'+font.family.replace(/"/g,'')+'";src:url("'+new URL(f.file,base.replace(/\/$/,'')+'/').href+'") format("'+(f.format||'woff2')+'");font-weight:'+(f.weight||400)+';font-style:'+(f.style||'normal')+';font-display:swap;}');});}if(font.cssVariable){document.documentElement.style.setProperty(font.cssVariable,'"'+font.family+'", '+(font.fallback||'sans-serif'));}});if(css.length){var st=document.createElement('style');st.textContent=css.join('\n');document.head.appendChild(st);}}
+  // Resolve page XML relative to the host HTML first, then the active course root.
+  // Absolute URLs and root-relative paths are requested only once.
+  async function resolveContent(content, courseRoot) {
+    var local = new URL(content, document.baseURI).href;
+    var course = new URL(content, courseRoot).href;
+    var candidates = local === course ? [local] : [local, course];
+    for (var i = 0; i < candidates.length; i++) {
+      var response = await fetch(candidates[i], {credentials: 'same-origin', cache: 'no-store'});
+      if (response.ok) return {url: candidates[i], text: await response.text()};
+      if (response.status !== 404) {
+        throw new Error('[CourseKit bootstrap] Cannot load '+candidates[i]+' (HTTP '+response.status+').');
+      }
+    }
+    throw new Error('[CourseKit bootstrap] XML content not found: '+content+' (checked '+candidates.join(', ')+').');
+  }
   async function readJsonAbsolute(url){var r=await fetch(url,{credentials:'same-origin'});if(!r.ok)throw new Error('[CourseKit bootstrap] Cannot read '+url);return r.json();}
   async function loadComponentDefinition(id){
     if(definitions[id])return definitions[id];
@@ -120,6 +136,6 @@
           }
         }
         throw new Error('[CourseKit schema] Schema not found locally or in framework: '+name+' (checked '+candidates.join(', ')+').');
-      };window.BRIGHTSPACE.resources=window.BRIGHTSPACE.resourcesFactory.create(activeCourseBase);loadFonts();if(!contentLogical)throw new Error('[CourseKit bootstrap] No XML content specified. Use data-content or ?content=.');var xml=await window.BRIGHTSPACE.resources.readText(contentLogical);var pageType=pageTypeFromXml(xml,registry);var pt=registry.pageTypes&&registry.pageTypes[pageType];if(!pt)throw new Error('[CourseKit bootstrap] Unknown page type '+pageType);await loadAll((pt.styles||[]).map(function(p){return new URL(p,frameworkBase).href;}),loadCss);await loadScript(new URL('scripts/component-engine.js',frameworkBase).href);var defs=[];for(var i=0;i<(pt.components||[]).length;i++)defs.push(await loadComponentDefinition(pt.components[i]));window.BRIGHTSPACE.components.setDefinitions(definitions);var styleUrls=[],scriptUrls=[];Object.keys(definitions).forEach(function(id){var d=definitions[id];styleUrls=styleUrls.concat(d.__styleUrls||[]);scriptUrls=scriptUrls.concat(d.__scriptUrls||[]);});await loadAll(unique(styleUrls),loadCss);await loadAll((pt.scripts||[]).filter(function(p){ return p !== 'scripts/component-engine.js'; }).map(function(p){return new URL(p,frameworkBase).href;}),loadScript);await loadAll(unique(scriptUrls),loadScript);var res=window.COURSE_CONFIG.resources||{};await loadAll((res.styles||[]).map(function(f){return resolveCustom('styles',f);}),loadCss);if(pageType==='course-page')window.BRIGHTSPACE.renderCoursePage(xml,{root:document.getElementById('brightspace-root')||document.body});await loadAll((res.scripts||[]).map(function(f){return resolveCustom('scripts',f);}),loadScript);window.dispatchEvent(new CustomEvent('coursekit:ready'));})
+      };window.BRIGHTSPACE.resources=window.BRIGHTSPACE.resourcesFactory.create(activeCourseBase);loadFonts();if(!contentLogical)throw new Error('[CourseKit bootstrap] No XML content specified. Use data-content or ?content=.');var resolvedContent=await resolveContent(contentLogical,activeCourseBase);var xml=resolvedContent.text;var pageType=pageTypeFromXml(xml,registry);var pt=registry.pageTypes&&registry.pageTypes[pageType];if(!pt)throw new Error('[CourseKit bootstrap] Unknown page type '+pageType);await loadAll((pt.styles||[]).map(function(p){return new URL(p,frameworkBase).href;}),loadCss);await loadScript(new URL('scripts/component-engine.js',frameworkBase).href);var defs=[];for(var i=0;i<(pt.components||[]).length;i++)defs.push(await loadComponentDefinition(pt.components[i]));window.BRIGHTSPACE.components.setDefinitions(definitions);var styleUrls=[],scriptUrls=[];Object.keys(definitions).forEach(function(id){var d=definitions[id];styleUrls=styleUrls.concat(d.__styleUrls||[]);scriptUrls=scriptUrls.concat(d.__scriptUrls||[]);});await loadAll(unique(styleUrls),loadCss);await loadAll((pt.scripts||[]).filter(function(p){ return p !== 'scripts/component-engine.js'; }).map(function(p){return new URL(p,frameworkBase).href;}),loadScript);await loadAll(unique(scriptUrls),loadScript);var res=window.COURSE_CONFIG.resources||{};await loadAll((res.styles||[]).map(function(f){return resolveCustom('styles',f);}),loadCss);if(pageType==='course-page')window.BRIGHTSPACE.renderCoursePage(xml,{root:document.getElementById('brightspace-root')||document.body});await loadAll((res.scripts||[]).map(function(f){return resolveCustom('scripts',f);}),loadScript);window.dispatchEvent(new CustomEvent('coursekit:ready'));})
     .catch(function(error){console.error(error);var root=document.getElementById('brightspace-root')||document.body;var pre=document.createElement('pre');pre.textContent=error.stack||error.message||String(error);pre.style.whiteSpace='pre-wrap';pre.style.padding='1rem';root.appendChild(pre);window.dispatchEvent(new CustomEvent('coursekit:error',{detail:error}));});
 })();

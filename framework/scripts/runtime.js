@@ -10,7 +10,7 @@
   function loadCss(url) { return new Promise(function (resolve, reject) { var el = document.createElement('link'); el.rel = 'stylesheet'; el.href = url; el.onload = resolve; el.onerror = function () { reject(new Error('[CourseKit runtime] Cannot load ' + url)); }; document.head.appendChild(el); }); }
   async function getJson(url) { var res = await fetch(url, {credentials:'same-origin',cache:'no-store'}); if (!res.ok) throw new Error('[CourseKit runtime] Cannot read ' + url); return res.json(); }
   async function start() {
-    var services = ['config-manager', 'resource-provider', 'style-manager', 'font-loader', 'link-resolver', 'xml-resource-manager', 'component-manager'];
+    var services = ['config-manager', 'resource-provider', 'style-manager', 'font-loader', 'link-resolver', 'xml-resource-manager', 'component-manager', 'module-manager'];
     for (var i = 0; i < services.length; i++) await loadScript(new URL('scripts/' + services[i] + '.js', base).href);
     var both = await Promise.all([getJson(new URL('registry.json', base).href), getJson(courseConfigUrl)]);
     var registry = both[0];
@@ -39,7 +39,9 @@
     var id = ids[0], page = pages[id];
     for (var j = 0; j < (page.styles || []).length; j++) await loadCss(new URL(page.styles[j], base).href);
     await loadScript(new URL('scripts/component-engine.js', base).href);
-    await CK.componentManager.load(page.components || [], loadCss, loadScript);
+    CK.moduleManager.nativeComponents = Array.from(new Set(Object.keys(pages).reduce(function (out, key) { return out.concat(pages[key].components || []); }, [])));
+    var moduleIds = await CK.moduleManager.load(CK.config.get('modules', []), loadCss, loadScript);
+    await CK.componentManager.load((page.components || []).concat(moduleIds), loadCss, loadScript);
     var scripts = (page.scripts || []).filter(function (p) { return p !== 'scripts/component-engine.js'; });
     for (var k = 0; k < scripts.length; k++) await loadScript(new URL(scripts[k], base).href);
     await CK.styles.loadCustom(loadCss);

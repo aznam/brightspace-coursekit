@@ -4,9 +4,14 @@
   var definitions = Object.create(null);
   function unique(items) { return items.filter(function (x, i) { return items.indexOf(x) === i; }); }
   async function loadJson(url) { var r = await fetch(url, {credentials:'same-origin',cache:'no-store'}); if (!r.ok) throw new Error('[CourseKit components] Cannot read ' + url); return r.json(); }
+  var sources = Object.create(null);
+  var inProgress = Object.create(null);
   async function definition(id) {
     if (definitions[id]) return definitions[id];
-    var url = new URL('components/' + id + '/component.json', CK.config.frameworkRoot()).href;
+    if (inProgress[id]) throw new Error('[CourseKit components] Circular inheritance: ' + id);
+    inProgress[id] = true;
+    try {
+    var url = sources[id] || new URL('components/' + id + '/component.json', CK.config.frameworkRoot()).href;
     var own = await loadJson(url), ownBase = new URL('.', url).href;
     var stylePaths = (own.styles || []).slice(), scriptPaths = (own.scripts || []).slice();
     var inheritedStyles = [], inheritedScripts = [];
@@ -18,10 +23,17 @@
     own.__base = ownBase;
     own.__styleUrls = unique(inheritedStyles.concat(stylePaths.map(function (x) { return new URL(x, ownBase).href; })));
     own.__scriptUrls = unique(inheritedScripts.concat(scriptPaths.map(function (x) { return new URL(x, ownBase).href; })));
+    if (own.id && own.id !== id) throw new Error('[CourseKit components] Component id mismatch: ' + id + ' vs ' + own.id);
     definitions[id] = own;
     return own;
+    } finally { delete inProgress[id]; }
   }
-  CK.componentManager = {load: async function (ids, loadCss, loadScript) {
+  CK.componentManager = {registerSources: function (items) {
+    Object.keys(items || {}).forEach(function (id) {
+      if (sources[id]) throw new Error('[CourseKit components] Duplicate custom component: ' + id);
+      sources[id] = items[id];
+    });
+  }, load: async function (ids, loadCss, loadScript) {
     for (var i = 0; i < ids.length; i++) await definition(ids[i]);
     CK.components.setDefinitions(definitions);
     var styles = [], scripts = [];

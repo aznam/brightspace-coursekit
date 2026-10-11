@@ -22,10 +22,39 @@
       "type": "string"
     },
     "components": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "manifest"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "manifest": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      },
+      "uniqueItems": true
     },
     "pages": {
-      "type": "array"
+      "type": "array",
+      "maxItems": 0,
+      "description": "Reserved for a future page extension system; course modules currently only add components."
     },
     "styles": {
       "type": "array",
@@ -49,7 +78,8 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Reserved for future module dependencies; unsupported at runtime."
     }
   }
 }

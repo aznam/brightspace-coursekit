@@ -27,7 +27,6 @@
       ]
     }
   },
-  "modules": {},
   "schemas": {
     "course": "schemas/course.schema.json",
     "module": "schemas/module.schema.json",

@@ -1,0 +1,18 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:sync": "node tools/sync-docs.mjs",
+    "docs:dev": "npm run docs:sync && vitepress dev docs",
+    "docs:build": "npm run docs:sync && vitepress build docs",
+    "docs:check": "python tools/check-component-docs.py",
+    "api:docs": "jsdoc -c jsdoc.json"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.0",
+    "jsdoc": "^4.0.4"
+  }
+}

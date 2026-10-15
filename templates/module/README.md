@@ -1,10 +1,13 @@
 # Module template
 
-A module is a reusable library that can provide components, page types, schemas, scripts, and styles. It is distinct from course `resources`, which are manually loaded CSS/JS/font files that do not register framework capabilities.
+Copy this directory into a course module folder, or publish it as a reusable module.
+All manifest paths are relative to `module.json`. Registration happens in `course.json` through its ordered `modules` array.
 
-1. Copy this directory.
-2. Rename the module and update `module.json` (`id`, `name`, `namespace`).
-3. Add components under `components/`.
-4. Add page types only when the module genuinely provides a new page type.
-5. Declare module-level styles/scripts/schemas only when they belong to the library as a whole.
-6. Register the module with the framework/course registry when module loading is enabled.
+1. Fill in the `module.json` manifest.
+2. Place semantic schemas in the root of this folder.
+3. Place visual components in the `components/` subfolder.
+4. Register this module in your course's `course.json` under the `"modules"` array.
+
+`semantic` provides semantic component manifests; `schemas` provides additional XSD files; `pages` registers page type manifests; `components` registers visual components; `pageExtensions` contributes public parameters and XSLT to existing pages. `styles` and `scripts` are optional module-wide resources; `dependsOn` lists previously declared module IDs.
+
+The example visual renderer imports CourseKit classes using a relative path shown for a module located in `example-course/modules/`. Adjust the relative imports when installing the module in a different location; the class interface is otherwise identical.

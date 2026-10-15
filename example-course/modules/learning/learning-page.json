@@ -1,0 +1,5 @@
+{
+    "id": "learning-page",
+    "schema": "learning-page.xsd",
+    "transform": "learning-page.xslt"
+}

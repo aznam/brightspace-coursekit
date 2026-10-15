@@ -1,3 +1,63 @@
+/* Course-level restyling hook via data-style-ref="course-note" */
 .ck-infobox[data-style-ref="course-note"] {
-  /* Course-level restyling hook. Remove this rule to use the framework default. */
+    --ck-infobox-bg: var(--ck-accent-light);
+    --ck-infobox-border: var(--ck-accent);
+    --ck-infobox-accent: var(--ck-accent);
+    --ck-infobox-text: var(--ck-text-dark);
+}
+
+.ck-infobox[data-style-ref="course-note"] .ck-infobox__title {
+    color: var(--ck-accent);
+}
+
+.ck-section[data-level="1"] > .ck-section__title {
+    border-bottom: 2px solid var(--ck-border);
+    color: var(--ck-text-dark);
+    font-size: 1.1em;
+    padding-bottom: 6px;
+}
+.ck-section[data-level="1"]:first-child > .ck-section__title {
+    margin-top: 0;
+}
+
+/* Retrait des puces pour "Course at a Glance" et "Useful Links" */
+.ck-side .ck-list {
+    list-style: none ;
+    padding-left: 0 ;
+}
+.ck-side[data-position="before"] .ck-item {
+    display: flex ;
+    justify-content: space-between ;
+    padding: 8px 0 ;
+    border-bottom: 1px solid #f1f5f9 ;
+    margin-top: 0 ;
+}
+.ck-side[data-position="before"] .ck-item:last-child {
+    border-bottom: none ;
+}
+
+.ck-side[data-position="after"] .ck-item a {
+    display: flex ;
+    padding: 11px 0 ;
+    border-bottom: 1px solid #f1f5f9 ;
+    color: var(--ck-text-main) ;
+    text-decoration: none ;
+}
+.ck-side[data-position="after"] .ck-item a:hover {
+    color: var(--ck-accent) ;
+    border-left: 3px solid var(--ck-accent) ;
+    padding-left: 10px ;
+    background: #f8fafc ;
+}
+
+.ck-infobox[data-style-ref="course-note"] {
+    background: #EBF2FC ;
+    border: 1px solid #93BBE8 ;
+    border-left: 6px solid #185FA5 ;
+    color: #0C447C ;
+    border-radius: 4px ;
+    padding: 18px 22px ;
+}
+.ck-infobox[data-style-ref="course-note"] .ck-infobox__title {
+    color: #0C447C ;
 }

@@ -1,12 +1,15 @@
 {
-  "$schema": "../../../../framework/schemas/component.schema.json",
-  "id": "example-component",
-  "element": "example-component",
-  "renderer": "example-component",
-  "styles": [
-    "example-component.css"
-  ],
-  "scripts": [
-    "renderer.js"
-  ]
+    "id": "", 
+    "schema": "component.xsd", 
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [
+        "component.css"
+    ],
+    "scripts": [
+        "behavior.js"
+    ],
+    "variants": [
+        "default"
+    ]
 }

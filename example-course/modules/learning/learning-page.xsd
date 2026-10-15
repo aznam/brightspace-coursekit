@@ -1,0 +1,9 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:p="urn:coursekit:page" 
+           targetNamespace="urn:coursekit:page" 
+           elementFormDefault="qualified">
+
+    <!-- Magique : On importe tout le vocabulaire visuel p:* d'un coup -->
+    <xs:include schemaLocation="framework/pages/course-page/course-page.xsd"/>
+
+</xs:schema>

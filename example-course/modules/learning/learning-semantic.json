@@ -1,0 +1,5 @@
+{
+    "id": "learning-semantic",
+    "schema": "learning-semantic.xsd",
+    "namespace": "urn:coursekit:semantic:learning"
+}

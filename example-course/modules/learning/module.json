@@ -1,0 +1,16 @@
+{
+    "id": "learning-module",
+    "name": "Learning Extension Module",
+    "version": "1.0.0",
+    "namespace": "urn:coursekit:semantic:learning",
+    "semantic": [
+        "learning-semantic.json"
+    ],
+    "pageExtensions": [
+        {
+            "page": "course-page",
+            "transform": "learning-page.xslt"
+        }
+    ],
+    "dependsOn": []
+}

@@ -1,0 +1,20 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:c="urn:coursekit:visual" 
+           targetNamespace="urn:coursekit:visual" 
+           elementFormDefault="qualified">
+    
+    <!-- Adjust relative path to base-component.xsd depending on your folder depth -->
+    <xs:include schemaLocation="visual/base-component/base-component.xsd"/>
+    
+    <!-- Define your visual component type -->
+    <xs:complexType name="MyCustomComponentType">
+        <xs:complexContent>
+            <!-- Inherit from VisualContainer (can contain children) or VisualNode (text only) -->
+            <xs:extension base="c:VisualContainer">
+                <!-- Add your custom attributes here -->
+                <xs:attribute name="custom-attr" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>

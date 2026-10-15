@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:content xmlns:s="urn:coursekit:semantic"
+           xmlns:l="urn:coursekit:semantic:learning"
+           page-type="course-page"
+           title="${course.title}"
+           subtitle="From design intent to playable systems"
+           image="hero-sample.svg"
+           toc="true">
+
+    <!-- Sidebar before (placé avant les sections) -->
+    <s:information id="course-at-a-glance" title="Course at a Glance">
+        <s:list>
+            <s:item>Code: ${course.code}</s:item>
+            <s:item>Credits: 3</s:item>
+            <s:item>Session: ${course.term} ${course.year}</s:item>
+        </s:list>
+    </s:information>
+
+    <!-- Section 1 utilisant l:section pour démontrer l'héritage XSD (xsp:inherit) -->
+    <l:section id="section-1" title="Section Title" nav="true">
+        <l:paragraph>
+            Paragraph text. You can include
+            <l:term title="hoverable terms" definition-title="Definition">Explanation text displayed on hover or tap. The underline belongs only to the trigger text, never to the following whitespace.</l:term>
+            inline in your prose.
+        </l:paragraph>
+
+        <l:infonote title="ℹ️ Note">
+            <s:paragraph>Content of the info note.</s:paragraph>
+            <s:list>
+                <s:item>Lists use the infobox component's own spacing rules.</s:item>
+                <s:item>The component keeps a consistent palette and icon treatment.</s:item>
+            </s:list>
+        </l:infonote>
+
+        <l:details title="Accordion title">
+            <s:paragraph>Content revealed when expanded.</s:paragraph>
+        </l:details>
+
+        <s:section id="section-1-1" title="Subsection Title" nav="false">
+            <s:paragraph>Subsections are nested structurally and receive their own heading level and spacing.</s:paragraph>
+        </s:section>
+    </l:section>
+
+    <!-- Section 2 utilisant la sémantique native s:section et s:picture -->
+    <s:section id="section-2" title="Another Section" nav="true">
+        <s:paragraph>More content here.</s:paragraph>
+        <s:picture src="example-diagram.svg" title="Example of a responsive picture with a legend.">
+            <s:alt>Simple example diagram</s:alt>
+        </s:picture>
+        <s:picture src="example-diagram.svg">
+            <s:alt>Same example diagram without a legend</s:alt>
+        </s:picture>
+    </s:section>
+
+    <!-- Objectifs pédagogiques du module learning -->
+    <l:objectives id="learning-objectives" title="Learning Objectives" nav="true">
+        <l:objective>Use module pageExtensions to overlay the native course-page XSLT.</l:objective>
+        <l:objective>Map semantic elements to visual components with injected attributes.</l:objective>
+    </l:objectives>
+
+    <!-- Sidebar after (placé après les sections) -->
+    <s:information id="useful-links" title="Useful Links">
+        <s:list>
+            <s:item>
+                <s:link href="#">
+                    <s:paragraph>Course Syllabus</s:paragraph>
+                </s:link>
+            </s:item>
+            <s:item>
+                <s:link href="#">
+                    <s:paragraph>Evaluation</s:paragraph>
+                </s:link>
+            </s:item>
+        </s:list>
+    </s:information>
+
+</s:content>

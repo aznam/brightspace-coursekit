@@ -1,0 +1,9 @@
+/* 
+ * Styles for your custom component. 
+ * Variables from the framework (e.g., var(--ck-accent)) can be used here.
+ */
+
+.ck-custom-component {
+    display: block;
+    /* Add your CSS rules */
+}

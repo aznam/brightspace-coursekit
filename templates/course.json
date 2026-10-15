@@ -1,35 +1,49 @@
 {
-  "$schema": "framework/schemas/course.schema.json",
-  "version": 2,
-  "siteId": null,
-  "course": {
-    "code": "",
-    "title": "",
-    "section": "",
-    "term": "",
-    "year": null
-  },
-  "variables": {},
-  "modules": {},
-  "theme": {
-    "palette": {},
-    "backgroundImage": null
-  },
-  "paths": {
-    "assets": "assets/",
-    "attachments": "attachments/",
-    "content": "content/"
-  },
-  "customPaths": {
-    "styles": null,
-    "scripts": null,
-    "fonts": null
-  },
-  "resources": {
-    "styles": [],
-    "scripts": [],
-    "fonts": []
-  },
-  "icons": {},
-  "learningOutcomes": []
+    "version": 2,
+    "siteId": null,
+    
+    "course": {
+        "code": "",
+        "title": "",
+        "section": "",
+        "term": "",
+        "year": null
+    },
+    
+    "modules": [],
+    
+    "variables": {
+        "page-label": "The Course",
+        "module-label": "Getting Started"
+    },
+    
+    "theme": {
+        "palette": {
+            "accent": "",
+            "accent-light": "",
+            "structure": "",
+            "text-main": "",
+            "text-dark": "",
+            "border": "",
+            "bg-base": "#"
+        },
+        "backgroundImage": null
+    },
+    
+    "customPaths": {
+        "assets": "assets/",
+        "attachments": "attachments/",
+        "content": "content/",
+        "styles": "styles/",
+        "scripts": "scripts/",
+        "fonts": "fonts/"
+    },
+    
+    "resources": {
+        "styles": [
+            "course.css"
+        ],
+        "scripts": [],
+        "fonts": []
+    }
 }

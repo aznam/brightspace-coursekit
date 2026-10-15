@@ -1,0 +1,67 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:s="urn:coursekit:semantic" 
+           xmlns:l="urn:coursekit:semantic:learning" 
+           xmlns:xsp="urn:coursekit:preprocessor"
+           targetNamespace="urn:coursekit:semantic:learning" 
+           elementFormDefault="qualified">
+    
+    <!-- Référence directe vers l'entrée du namespace urn:coursekit:semantic dans le VFS Xerces -->
+    <xs:import namespace="urn:coursekit:semantic" schemaLocation="content.xsd"/>
+
+    <!-- 1. Terme survolable en ligne (hoverbox) -->
+    <xs:complexType name="TermType" mixed="true">
+        <xsp:inherit base="s:Text"/>
+        <xs:attribute name="definition-title" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:element name="term" type="l:TermType" substitutionGroup="s:component"/>
+
+    <!-- 2. Paragraphe enrichi acceptant des termes survolables (l:term) en plus de s:link -->
+    <xs:complexType name="RichParagraphType" mixed="true">
+        <xsp:inherit base="s:ParagraphType">
+            <xs:element ref="l:term"/>
+        </xsp:inherit>
+    </xs:complexType>
+
+    <xs:element name="paragraph" type="l:RichParagraphType" substitutionGroup="s:component"/>
+
+    <!-- 3. Infonote sémantique qui hérite de s:NoteType -->
+    <xs:complexType name="InfoNoteType">
+        <xsp:inherit base="s:NoteType"/>
+    </xs:complexType>
+    
+    <xs:element name="infonote" type="l:InfoNoteType" substitutionGroup="s:component"/>
+
+    <!-- 4. Bloc dépliable (accordéon / collapse-box) qui hérite de s:NoteType -->
+    <xs:complexType name="DetailsType">
+        <xsp:inherit base="s:NoteType"/>
+        <xs:attribute name="open" type="xs:boolean"/>
+    </xs:complexType>
+
+    <xs:element name="details" type="l:DetailsType" substitutionGroup="s:component"/>
+
+    <!-- 5. Section Métier étendue via xsp:inherit -->
+    <xs:complexType name="LearningSectionType">
+        <xsp:inherit base="s:SectionType">
+            <xs:element ref="l:paragraph"/>
+            <xs:element ref="l:infonote"/>
+            <xs:element ref="l:details"/>
+            <xs:element ref="l:section"/>
+        </xsp:inherit>
+    </xs:complexType>
+
+    <xs:element name="section" type="l:LearningSectionType" substitutionGroup="s:component"/>
+
+    <!-- 6. Objectifs d'apprentissage -->
+    <xs:complexType name="ObjectivesType">
+        <xs:sequence>
+            <xs:element name="objective" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:ID"/>
+        <xs:attribute name="title" type="xs:string"/>
+        <xs:attribute name="nav" type="xs:boolean"/>
+    </xs:complexType>
+
+    <xs:element name="objectives" type="l:ObjectivesType" substitutionGroup="s:component"/>
+
+</xs:schema>

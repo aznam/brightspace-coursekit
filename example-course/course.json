@@ -1,62 +1,64 @@
 {
-  "$schema": "../framework/schemas/course.schema.json",
-  "version": 2,
-  "siteId": null,
-  "course": {
-    "code": "COMP-XXXX",
-    "title": "Course Name",
-    "section": "01",
-    "term": "Fall",
-    "year": 2026
-  },
-  "modules": {},
-  "variables": {},
-  "theme": {
-    "palette": {
-      "accent": "#c2410c",
-      "accent-light": "#ffedd5",
-      "structure": "#1e293b",
-      "text-main": "#334155",
-      "text-dark": "#0f172a",
-      "border": "#e2e8f0",
-      "bg-base": "#fafaf9"
+    "$schema": "../framework/schemas/course.schema.json",
+    "version": 2,
+    "siteId": null,
+    "course": {
+        "code": "COMP-XXXX",
+        "title": "Course Name",
+        "section": "01",
+        "term": "Fall",
+        "year": 2026
     },
-    "backgroundImage": null
-  },
-  "paths": {
-    "assets": "assets/",
-    "attachments": "attachments/",
-    "content": "content/"
-  },
-  "customPaths": {
-    "styles": "styles/",
-    "scripts": "scripts/",
-    "fonts": "fonts/"
-  },
-  "resources": {
-    "styles": [
-      "course.css"
+    "modules": [
+        "modules/learning/module.json"
     ],
-    "scripts": [],
-    "fonts": [
-      {
-        "id": "body",
-        "family": "Inter",
-        "source": "online",
-        "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",
-        "cssVariable": "--ck-font-body",
-        "fallback": "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-      },
-      {
-        "id": "display",
-        "family": "Merriweather",
-        "source": "online",
-        "url": "https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&display=swap",
-        "cssVariable": "--ck-font-display",
-        "fallback": "Georgia, serif"
-      }
-    ]
-  },
-  "icons": {},
-  "learningOutcomes": []
+    "variables": {},
+    "theme": {
+        "palette": {
+            "accent": "#c2410c",
+            "accent-light": "#ffedd5",
+            "structure": "#1e293b",
+            "text-main": "#334155",
+            "text-dark": "#0f172a",
+            "border": "#e2e8f0",
+            "bg-base": "#fafaf9"
+        },
+        "backgroundImage": null
+    },
+    "customPaths": {
+        "assets": "assets/",
+        "attachments": "attachments/",
+        "content": "content/",
+        "styles": "styles/",
+        "scripts": "scripts/",
+        "fonts": "fonts/"
+    },
+    "resources": {
+        "styles": [
+            "course.css"
+        ],
+        "scripts": [
+            "behaviors.js"
+        ],
+        "fonts": [
+            {
+                "id": "body",
+                "family": "Inter",
+                "source": "online",
+                "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",
+                "cssVariable": "--ck-font-body",
+                "fallback": "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+            },
+            {
+                "id": "display",
+                "family": "Merriweather",
+                "source": "online",
+                "url": "https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&display=swap",
+                "cssVariable": "--ck-font-display",
+                "fallback": "Georgia, serif"
+            }
+        ]
+    },
+    "icons": {},
+    "learningOutcomes": []
 }

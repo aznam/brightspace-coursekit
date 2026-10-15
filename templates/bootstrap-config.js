@@ -1,48 +1,40 @@
 /**
  * CourseKit — course bootstrap configuration.
- * Only edit the three paths in USER CONFIGURATION.
- * All paths are relative to THIS file, except courseConfig, which is
- * relative to courseRoot. Absolute URLs are also accepted.
+ * Only edit the paths in the USER CONFIGURATION block.
  */
 
 // ============================================================
-// USER CONFIGURATION — EDIT THIS BLOCK ONLY
+// USER CONFIGURATION
 // ============================================================
 
-const frameworkPath = ''; // Path to the frameworkd diretory, relative to this file. Absolute URLs are also accepted.
-const courseRoot = ''; // Path to the course root directory, relative to this file. Absolute URLs are also accepted.
-const courseConfig = ''; // Path to the course configuration file, relative to courseRoot. Absolute URLs are also accepted.
+// Path to the CourseKit framework directory (e.g., '../framework/')
+const frameworkPath = ''; 
 
+// Path to this specific course's root directory (e.g., './')
+const courseRoot = ''; 
+
+// Path to the course.json configuration file
+const courseConfig = 'course.json';
 
 // ============================================================
-// COURSEKIT INITIALIZATION — DO NOT MODIFY
+// COURSEKIT INITIALIZATION — DO NOT MODIFY BELOW
 // ============================================================
-
 (function () {
-  'use strict';
+    'use strict';
+    const host = document.currentScript;
+    if (!host || !host.src) throw new Error('[CourseKit] bootstrap-config.js must be loaded using a script src.');
 
-  const host = document.currentScript;
+    const framework = new URL(frameworkPath, host.src);
+    const course = new URL(courseRoot, host.src);
+    const loader = document.createElement('script');
 
-  if (!host || !host.src) {
-    throw new Error(
-      '[CourseKit] bootstrap-config.js must be loaded using a script src.'
-    );
-  }
+    loader.type = 'module';
+    loader.src = new URL('bootstrap.js', framework).href;
+    loader.dataset.courseRoot = course.href;
+    loader.dataset.courseConfig = new URL(courseConfig, course).href;
+    loader.dataset.content = host.dataset.content || '';
+    loader.async = false;
+    loader.onerror = () => console.error('[CourseKit] Cannot load ' + loader.src);
 
-  const framework = new URL(frameworkPath, host.src);
-  const course = new URL(courseRoot, host.src);
-
-  const loader = document.createElement('script');
-
-  loader.src = new URL('bootstrap.js', framework).href;
-  loader.dataset.courseRoot = course.href;
-  loader.dataset.courseConfig = new URL(courseConfig, course).href;
-  loader.dataset.content = host.dataset.content || '';
-
-  loader.async = false;
-  loader.onerror = () => {
-    console.error('[CourseKit] Cannot load ' + loader.src);
-  };
-
-  document.head.appendChild(loader);
+    document.head.appendChild(loader);
 })();

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:content xmlns:s="urn:coursekit:semantic"
+           page-type="course-page"
+           title="${course.title}"
+           subtitle=""
+           image=""
+           page-title="${variables.page-label}"
+           module-title="${variables.module-label}"
+           toc="true">
+
+    <!-- ============================================================
+         SIDEBAR BEFORE (e.g., Course at a Glance)
+         Displays before the main content on mobile, right on desktop
+         ============================================================ -->
+    <s:information title="">
+        <s:list>
+            <s:item></s:item>
+            <s:item></s:item>
+            <s:item></s:item>
+        </s:list>
+    </s:information>
+
+    <!-- ============================================================
+         MAIN CONTENT (Sections)
+         Set nav="true" to include the section in the navbar/TOC
+         ============================================================ -->
+    <s:section id="section-1" title="" nav="true">
+        
+        <s:paragraph>
+            
+        </s:paragraph>
+
+        <!-- Optional Infobox (Requires style-ref="course-note" for custom styling) -->
+        <!-- Add icon="none" to hide the default info icon -->
+        <s:note style-ref="course-note" title="">
+            <s:paragraph></s:paragraph>
+        </s:note>
+
+    </s:section>
+
+    <!-- ============================================================
+         SIDEBAR AFTER (e.g., Useful Links)
+         Displays after the main content on mobile, right on desktop
+         ============================================================ -->
+    <s:information title="">
+        <s:list>
+            <s:item>
+                <s:link href="">
+                    <s:paragraph></s:paragraph>
+                </s:link>
+            </s:item>
+        </s:list>
+    </s:information>
+
+</s:content>

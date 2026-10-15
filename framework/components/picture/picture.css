@@ -1,5 +1,0 @@
-.ck-picture { margin:0; min-width:0; }
-.ck-picture__image { display:block; width:auto; max-width:100%; height:auto; margin-inline:auto; }
-.ck-picture[data-width="full"] .ck-picture__image { width:100%; }
-.ck-picture[data-width="medium"] .ck-picture__image { max-width:min(100%, 42rem); }
-.ck-picture[data-width="small"] .ck-picture__image { max-width:min(100%, 28rem); }

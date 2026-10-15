@@ -1,0 +1,9 @@
+{
+    "id": "hero",
+    "schema": "hero.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": ["hero.css"],
+    "scripts": [],
+    "variants": ["default"]
+}

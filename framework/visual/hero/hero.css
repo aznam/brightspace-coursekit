@@ -1,0 +1,28 @@
+.ck-hero { 
+    min-height: 20rem; 
+    padding: 110px 30px 170px;
+    display: grid; 
+    place-items: center; 
+    text-align: center; 
+    color: #fff; 
+    border-bottom: 1px solid #475569; 
+    background: linear-gradient(rgba(15,23,42,.85), rgba(30,41,59,.95)), var(--ck-hero-image, none) center/cover no-repeat; 
+}
+.ck-hero__inner { 
+    width: min(100%, 56rem); 
+}
+.ck-hero__title { 
+    margin: 0 0 .9rem; 
+    font-family: var(--ck-font-display); 
+    font-size: 2.8em; 
+    line-height: 1.1; 
+    font-weight: 800; 
+    letter-spacing: -.02em; 
+    text-transform: uppercase; 
+}
+.ck-hero__subtitle { 
+    margin: 0 auto; 
+    max-width: 50rem; 
+    font-size: clamp(1rem,2vw,1.25rem); 
+    color: #e2e8f0; 
+}

@@ -1,0 +1,106 @@
+.ck-infobox { 
+    --ck-infobox-bg: #ebf2fc; 
+    --ck-infobox-border: #93bbe8; 
+    --ck-infobox-accent: #185fa5; 
+    --ck-infobox-text: #0c447c; 
+    
+    margin: 0; 
+    padding: 1.1rem 1.35rem; 
+    border: 1px solid var(--ck-infobox-border); 
+    border-left: .375rem solid var(--ck-infobox-accent); 
+    border-radius: var(--ck-radius); 
+    background: var(--ck-infobox-bg); 
+    color: var(--ck-infobox-text); 
+    container-type: inline-size; 
+}
+
+.ck-infobox[data-variant="warning"] { 
+    --ck-infobox-bg: #faeeda; 
+    --ck-infobox-border: #ef9f27; 
+    --ck-infobox-accent: #854f0b; 
+    --ck-infobox-text: #633806; 
+}
+.ck-infobox[data-variant="success"] { 
+    --ck-infobox-bg: #eaf3de; 
+    --ck-infobox-border: #97c459; 
+    --ck-infobox-accent: #3b6d11; 
+    --ck-infobox-text: #3b6d11; 
+}
+.ck-infobox[data-variant="error"] { 
+    --ck-infobox-bg: #fcebeb; 
+    --ck-infobox-border: #f09595; 
+    --ck-infobox-accent: #a32d2d; 
+    --ck-infobox-text: #a32d2d; 
+}
+.ck-infobox[data-variant="dark"] { 
+    --ck-infobox-bg: var(--ck-text-dark); 
+    --ck-infobox-border: var(--ck-structure); 
+    --ck-infobox-accent: var(--ck-accent); 
+    --ck-infobox-text: #e2e8f0; 
+}
+.ck-infobox[data-variant="neutral"] { 
+    --ck-infobox-bg: #f8fafc; 
+    --ck-infobox-border: var(--ck-border); 
+    --ck-infobox-accent: var(--ck-structure); 
+    --ck-infobox-text: var(--ck-text-main); 
+}
+
+.ck-infobox__header { 
+    display: flex; 
+    align-items: center; 
+    gap: .6rem; 
+    margin-bottom: .65rem; 
+    color: var(--ck-infobox-accent); 
+}
+.ck-infobox__icon { 
+    width: 1.15rem; 
+    height: 1.15rem; 
+    flex: 0 0 auto; 
+    display: inline-grid; 
+    place-items: center; 
+}
+.ck-infobox__icon svg { 
+    width: 100%; 
+    height: 100%; 
+    fill: none; 
+    stroke: currentColor; 
+    stroke-width: 2; 
+    stroke-linecap: round; 
+    stroke-linejoin: round; 
+}
+.ck-infobox__title { 
+    margin: 0; 
+    font-size: .85rem; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    letter-spacing: .03rem; 
+}
+.ck-infobox__body { 
+    display: flex; 
+    flex-direction: column; 
+    gap: .55rem; 
+}
+.ck-infobox__body > * { 
+    margin: 0; 
+}
+.ck-infobox__body p, 
+.ck-infobox__body li { 
+    color: var(--ck-infobox-text); 
+}
+.ck-infobox__body ul, 
+.ck-infobox__body ol { 
+    margin: 0; 
+    padding-left: var(--ck-list-indent); 
+}
+.ck-infobox__body li + li { 
+    margin-top: .3rem; 
+}
+
+@container (max-width: 22rem) { 
+    .ck-infobox { 
+        padding: 1rem; 
+    } 
+    .ck-infobox__header { 
+        align-items: flex-start; 
+    } 
+}

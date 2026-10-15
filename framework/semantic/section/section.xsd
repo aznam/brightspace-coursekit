@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    
+    <xs:include schemaLocation="../core/core.xsd"/>
+    
+    <xs:include schemaLocation="../paragraph/paragraph.xsd"/>
+    <xs:include schemaLocation="../heading/heading.xsd"/>
+    <xs:include schemaLocation="../list/list.xsd"/>
+    <xs:include schemaLocation="../note/note.xsd"/>
+    <xs:include schemaLocation="../information/information.xsd"/>
+    <xs:include schemaLocation="../picture/picture.xsd"/>
+
+    <xs:complexType name="SectionType">
+        <xs:complexContent>
+            <xs:extension base="s:Container">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="s:paragraph"/>
+                    <xs:element ref="s:heading"/>
+                    <xs:element ref="s:list"/>
+                    <xs:element ref="s:note"/>
+                    <xs:element ref="s:information"/>
+                    <xs:element ref="s:picture"/>
+                    <xs:element ref="s:section"/>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="section" type="s:SectionType" substitutionGroup="s:component"/>
+</xs:schema>

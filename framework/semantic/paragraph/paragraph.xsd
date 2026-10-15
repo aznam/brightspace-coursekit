@@ -1,0 +1,18 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    
+    <xs:include schemaLocation="../core/core.xsd"/>
+    <xs:include schemaLocation="../link/link.xsd"/>
+
+    <xs:complexType name="ParagraphType">
+        <xs:complexContent>
+            <xs:extension base="s:Text">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="s:link"/>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="paragraph" type="s:ParagraphType" substitutionGroup="s:component"/>
+
+</xs:schema>

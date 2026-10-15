@@ -1,0 +1,14 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:c="urn:coursekit:visual" targetNamespace="urn:coursekit:visual" elementFormDefault="qualified">
+    <xs:include schemaLocation="../base-component/base-component.xsd"/>
+    <xs:complexType name="PictureType">
+        <xs:complexContent>
+            <xs:extension base="c:VisualNode">
+                <xs:attribute name="src" type="xs:string" use="required"/>
+                <xs:attribute name="alt" type="xs:string"/>
+                <xs:attribute name="loading" type="xs:string"/>
+                <xs:attribute name="width" type="xs:string"/>
+                <xs:attribute name="legend" type="xs:string"/> 
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

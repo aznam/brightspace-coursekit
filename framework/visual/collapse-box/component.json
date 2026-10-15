@@ -1,0 +1,9 @@
+{
+    "id": "collapse-box",
+    "schema": "collapse-box.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": ["collapse-box.css"],
+    "scripts": [],
+    "variants": ["default"]
+}

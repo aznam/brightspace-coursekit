@@ -1,85 +1,148 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "CourseKit module manifest",
-  "type": "object",
-  "required": [
-    "id",
-    "name",
-    "version",
-    "namespace"
-  ],
-  "properties": {
-    "id": {
-      "type": "string"
-    },
-    "name": {
-      "type": "string"
-    },
-    "version": {
-      "type": "string"
-    },
-    "namespace": {
-      "type": "string"
-    },
-    "components": {
-      "type": "array",
-      "items": {
-        "oneOf": [
-          {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "CourseKit module manifest",
+    "type": "object",
+    "required": [
+        "id"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "id": {
             "type": "string",
             "minLength": 1
-          },
-          {
+        },
+        "name": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string"
+        },
+        "namespace": {
+            "type": "string"
+        },
+        "semantic": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/entry"
+            }
+        },
+        "schemas": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "pages": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/entry"
+            }
+        },
+        "components": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/entry"
+            }
+        },
+        "styles": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "scripts": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "resources": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "id",
-              "manifest"
-            ],
             "properties": {
-              "id": {
-                "type": "string",
-                "minLength": 1
-              },
-              "manifest": {
-                "type": "string",
-                "minLength": 1
-              }
+                "styles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "scripts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "fonts": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "family",
+                            "source"
+                        ],
+                        "additionalProperties": true
+                    }
+                }
             }
-          }
-        ]
-      },
-      "uniqueItems": true
+        },
+        "pageExtensions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "page"
+                ],
+                "properties": {
+                    "page": {
+                        "type": "string"
+                    },
+                    "parameters": {
+                        "type": "object"
+                    },
+                    "transform": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "dependsOn": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
     },
-    "pages": {
-      "type": "array",
-      "maxItems": 0,
-      "description": "Reserved for a future page extension system; course modules currently only add components."
-    },
-    "styles": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "scripts": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "schemas": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "dependsOn": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Reserved for future module dependencies; unsupported at runtime."
+    "$defs": {
+        "entry": {
+            "oneOf": [
+                {
+                    "type": "string",
+                    "minLength": 1
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "manifest"
+                    ],
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "manifest": {
+                            "type": "string"
+                        },
+                        "operation": {
+                            "enum": [
+                                "add",
+                                "extend",
+                                "override"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            ]
+        }
     }
-  }
 }

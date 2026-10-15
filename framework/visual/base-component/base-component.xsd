@@ -1,0 +1,19 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:c="urn:coursekit:visual" targetNamespace="urn:coursekit:visual" elementFormDefault="qualified">
+
+    <xs:attributeGroup name="VisualAttr">
+        <xs:attribute name="id" type="xs:ID"/>
+        <xs:attribute name="variant" type="xs:string"/>
+        <xs:attribute name="style-ref" type="xs:string"/>
+        <xs:attribute name="init-ref" type="xs:string"/>    
+        <xs:attribute name="behavior-ref" type="xs:string"/> 
+    </xs:attributeGroup>
+
+    <xs:complexType name="VisualNode" mixed="true">
+        <xs:attributeGroup ref="c:VisualAttr"/>
+    </xs:complexType>
+
+    <xs:complexType name="VisualContainer">
+        <xs:attributeGroup ref="c:VisualAttr"/>
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,13 @@
+{
+    "id": "section",
+    "schema": "section.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [
+        "section.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

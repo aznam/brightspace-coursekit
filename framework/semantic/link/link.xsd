@@ -1,0 +1,21 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    
+    <xs:include schemaLocation="../core/core.xsd"/>
+    <xs:include schemaLocation="../paragraph/paragraph.xsd"/>
+    <xs:include schemaLocation="../picture/picture.xsd"/>
+
+    <xs:complexType name="LinkType">
+        <xs:complexContent>
+            <xs:extension base="s:Container">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="s:paragraph"/>
+                    <xs:element ref="s:picture"/>
+                </xs:choice>
+                <xs:attribute name="href" type="xs:anyURI" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="link" type="s:LinkType" substitutionGroup="s:component"/>
+
+</xs:schema>

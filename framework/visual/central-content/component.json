@@ -1,0 +1,9 @@
+{
+    "id": "central-content",
+    "schema": "central-content.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": ["central-content.css"],
+    "scripts": [],
+    "variants": ["default"]
+}

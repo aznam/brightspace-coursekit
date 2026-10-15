@@ -1,0 +1,9 @@
+{
+    "id": "picture",
+    "schema": "picture.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": ["picture.css"],
+    "scripts": [],
+    "variants": ["default"]
+}

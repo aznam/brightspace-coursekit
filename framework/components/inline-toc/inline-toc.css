@@ -1,5 +1,0 @@
-.ck-inline-toc { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem 0; padding:.9rem 0; border-top:1px solid var(--ck-border); border-bottom:1px solid var(--ck-border); color:#64748b; font-size:.9rem; line-height:1.8; }
-.ck-inline-toc__label { margin-right:.9rem; color:var(--ck-text-dark); font-size:.8rem; font-weight:800; text-transform:uppercase; letter-spacing:.03rem; white-space:nowrap; }
-.ck-inline-toc a { color:var(--ck-accent); text-decoration:none; font-weight:600; white-space:nowrap; }
-.ck-inline-toc a:hover { text-decoration:underline; }
-.ck-inline-toc__separator { margin:0 .65rem; color:#cbd5e1; }

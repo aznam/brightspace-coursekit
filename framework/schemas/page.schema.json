@@ -1,0 +1,66 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "CourseKit page manifest",
+    "type": "object",
+    "required": [
+        "id",
+        "schema",
+        "transform"
+    ],
+    "properties": {
+        "id": {
+            "type": "string",
+            "minLength": 1
+        },
+        "schema": {
+            "type": "string",
+            "minLength": 1
+        },
+        "transform": {
+            "type": "string",
+            "minLength": 1
+        },
+        "styles": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "scripts": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "parameters": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "required": [
+                    "type"
+                ],
+                "properties": {
+                    "type": {
+                        "enum": [
+                            "string",
+                            "number",
+                            "integer",
+                            "boolean",
+                            "asset",
+                            "asset-or-none"
+                        ]
+                    },
+                    "default": {},
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "enum": {
+                        "type": "array"
+                    }
+                },
+                "additionalProperties": true
+            }
+        }
+    },
+    "additionalProperties": true
+}

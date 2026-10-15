@@ -1,0 +1,11 @@
+{
+    "id": "sidebar-before",
+    "schema": "sidebar-before.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

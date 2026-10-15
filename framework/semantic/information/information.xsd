@@ -1,0 +1,20 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    
+    <xs:include schemaLocation="../core/core.xsd"/>
+    <xs:include schemaLocation="../paragraph/paragraph.xsd"/>
+    <xs:include schemaLocation="../list/list.xsd"/>
+
+    <xs:complexType name="InformationType">
+        <xs:complexContent>
+            <xs:extension base="s:Container">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="s:paragraph"/>
+                    <xs:element ref="s:list"/>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="information" type="s:InformationType" substitutionGroup="s:component"/>
+
+</xs:schema>

@@ -1,0 +1,11 @@
+{
+    "id": "sidebar-after",
+    "schema": "sidebar-after.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

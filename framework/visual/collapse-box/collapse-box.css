@@ -1,0 +1,53 @@
+.ck-collapse { 
+    margin:0; 
+    border:1px solid var(--ck-border); 
+    border-top:4px solid var(--ck-accent); 
+    border-radius:var(--ck-radius); 
+    background:#fff; 
+    box-shadow:var(--ck-shadow); 
+    overflow:clip; 
+}
+.ck-collapse > summary { 
+    padding:.9rem 1.25rem; 
+    cursor:pointer; 
+    list-style:none; 
+    color:var(--ck-text-dark); 
+    background:#fffaf5; 
+    font-weight:800; 
+    text-transform:uppercase; 
+    letter-spacing:.03rem; 
+}
+.ck-collapse > summary::-webkit-details-marker { 
+    display:none; 
+}
+.ck-collapse > summary::before { 
+    content:'▶'; 
+    display:inline-block; 
+    margin-right:.55rem; 
+    transition:transform .2s ease; 
+}
+.ck-collapse[open] > summary::before { 
+    transform:rotate(90deg); 
+}
+.ck-collapse > summary:hover { 
+    background:var(--ck-accent-light); 
+}
+.ck-collapse[open] > summary { 
+    border-bottom:1px solid var(--ck-border); 
+}
+.ck-collapse__body { 
+    padding:1.25rem; 
+    display:flex; 
+    flex-direction:column; 
+    gap:var(--ck-prose-gap); 
+}
+.ck-collapse__body > * { 
+    margin-block:0; 
+}
+.ck-collapse__body ul, .ck-collapse__body ol { 
+    margin:0; 
+    padding-left:var(--ck-list-indent); 
+}
+.ck-collapse__body li + li { 
+    margin-top:.35rem; 
+}

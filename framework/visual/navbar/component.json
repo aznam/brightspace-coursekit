@@ -1,0 +1,15 @@
+{
+    "id": "navbar",
+    "schema": "navbar.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [
+        "navbar.css"
+    ],
+    "scripts": [
+        "navbar.js"
+    ],
+    "variants": [
+        "default"
+    ]
+}

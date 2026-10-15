@@ -1,0 +1,11 @@
+{
+    "id": "list",
+    "schema": "list.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

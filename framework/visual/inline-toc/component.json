@@ -1,0 +1,13 @@
+{
+    "id": "inline-toc",
+    "schema": "inline-toc.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [
+        "inline-toc.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

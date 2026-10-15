@@ -1,0 +1,18 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    
+    <xs:include schemaLocation="../core/core.xsd"/>
+    <xs:include schemaLocation="../item/item.xsd"/>
+
+    <xs:complexType name="ListType">
+        <xs:complexContent>
+            <xs:extension base="s:Container">
+                <xs:sequence>
+                    <xs:element ref="s:item" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="list" type="s:ListType" substitutionGroup="s:component"/>
+
+</xs:schema>

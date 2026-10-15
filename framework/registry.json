@@ -1,36 +1,47 @@
 {
-  "version": 2,
-  "pageTypes": {
-    "course-page": {
-      "namespace": "urn:coursekit:page",
-      "definition": "pages/course-page/page.json",
-      "styles": [
-        "styles/tokens.css",
-        "styles/reset.css",
-        "pages/course-page/course-page.css"
-      ],
-      "scripts": [
-        "pages/course-page/course-page.js"
-      ],
-      "components": [
-        "navbar",
-        "hero",
-        "side",
-        "central-content",
-        "inline-toc",
-        "section",
-        "collapse-box",
-        "hoverbox",
-        "infobox",
-        "picture-with-legend",
-        "picture-without-legend"
-      ]
+    "semantic": [
+        "semantic/core/core.json",
+        "semantic/content/content.json",
+        "semantic/section/section.json",
+        "semantic/information/information.json",
+        "semantic/note/note.json",
+        "semantic/list/list.json",
+        "semantic/paragraph/paragraph.json",
+        "semantic/heading/heading.json",
+        "semantic/item/item.json",
+        "semantic/link/link.json",
+        "semantic/picture/picture.json"
+    ],
+    "pages": [
+        "pages/course-page/page.json"
+    ],
+    "components": [
+        "visual/page-layout/component.json",
+        "visual/navbar/component.json",
+        "visual/hero/component.json",
+        "visual/sidebar-before/component.json",
+        "visual/sidebar-after/component.json",
+        "visual/central-content/component.json",
+        "visual/side/component.json",
+        "visual/section/component.json",
+        "visual/heading/component.json",
+        "visual/paragraph/component.json",
+        "visual/list/component.json",
+        "visual/item/component.json",
+        "visual/link/component.json",
+        "visual/infobox/component.json",
+        "visual/picture/component.json",
+        "visual/collapse-box/component.json",
+        "visual/hoverbox/component.json",
+        "visual/inline-toc/component.json"
+    ],
+    "resources": {
+        "styles": [
+            "styles/tokens.css",
+            "styles/reset.css"
+        ],
+        "scripts": [],
+        "fonts": [],
+        "assets": "assets/"
     }
-  },
-  "schemas": {
-    "course": "schemas/course.schema.json",
-    "module": "schemas/module.schema.json",
-    "component": "schemas/component.schema.json",
-    "urn:coursekit:page": "schemas/course-page.xsd"
-  }
 }

@@ -1,0 +1,13 @@
+{
+    "id": "side",
+    "schema": "side.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [
+        "side.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

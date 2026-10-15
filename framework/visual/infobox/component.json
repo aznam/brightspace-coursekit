@@ -1,0 +1,19 @@
+{
+    "id": "infobox",
+    "schema": "infobox.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": [
+        "infobox.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default",
+        "info",
+        "warning",
+        "success",
+        "error",
+        "dark",
+        "neutral"
+    ]
+}

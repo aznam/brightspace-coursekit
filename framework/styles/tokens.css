@@ -1,27 +1,27 @@
 :root {
-  --ck-accent: #c2410c;
-  --ck-accent-light: #ffedd5;
-  --ck-structure: #1e293b;
-  --ck-text-main: #334155;
-  --ck-text-dark: #0f172a;
-  --ck-border: #e2e8f0;
-  --ck-bg-base: #fafaf9;
-  --ck-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --ck-font-display: var(--ck-font-body);
+    --ck-accent: #c2410c;
+    --ck-accent-light: #ffedd5;
+    --ck-structure: #1e293b;
+    --ck-text-main: #334155;
+    --ck-text-dark: #0f172a;
+    --ck-border: #e2e8f0;
+    --ck-bg-base: #fafaf9;
+    --ck-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --ck-font-display: var(--ck-font-body);
 
-  --ck-space-2xs: .25rem;
-  --ck-space-xs: .5rem;
-  --ck-space-sm: .75rem;
-  --ck-space-md: 1rem;
-  --ck-space-lg: 1.5rem;
-  --ck-space-xl: 2.5rem;
-  --ck-space-2xl: 3.75rem;
+    --ck-space-2xs: .25rem;
+    --ck-space-xs: .5rem;
+    --ck-space-sm: .75rem;
+    --ck-space-md: 1rem;
+    --ck-space-lg: 1.5rem;
+    --ck-space-xl: 2.5rem;
+    --ck-space-2xl: 3.75rem;
 
-  --ck-content-padding: clamp(1.25rem, 4vw, 3.75rem);
-  --ck-content-gap: clamp(1.75rem, 3vw, 2.5rem);
-  --ck-prose-gap: 1rem;
-  --ck-subsection-gap: 1.75rem;
-  --ck-list-indent: 1.45em;
-  --ck-radius: .35rem;
-  --ck-shadow: 4px 4px 0 rgba(30,41,59,.05);
+    --ck-content-padding: clamp(1.25rem, 4vw, 3.75rem);
+    --ck-content-gap: clamp(1.75rem, 3vw, 2.5rem);
+    --ck-prose-gap: 1rem;
+    --ck-subsection-gap: 1.75rem;
+    --ck-list-indent: 1.45em;
+    --ck-radius: .35rem;
+    --ck-shadow: 4px 4px 0 rgba(30,41,59,.05);
 }

@@ -1,0 +1,15 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    
+    <xs:include schemaLocation="../core/core.xsd"/>
+
+    <xs:complexType name="PictureType">
+        <xs:sequence>
+            <xs:element name="alt" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="src" type="xs:string" use="required"/>
+        <xs:attributeGroup ref="s:CommonAttr"/>
+    </xs:complexType>
+
+    <xs:element name="picture" type="s:PictureType" substitutionGroup="s:component"/>
+
+</xs:schema>

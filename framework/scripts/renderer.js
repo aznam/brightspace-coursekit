@@ -1,0 +1,92 @@
+import { transform } from './xml.js';
+
+/** 
+ * Renderer contract & Template Method. 
+ */
+export class Renderer {
+    constructor(context) {
+        Object.assign(this, context);
+        this.element = null;
+
+        this.supportsDefaultAttributes = true;
+        this.supportsDefaultStyles = true;
+        this.supportsDefaultScripts = true; 
+        this.supportsBehaviorOverride = true; 
+    }
+
+    async render() {
+        await this.build();          
+        await this.applyAttributes(); 
+        await this.applyStyles();     
+        await this.applyScripts();    
+        
+        return this.element;
+    }
+
+    async build() {
+        const input = document.implementation.createDocument(this.xml.namespaceURI, this.xml.nodeName, null);
+        input.replaceChild(input.importNode(this.xml, true), input.documentElement);
+        const rendered = transform(input, this.manifest.templateDoc);
+        this.element = document.importNode(rendered.documentElement, true);
+        
+        for (const slot of [...this.element.querySelectorAll('ck-children,ck-slot')]) {
+            const nodes = document.createDocumentFragment();
+            for (const child of [...this.xml.childNodes]) {
+                if (slot.localName === 'ck-slot' && child.localName !== slot.getAttribute('name')) continue;
+                if (slot.localName === 'ck-children' && this.xml.localName === 'layout' && ['central-content', 'sidebar-before', 'sidebar-after'].includes(child.localName)) continue;
+                nodes.append(await this.renderChild(child));
+            }
+            slot.replaceWith(nodes);
+        }
+    }
+
+    async applyAttributes() {
+        if (this.supportsDefaultAttributes && this.xml.hasAttribute('id')) {
+            this.element.id = this.xml.getAttribute('id');
+        }
+    }
+
+    async applyStyles() {
+        if (this.supportsDefaultStyles) {
+            if (this.xml.hasAttribute('variant')) {
+                this.element.setAttribute('data-variant', this.xml.getAttribute('variant'));
+            }
+            if (this.xml.hasAttribute('style-ref')) {
+                this.element.setAttribute('data-style-ref', this.xml.getAttribute('style-ref'));
+            }
+        }
+    }
+
+    async applyScripts() {
+        if (this.supportsDefaultScripts) {
+            const initRef = this.xml.getAttribute('init-ref');
+            if (initRef) {
+                const initFunction = window.CourseKitBehaviors?.[initRef];
+                if (typeof initFunction === 'function') await initFunction(this.element, this.xml);
+            }
+        }
+    }
+
+    async rendered() {}
+
+    async mounted() {}
+
+    async setBehavior() {
+
+        const behaviorRef = this.xml.getAttribute('behavior-ref');
+        
+        if (this.supportsBehaviorOverride && behaviorRef) {
+            const overrideFn = window.CourseKitBehaviors?.[behaviorRef];
+            if (typeof overrideFn === 'function') {
+                return await overrideFn(this.element, this.xml);
+            }
+        }
+        
+        const disposers = [];
+        for (const behavior of this.componentBehaviors || []) {
+            const dispose = await behavior(this.element, this.xml);
+            if (typeof dispose === 'function') disposers.push(dispose);
+        }
+        return () => disposers.forEach(d => d());
+    }
+}

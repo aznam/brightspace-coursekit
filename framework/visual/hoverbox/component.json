@@ -1,0 +1,9 @@
+{
+    "id": "hoverbox",
+    "schema": "hoverbox.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": ["hoverbox.css"],
+    "scripts": ["hoverbox.js"],
+    "variants": ["default"]
+}

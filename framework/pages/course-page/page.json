@@ -1,7 +1,17 @@
 {
-  "id": "course-page",
-  "element": "page",
-  "namespace": "urn:coursekit:page",
-  "renderer": "course-page",
-  "description": "Standard composable course page."
+    "id": "course-page",
+    "schema": "course-page.xsd",
+    "transform": "transform.xslt",
+    "styles": [],
+    "scripts": [],
+    "parameters": {
+        "title": { "type": "string", "default": "" },
+        "subtitle": { "type": "string", "default": "" },
+        "image": { "type": "string", "default": "" },
+        "background": { "type": "string", "default": "theme" },
+        "toc": { "type": "boolean", "default": true },
+        "page-numbered": { "type": "boolean", "default": false },
+        "variant": { "type": "string", "default": "default" },
+        "style-ref": { "type": "string", "default": "" }
+    }
 }

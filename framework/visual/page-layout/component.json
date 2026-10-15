@@ -1,0 +1,9 @@
+{
+    "id": "layout",
+    "schema": "page-layout.xsd",
+    "template": "template.xslt",
+    "renderer": "renderer.js",
+    "styles": ["page-layout.css"],
+    "scripts": [],
+    "variants": ["default"]
+}

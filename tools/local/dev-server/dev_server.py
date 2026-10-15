@@ -10,10 +10,14 @@ import secrets
 import threading
 from urllib.parse import urlsplit, unquote
 import posixpath
+import mimetypes
 
 ROOT = Path(__file__).resolve().parents[3]
 STATE = ROOT / '.coursekit-server.json'
 
+mimetypes.add_type("text/javascript", ".js")
+mimetypes.add_type("text/javascript", ".mjs")
+mimetypes.add_type("application/wasm", ".wasm")
 
 def main():
     parser = argparse.ArgumentParser()

@@ -1,9 +1,13 @@
 {
     "id": "picture",
-    "schema": "picture.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
-    "styles": ["picture.css"],
+    "schema": "$(frameworkRoot)/visual/picture/picture.xsd",
+    "template": "$(frameworkRoot)/visual/picture/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/picture/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/picture/picture.css"
+    ],
     "scripts": [],
-    "variants": ["default"]
+    "variants": [
+        "default"
+    ]
 }

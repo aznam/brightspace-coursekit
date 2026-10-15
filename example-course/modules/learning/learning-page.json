@@ -1,5 +1,5 @@
 {
     "id": "learning-page",
-    "schema": "learning-page.xsd",
-    "transform": "learning-page.xslt"
+    "schema": "$(courseRoot)/modules/learning/learning-page.xsd",
+    "transform": "$(courseRoot)/modules/learning/learning-page.xslt"
 }

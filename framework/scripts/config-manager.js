@@ -1,3 +1,4 @@
+import { JSONPreprocessor } from './json-preprocessor.js';
 /** Owns site-level configuration, inherited framework resources and course resources. */
 export class ConfigManager {
     constructor(resources) {
@@ -12,6 +13,7 @@ export class ConfigManager {
             throw new Error('course.modules must be an ordered array');
         }
         this.resources.configure(this.data);
+        this.data = new JSONPreprocessor(this.resources).process(this.data, url);
     }
     get(path, fallback = '') {
         let value = { ...this.data, course: this.data.course || {} };

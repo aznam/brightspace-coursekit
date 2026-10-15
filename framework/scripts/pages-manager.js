@@ -50,12 +50,13 @@ export class PagesManager {
     async prepare() {
         const r = this.ctx.resources;
         const files = {};
-        const preprocessor = new XSDPreprocessor();
+        const preprocessor = new XSDPreprocessor(r);
         const componentSchemas = [];
 
         const base = this.ctx.components.baseSchema;
         if (base) {
-            preprocessor.addSchema(base.filename, parseXML(base.content, base.filename), base.namespace);
+            const key = r.virtualKey(base.url);
+            preprocessor.addSchema(key, parseXML(base.content, base.filename), base.namespace, base.url);
         }
         
         for (const m of this.ctx.components.components.values()) {
@@ -63,40 +64,48 @@ export class PagesManager {
             const url = r.relative(m.schema, m.manifestUrl);
             const xsd = await r.text(url);
             const doc = parseXML(xsd, m.schema);
-            preprocessor.addSchema(m.schema, doc, doc.documentElement.getAttribute('targetNamespace'));
-            componentSchemas.push(m.schema);
+            const key = r.virtualKey(url);
+            preprocessor.addSchema(key, doc, doc.documentElement.getAttribute('targetNamespace'), url);
+            componentSchemas.push(key);
         }
 
         for (const page of this.pages.values()) {
             const url = r.relative(page.schema, page.manifestUrl);
             const xsd = await r.text(url);
             const doc = parseXML(xsd, page.schema);
-            preprocessor.addSchema(page.schema, doc, doc.documentElement.getAttribute('targetNamespace'));
+            page.schemaKey = r.virtualKey(url);
+            preprocessor.addSchema(page.schemaKey, doc, doc.documentElement.getAttribute('targetNamespace'), url);
         }
 
+        // A synthetic schema gathers the visual component declarations.
+        const virtualKey = '__generated__/virtual_components.xsd';
+        const virtualSchemaDoc = document.implementation.createDocument(NS.xs, 'xs:schema', null);
+        const vSchema = virtualSchemaDoc.documentElement;
+        vSchema.setAttribute('targetNamespace', 'urn:coursekit:visual');
+        vSchema.setAttribute('elementFormDefault', 'qualified');
+        for (const schemaKey of componentSchemas) {
+            const inc = virtualSchemaDoc.createElementNS(NS.xs, 'xs:include');
+            inc.setAttribute('schemaLocation', r.virtualRelative(virtualKey, schemaKey));
+            vSchema.appendChild(inc);
+        }
+        // Generated references are already VFS-relative; no source URL is required.
+        preprocessor.addSchema(virtualKey, virtualSchemaDoc, 'urn:coursekit:visual');
+        const basePageURL = r.framework('pages/base/base.xsd');
+        preprocessor.addSchema(
+            r.virtualKey(basePageURL),
+            parseXML(await r.text(basePageURL), basePageURL),
+            'urn:coursekit:page',
+            basePageURL
+        );
         const processedSchemas = preprocessor.processAll();
         for (const [filename, xsdString] of Object.entries(processedSchemas)) {
             files[filename] = xsdString;
         }
 
-        const virtualSchemaDoc = document.implementation.createDocument(NS.xs, 'xs:schema', null);
-        const vSchema = virtualSchemaDoc.documentElement;
-        vSchema.setAttribute('targetNamespace', 'urn:coursekit:visual');
-        vSchema.setAttribute('elementFormDefault', 'qualified');
-        
-        for (const schemaPath of componentSchemas) {
-            const inc = virtualSchemaDoc.createElementNS(NS.xs, 'xs:include');
-            const parts = schemaPath.split('/');
-            inc.setAttribute('schemaLocation', parts[parts.length - 1]);
-            vSchema.appendChild(inc);
-        }
-        files['virtual_components.xsd'] = serialize(virtualSchemaDoc);
-
         for (const page of this.pages.values()) {
             const schema = await r.text(r.relative(page.schema, page.manifestUrl));
-            // ---> INJECTE LE DIAGNOSTIC ICI <---
-            diagnoseXSD(page.schema, files);
-            page.validator = await compileXSD(page.schema, files);
+            // diagnoseXSD(page.schemaKey, files);
+            page.validator = await compileXSD(page.schemaKey, files);
             page.transformDoc = parseXML(await r.text(r.relative(page.transform, page.manifestUrl)), page.transform);
             for (const url of page.overlays || []) {
                 const overlay = parseXML(await r.text(url), url);

@@ -1,4 +1,4 @@
 {
     "id": "picture",
-    "schema": "picture.xsd"
+    "schema": "$(frameworkRoot)/semantic/picture/picture.xsd"
 }

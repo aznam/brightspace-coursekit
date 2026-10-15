@@ -1,9 +1,13 @@
 {
     "id": "central-content",
-    "schema": "central-content.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
-    "styles": ["central-content.css"],
+    "schema": "$(frameworkRoot)/visual/central-content/central-content.xsd",
+    "template": "$(frameworkRoot)/visual/central-content/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/central-content/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/central-content/central-content.css"
+    ],
     "scripts": [],
-    "variants": ["default"]
+    "variants": [
+        "default"
+    ]
 }

@@ -1,9 +1,13 @@
 {
     "id": "hero",
-    "schema": "hero.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
-    "styles": ["hero.css"],
+    "schema": "$(frameworkRoot)/visual/hero/hero.xsd",
+    "template": "$(frameworkRoot)/visual/hero/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/hero/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/hero/hero.css"
+    ],
     "scripts": [],
-    "variants": ["default"]
+    "variants": [
+        "default"
+    ]
 }

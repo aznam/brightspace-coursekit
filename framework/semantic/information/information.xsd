@@ -1,8 +1,8 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
     
-    <xs:include schemaLocation="../core/core.xsd"/>
-    <xs:include schemaLocation="../paragraph/paragraph.xsd"/>
-    <xs:include schemaLocation="../list/list.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/paragraph/paragraph.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/list/list.xsd"/>
 
     <xs:complexType name="InformationType">
         <xs:complexContent>

@@ -1,4 +1,4 @@
 {
     "id": "link",
-    "schema": "link.xsd"
+    "schema": "$(frameworkRoot)/semantic/link/link.xsd"
 }

@@ -1,9 +1,13 @@
 {
     "id": "layout",
-    "schema": "page-layout.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
-    "styles": ["page-layout.css"],
+    "schema": "$(frameworkRoot)/visual/page-layout/page-layout.xsd",
+    "template": "$(frameworkRoot)/visual/page-layout/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/page-layout/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/page-layout/page-layout.css"
+    ],
     "scripts": [],
-    "variants": ["default"]
+    "variants": [
+        "default"
+    ]
 }

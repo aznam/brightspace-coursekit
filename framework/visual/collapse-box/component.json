@@ -1,9 +1,13 @@
 {
     "id": "collapse-box",
-    "schema": "collapse-box.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
-    "styles": ["collapse-box.css"],
+    "schema": "$(frameworkRoot)/visual/collapse-box/collapse-box.xsd",
+    "template": "$(frameworkRoot)/visual/collapse-box/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/collapse-box/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/collapse-box/collapse-box.css"
+    ],
     "scripts": [],
-    "variants": ["default"]
+    "variants": [
+        "default"
+    ]
 }

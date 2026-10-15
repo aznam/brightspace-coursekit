@@ -3,17 +3,20 @@ import { serialize, NS } from './xml.js';
 export const XSP_NS = 'urn:coursekit:preprocessor';
 
 export class XSDPreprocessor {
-    constructor() {
+    constructor(resources) {
+        this.resources = resources;
+        this.vfs = resources.createVirtualFS();
         this.documents = new Map();
     }
 
-    addSchema(filename, doc, namespace) {
-        this.documents.set(filename, { doc, namespace });
+    addSchema(filename, doc, namespace, sourceURL = null) {
+        if (this.documents.has(filename)) throw Error(`Duplicate schema key: ${filename}`);
+        this.documents.set(filename, { doc, namespace, sourceURL });
     }
 
     processAll() {
-        for (const { doc } of this.documents.values()) {
-            this._flattenImports(doc);
+        for (const [key, entry] of this.documents) {
+            this._flattenImports(key, entry);
         }
 
         for (const { doc } of this.documents.values()) {
@@ -23,21 +26,37 @@ export class XSDPreprocessor {
         const result = {};
         for (const [filename, { doc }] of this.documents.entries()) {
             result[filename] = serialize(doc);
+            this.vfs.put(filename, result[filename]);
         }
         return result;
     }
 
-    _flattenImports(doc) {
+    _flattenImports(key, { doc, sourceURL }) {
         const imports = [
             ...doc.getElementsByTagNameNS(NS.xs, 'include'),
             ...doc.getElementsByTagNameNS(NS.xs, 'import')
         ];
         for (const el of imports) {
             const loc = el.getAttribute('schemaLocation');
-            if (loc) {
-                const parts = loc.split('/');
-                el.setAttribute('schemaLocation', parts[parts.length - 1]);
+            if (!loc) continue;
+            // A generated schema is addressed by its exact VFS key.
+            let target;
+            if (loc === 'virtual_components.xsd') {
+                target = '__generated__/virtual_components.xsd';
+            } else if (loc.startsWith('__generated__/')) {
+                target = loc;
+            } else {
+                if (!sourceURL) {
+                    const virtualURL = new URL(loc, new URL(key, 'https://vfs.coursekit.invalid/'));
+                    target = virtualURL.pathname.slice(1);
+                } else {
+                    target = this.resources.virtualKey(loc, sourceURL);
+                }
             }
+            if (!this.documents.has(target)) {
+                throw Error(`Unregistered XSD reference ${loc} (${key} -> ${target})`);
+            }
+            el.setAttribute('schemaLocation', this.resources.virtualRelative(key, target));
         }
     }
 

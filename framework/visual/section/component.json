@@ -1,10 +1,10 @@
 {
     "id": "section",
-    "schema": "section.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/section/section.xsd",
+    "template": "$(frameworkRoot)/visual/section/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/section/renderer.js",
     "styles": [
-        "section.css"
+        "$(frameworkRoot)/visual/section/section.css"
     ],
     "scripts": [],
     "variants": [

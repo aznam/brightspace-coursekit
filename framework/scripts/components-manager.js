@@ -19,7 +19,7 @@ export class ComponentsManager {
 
         const baseUrl = r.framework('visual/base-component/base-component.xsd');
         this.baseSchema = {
-            filename: 'base-component.xsd',
+            url: baseUrl,
             content: await r.text(baseUrl),
             namespace: 'urn:coursekit:visual'
         }

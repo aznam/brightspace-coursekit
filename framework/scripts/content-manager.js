@@ -31,16 +31,18 @@ export class ContentManager {
     }
     async prepare() {
         const files = {}, nsMap = new Map(), r = this.ctx.resources;
-        const preprocessor = new XSDPreprocessor();
+        const preprocessor = new XSDPreprocessor(r);
 
         for (const m of this.schemas) {
-            const xsd = await r.text((m.directSchemaURL || r.relative(m.schema, m.manifestUrl)));
+            const url = m.directSchemaURL || r.relative(m.schema, m.manifestUrl);
+            m.schemaKey = r.virtualKey(url);
+            const xsd = await r.text(url);
             const doc = parseXML(xsd, m.schema);
             const ns = doc.documentElement.getAttribute('targetNamespace');
             if (!nsMap.has(ns)) nsMap.set(ns, []);
             nsMap.get(ns).push(m);
 
-            preprocessor.addSchema(m.schema, doc, ns);
+            preprocessor.addSchema(m.schemaKey, doc, ns, url);
         }
         const processedSchemas = preprocessor.processAll();
 
@@ -53,16 +55,16 @@ export class ContentManager {
         if (!root)
             throw Error('No semantic content contract');
 
-        const rootXML = parseXML(files[root.schema]);
+        const rootXML = parseXML(files[root.schemaKey]);
         const schema = rootXML.documentElement;
 
 
         for (const [ns, manifests] of nsMap) {
             if (ns === schema.getAttribute('targetNamespace')) {
                 for (const m of manifests) {
-                    if (m.schema !== root.schema) {
+                    if (m.schemaKey !== root.schemaKey) {
                         const inc = rootXML.createElementNS(NS.xs, 'xs:include');
-                        inc.setAttribute('schemaLocation', m.schema);
+                        inc.setAttribute('schemaLocation', r.virtualRelative(root.schemaKey, m.schemaKey));
                         // On insère l'include au début du schéma
                         schema.insertBefore(inc, schema.firstChild);
                     }
@@ -70,7 +72,7 @@ export class ContentManager {
                 continue;
             }
 
-            const virtualSchemaName = `virtual_master_${ns.replace(/[^a-zA-Z0-9]/g, '_')}.xsd`;
+            const virtualSchemaName = `__generated__/virtual_master_${ns.replace(/[^a-zA-Z0-9]/g, '_')}.xsd`;
             const virtualSchemaDoc = document.implementation.createDocument(NS.xs, 'xs:schema', null);
             const vSchema = virtualSchemaDoc.documentElement;
             vSchema.setAttribute('targetNamespace', ns);
@@ -78,7 +80,7 @@ export class ContentManager {
             
             for (const m of manifests) {
                 const inc = virtualSchemaDoc.createElementNS(NS.xs, 'xs:include');
-                inc.setAttribute('schemaLocation', m.schema);
+                inc.setAttribute('schemaLocation', r.virtualRelative(virtualSchemaName, m.schemaKey));
                 vSchema.appendChild(inc);
             }
             
@@ -86,12 +88,12 @@ export class ContentManager {
 
             const imp = rootXML.createElementNS(NS.xs, 'xs:import');
             imp.setAttribute('namespace', ns);
-            imp.setAttribute('schemaLocation', virtualSchemaName);
+            imp.setAttribute('schemaLocation', r.virtualRelative(root.schemaKey, virtualSchemaName));
             schema.insertBefore(imp, schema.firstChild);
         }
 
-        files[root.schema] = serialize(rootXML);
-        this.validator = await compileXSD(root.schema, files);
+        files[root.schemaKey] = serialize(rootXML);
+        this.validator = await compileXSD(root.schemaKey, files);
     }
     async show(path, { pages, components }) {
         const url = await this.ctx.resources.resolve(path, 'content');

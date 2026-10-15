@@ -1,10 +1,10 @@
 {
     "id": "infobox",
-    "schema": "infobox.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/infobox/infobox.xsd",
+    "template": "$(frameworkRoot)/visual/infobox/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/infobox/renderer.js",
     "styles": [
-        "infobox.css"
+        "$(frameworkRoot)/visual/infobox/infobox.css"
     ],
     "scripts": [],
     "variants": [

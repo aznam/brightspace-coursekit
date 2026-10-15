@@ -1,9 +1,15 @@
 {
     "id": "hoverbox",
-    "schema": "hoverbox.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
-    "styles": ["hoverbox.css"],
-    "scripts": ["hoverbox.js"],
-    "variants": ["default"]
+    "schema": "$(frameworkRoot)/visual/hoverbox/hoverbox.xsd",
+    "template": "$(frameworkRoot)/visual/hoverbox/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/hoverbox/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/hoverbox/hoverbox.css"
+    ],
+    "scripts": [
+        "$(frameworkRoot)/visual/hoverbox/hoverbox.js"
+    ],
+    "variants": [
+        "default"
+    ]
 }

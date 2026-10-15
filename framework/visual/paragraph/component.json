@@ -1,8 +1,8 @@
 {
     "id": "paragraph",
-    "schema": "paragraph.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/paragraph/paragraph.xsd",
+    "template": "$(frameworkRoot)/visual/paragraph/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/paragraph/renderer.js",
     "styles": [],
     "scripts": [],
     "variants": [

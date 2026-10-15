@@ -1,7 +1,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
     
-    <xs:include schemaLocation="../core/core.xsd"/>
-    <xs:include schemaLocation="../link/link.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/link/link.xsd"/>
 
     <xs:complexType name="HeadingType">
         <xs:complexContent>

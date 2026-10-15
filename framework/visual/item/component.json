@@ -1,8 +1,8 @@
 {
     "id": "item",
-    "schema": "item.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/item/item.xsd",
+    "template": "$(frameworkRoot)/visual/item/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/item/renderer.js",
     "styles": [],
     "scripts": [],
     "variants": [

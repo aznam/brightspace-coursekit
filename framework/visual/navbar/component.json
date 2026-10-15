@@ -1,13 +1,13 @@
 {
     "id": "navbar",
-    "schema": "navbar.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/navbar/navbar.xsd",
+    "template": "$(frameworkRoot)/visual/navbar/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/navbar/renderer.js",
     "styles": [
-        "navbar.css"
+        "$(frameworkRoot)/visual/navbar/navbar.css"
     ],
     "scripts": [
-        "navbar.js"
+        "$(frameworkRoot)/visual/navbar/navbar.js"
     ],
     "variants": [
         "default"

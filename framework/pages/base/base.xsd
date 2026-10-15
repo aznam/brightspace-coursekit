@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:p="urn:coursekit:page"
+    targetNamespace="urn:coursekit:page"
+    elementFormDefault="qualified">
+
+    <xs:complexType name="VariableType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="MetaType">
+        <xs:sequence>
+            <xs:element name="var"
+                        type="p:VariableType"
+                        minOccurs="0"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PageType">
+        <xs:sequence>
+            <xs:element name="meta" type="p:MetaType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="page"
+                type="p:PageType"
+                abstract="true"/>
+
+</xs:schema>

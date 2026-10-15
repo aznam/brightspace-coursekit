@@ -1,4 +1,4 @@
 {
     "id": "paragraph",
-    "schema": "paragraph.xsd"
+    "schema": "$(frameworkRoot)/semantic/paragraph/paragraph.xsd"
 }

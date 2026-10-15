@@ -1,10 +1,10 @@
 {
     "id": "side",
-    "schema": "side.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/side/side.xsd",
+    "template": "$(frameworkRoot)/visual/side/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/side/renderer.js",
     "styles": [
-        "side.css"
+        "$(frameworkRoot)/visual/side/side.css"
     ],
     "scripts": [],
     "variants": [

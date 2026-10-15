@@ -10,7 +10,7 @@
         "year": 2026
     },
     "modules": [
-        "modules/learning/module.json"
+        "$(courseRoot)/modules/learning/module.json"
     ],
     "variables": {},
     "theme": {
@@ -35,10 +35,10 @@
     },
     "resources": {
         "styles": [
-            "course.css"
+            "$(courseRoot)/styles/course.css"
         ],
         "scripts": [
-            "behaviors.js"
+            "$(courseRoot)/scripts/behaviors.js"
         ],
         "fonts": [
             {

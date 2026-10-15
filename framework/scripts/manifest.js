@@ -1,10 +1,12 @@
+import { JSONPreprocessor } from './json-preprocessor.js';
 /** Manifest resource checking and deterministic declaration order. */
 export async function loadManifest(resources, url, type, keys = []) {
     if (!resources.manifestValidator) {
         throw new Error("ManifestValidator has not been initialized");
     }
-    const data = await resources.json(url);
-    await resources.manifestValidator.validate(type, data, url);
+    const raw = await resources.json(url);
+    await resources.manifestValidator.validate(type, raw, url);
+    const data = new JSONPreprocessor(resources).process(raw, url);
     if (!data.id || typeof data.id !== 'string')
         throw Error('Missing manifest id: ' + url);
     for (const key of keys)

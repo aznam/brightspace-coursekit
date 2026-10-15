@@ -1,9 +1,11 @@
 {
     "id": "heading",
-    "schema": "heading.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/heading/heading.xsd",
+    "template": "$(frameworkRoot)/visual/heading/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/heading/renderer.js",
     "styles": [],
     "scripts": [],
-    "variants": ["default"]
+    "variants": [
+        "default"
+    ]
 }

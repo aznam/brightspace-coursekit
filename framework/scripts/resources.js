@@ -10,11 +10,8 @@ export class ResourceLoader {
     }
 
     configure(course = {}) {
-        const id = course.siteId;
-        this.courseRoot = id != null && String(id).trim() !== '' &&
-            window.location.pathname.startsWith('/content/enforced/')
-            ? new URL(`/content/enforced/${String(id).replace(/^\/+|\/+$/g, '')}/`, window.location.origin)
-            : this.initialCourseRoot;
+        // The bootstrap supplies courseRoot explicitly. siteId is not a path override.
+        this.courseRoot = this.initialCourseRoot;
 
         const mergedPaths = {
             assets: 'assets/',
@@ -40,16 +37,72 @@ export class ResourceLoader {
         }
     }
 
+    /** Isolated virtual workspace for a schema or other compilation unit. */
+    createVirtualFS() {
+        const files = new Map();
+        return {
+            put(key, content) {
+                if (files.has(key)) throw Error(`Duplicate virtual resource: ${key}`);
+                files.set(key, content);
+            },
+            get(key) { return files.get(key); },
+            has(key) { return files.has(key); },
+            entries() { return [...files.entries()]; },
+            snapshot() { return Object.fromEntries(files); }
+        };
+    }
+
+    /** Root-qualified resource URL. Legacy relative paths remain supported. */
+    expand(path, base = this.courseRoot) {
+        if (typeof path !== 'string') throw new TypeError('Resource path must be a string');
+        const match = /^\$\((frameworkRoot|courseRoot)\)(?:\/(.*))?$/.exec(path);
+        if (match) {
+            const root = match[1] === 'frameworkRoot' ? this.frameworkRoot : this.courseRoot;
+            return new URL(match[2] || '', root).href;
+        }
+        if (/\$\((?:frameworkRoot|courseRoot)\)/.test(path)) {
+            throw new Error(`Root placeholders must start a resource path: ${path}`);
+        }
+        return new URL(path, base).href;
+    }
+
+    /** One stable VFS identity per URL; roots can overlap. */
+    virtualKey(path, base) {
+        const url = new URL(this.expand(path, base));
+        const roots = [
+            ['framework', this.frameworkRoot],
+            ['course', this.courseRoot]
+        ].sort((a, b) => b[1].href.length - a[1].href.length);
+        for (const [id, root] of roots) {
+            if (url.origin === root.origin && url.pathname.startsWith(root.pathname)) {
+                const relative = url.pathname.slice(root.pathname.length);
+                if (url.search || url.hash) throw Error(`VFS keys cannot contain query/fragment: ${url.href}`);
+                return `${id}/${relative}`;
+            }
+        }
+        throw Error(`Resource outside VFS roots: ${url.href}`);
+    }
+
+    /** VFS-relative references for Xerces: never lose parent directories. */
+    virtualRelative(fromKey, toKey) {
+        const source = fromKey.split('/').slice(0, -1);
+        const dest = toKey.split('/');
+        while (source.length && dest.length && source[0] === dest[0]) {
+            source.shift(); dest.shift();
+        }
+        return [...source.map(() => '..'), ...dest].join('/') || '.';
+    }
+
     framework(path) {
-        return new URL(path, this.frameworkRoot).href;
+        return this.expand(path, this.frameworkRoot);
     }
 
     course(path) {
-        return new URL(path, this.courseRoot).href;
+        return this.expand(path, this.courseRoot);
     }
 
     relative(path, manifestUrl) {
-        return new URL(path, manifestUrl).href;
+        return this.expand(path, manifestUrl);
     }
 
     async text(url) {
@@ -78,7 +131,7 @@ export class ResourceLoader {
     }
 
     static isExplicit(path) {
-        return /^(?:[a-z][a-z0-9+.-]*:|\/\/|\/)/i.test(path);
+        return /^(?:\$\((?:frameworkRoot|courseRoot)\)|[a-z][a-z0-9+.-]*:|\/\/|\/)/i.test(path);
     }
 
     directory(kind) {
@@ -96,7 +149,7 @@ export class ResourceLoader {
 
     candidates(path, kind = 'assets', options = {}) {
         if (!path || typeof path !== 'string') throw new Error(`Missing ${kind} resource path`);
-        if (ResourceLoader.isExplicit(path)) return [new URL(path, document.baseURI).href];
+        if (ResourceLoader.isExplicit(path)) return [this.expand(path, document.baseURI)];
         const result = [];
         let dir = this.customPaths[kind] || `${kind}/`;
         if (!dir.endsWith('/')) dir += '/';
@@ -146,6 +199,7 @@ export class ResourceLoader {
     /** Explicit framework/module sources have one authoritative location. */
     async asset(path, kind = 'assets', location = 'course') {
         if (!path) return '';
+        if (path.startsWith('$(')) return this.expand(path);
         if (ResourceLoader.isExplicit(path) || path.startsWith('#')) return path;
         if (location === 'framework') {
             const url = this.framework(path.includes('/') ? path : `${kind}/${path}`);

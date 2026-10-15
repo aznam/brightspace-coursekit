@@ -1,5 +1,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:p="urn:coursekit:page" xmlns:c="urn:coursekit:visual" targetNamespace="urn:coursekit:page" elementFormDefault="qualified">
 
+    <xs:include schemaLocation="$(frameworkRoot)/pages/base/base.xsd"/>
+
     <xs:import namespace="urn:coursekit:visual" schemaLocation="virtual_components.xsd" />
 
     <xs:element name="link" type="c:LinkType"/>
@@ -132,5 +134,19 @@
             </xs:sequence>
         </xs:extension></xs:complexContent></xs:complexType>
     </xs:element>
+
+    <xs:complexType name="CoursePageType">
+        <xs:complexContent>
+            <xs:extension base="p:PageType">
+                <xs:sequence>
+                    <xs:element ref="p:layout"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="course-page"
+                type="p:CoursePageType"
+                substitutionGroup="p:page"/>
 
 </xs:schema>

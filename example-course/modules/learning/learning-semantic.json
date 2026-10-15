@@ -1,5 +1,5 @@
 {
     "id": "learning-semantic",
-    "schema": "learning-semantic.xsd",
+    "schema": "$(courseRoot)/modules/learning/learning-semantic.xsd",
     "namespace": "urn:coursekit:semantic:learning"
 }

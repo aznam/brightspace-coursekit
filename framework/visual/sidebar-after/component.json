@@ -1,8 +1,8 @@
 {
     "id": "sidebar-after",
-    "schema": "sidebar-after.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/sidebar-after/sidebar-after.xsd",
+    "template": "$(frameworkRoot)/visual/sidebar-after/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/sidebar-after/renderer.js",
     "styles": [],
     "scripts": [],
     "variants": [

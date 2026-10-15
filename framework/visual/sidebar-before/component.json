@@ -1,8 +1,8 @@
 {
     "id": "sidebar-before",
-    "schema": "sidebar-before.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/sidebar-before/sidebar-before.xsd",
+    "template": "$(frameworkRoot)/visual/sidebar-before/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/sidebar-before/renderer.js",
     "styles": [],
     "scripts": [],
     "variants": [

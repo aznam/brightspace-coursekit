@@ -1,10 +1,10 @@
 {
     "id": "inline-toc",
-    "schema": "inline-toc.xsd",
-    "template": "template.xslt",
-    "renderer": "renderer.js",
+    "schema": "$(frameworkRoot)/visual/inline-toc/inline-toc.xsd",
+    "template": "$(frameworkRoot)/visual/inline-toc/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/inline-toc/renderer.js",
     "styles": [
-        "inline-toc.css"
+        "$(frameworkRoot)/visual/inline-toc/inline-toc.css"
     ],
     "scripts": [],
     "variants": [

@@ -4,12 +4,12 @@
     "version": "1.0.0",
     "namespace": "urn:coursekit:semantic:learning",
     "semantic": [
-        "learning-semantic.json"
+        "$(courseRoot)/modules/learning/learning-semantic.json"
     ],
     "pageExtensions": [
         {
             "page": "course-page",
-            "transform": "learning-page.xslt"
+            "transform": "$(courseRoot)/modules/learning/learning-page.xslt"
         }
     ],
     "dependsOn": []

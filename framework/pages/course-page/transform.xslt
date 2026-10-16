@@ -8,42 +8,54 @@
 
     <!-- L'enveloppe principale (Layout et Zones) -->
     <xsl:template match="/s:content">
-        <p:layout>
-            <xsl:copy-of select="@title|@subtitle|@image|@background|@style-ref|@variant|@page-numbered"/>
-            
-            <p:navbar>
-                <xsl:for-each select="s:section[@nav='true']">
-                    <p:link href="#{@id}">
-                        <xsl:value-of select="@title"/>
-                    </p:link>
-                </xsl:for-each>
-            </p:navbar>
-            
-            <p:hero>
-                <xsl:copy-of select="@title|@subtitle|@image"/>
-            </p:hero>
-            
-            <p:sidebar-before>
-                <xsl:apply-templates select="s:information[not(preceding-sibling::s:section)]"/>
-            </p:sidebar-before>
-            
-            <p:central-content>
-                <xsl:if test="@toc='true'">
-                    <p:inline-toc>
-                        <xsl:for-each select="s:section">
-                            <p:link href="#{@id}">
-                                <xsl:value-of select="@title"/>
-                            </p:link>
-                        </xsl:for-each>
-                    </p:inline-toc>
-                </xsl:if>
-                <xsl:apply-templates select="*[not(self::s:information)]"/>
-            </p:central-content>
-            
-            <p:sidebar-after>
-                <xsl:apply-templates select="s:information[preceding-sibling::s:section]"/>
-            </p:sidebar-after>
-        </p:layout>
+        <p:course-page>
+            <p:meta>
+                <p:var name="course-code" ref="course.code"/>
+                <p:var name="course-title" ref="course.title"/>
+                <p:var name="module-name" value="{@module-name}"/>
+            </p:meta>
+            <p:layout>
+                <xsl:copy-of select="@title|@subtitle|@image|@background|@style-ref|@variant|@page-numbered"/>
+                
+                <p:navbar
+                    course-code="${course-code}"
+                    page-title="${course-title}"
+                    module-title="${module-name}">
+
+                    <xsl:for-each select="s:section[@nav='true']">
+                        <p:link href="#{@id}">
+                            <xsl:value-of select="@title"/>
+                        </p:link>
+                    </xsl:for-each>
+
+                </p:navbar>
+                
+                <p:hero>
+                    <xsl:copy-of select="@title|@subtitle|@image"/>
+                </p:hero>
+                
+                <p:sidebar-before>
+                    <xsl:apply-templates select="s:information[not(preceding-sibling::s:section)]"/>
+                </p:sidebar-before>
+                
+                <p:central-content>
+                    <xsl:if test="@toc='true'">
+                        <p:inline-toc>
+                            <xsl:for-each select="s:section">
+                                <p:link href="#{@id}">
+                                    <xsl:value-of select="@title"/>
+                                </p:link>
+                            </xsl:for-each>
+                        </p:inline-toc>
+                    </xsl:if>
+                    <xsl:apply-templates select="*[not(self::s:information)]"/>
+                </p:central-content>
+                
+                <p:sidebar-after>
+                    <xsl:apply-templates select="s:information[preceding-sibling::s:section]"/>
+                </p:sidebar-after>
+            </p:layout>
+        </p:course-page>
     </xsl:template>
 
     <xsl:template match="s:section">
@@ -81,14 +93,17 @@
 
     <xsl:template match="s:picture">
         <p:picture>
-            <xsl:copy-of select="@src | @alt | @*"/>
-            <!-- Si l'image sémantique a un titre, ça devient la légende visuelle -->
-            <xsl:if test="@title">
+            <xsl:copy-of select="@*[local-name() != 'title']"/>
+
+            <xsl:attribute name="alt">
+                <xsl:value-of select="@title"/>
+            </xsl:attribute>
+
+            <xsl:if test="normalize-space(.) != ''">
                 <xsl:attribute name="legend">
-                    <xsl:value-of select="@title"/>
+                    <xsl:value-of select="normalize-space(.)"/>
                 </xsl:attribute>
             </xsl:if>
-            <xsl:apply-templates select="node()"/>
         </p:picture>
     </xsl:template>
 

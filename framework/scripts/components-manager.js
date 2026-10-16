@@ -41,7 +41,7 @@ export class ComponentsManager {
             }
         }
     }
-    async render(root) {
+    async render(root, variables = new Map())  {
         const instances = [];
         const walk = async (xml) => {
             if (xml.nodeType === Node.TEXT_NODE)
@@ -53,7 +53,7 @@ export class ComponentsManager {
             const m = this.components.get(xml.localName);
             if (!m)
                 throw Error('No visual component registered: ' + qname(xml));
-            const renderer = new m.Renderer({ xml, manifest: m, resources: this.ctx.resources, settings: this.ctx.settings, links: this.ctx.links, renderChild: walk });
+            const renderer = new m.Renderer({ xml, manifest: m, resources: this.ctx.resources, settings: this.ctx.settings, links: this.ctx.links, variables, renderChild: walk });
             const node = await renderer.render();
             if (!(node instanceof Node))
                 throw Error(m.id + ' renderer did not return a Node');

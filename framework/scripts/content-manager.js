@@ -102,7 +102,36 @@ export class ContentManager {
         this.ctx.settings.variables(xml);
         await this.validator.validate(serialize(xml)); // Content XML's page params are admitted via anyAttribute, validated by PagesManager.
         const pageXML = await pages.render(xml);
-        const { node, instances } = await components.render(pageXML.documentElement);
+        const pageRoot = pageXML.documentElement;
+
+        const meta = [...pageRoot.children].find(
+            child => child.namespaceURI === NS.page &&
+                    child.localName === 'meta'
+        );
+
+        const variables = new Map(
+            [...meta.children]
+                .filter(child => child.namespaceURI === NS.page &&
+                                child.localName === 'var')
+                .map(child => [
+                    child.getAttribute('name'),
+                    child.getAttribute('value')
+                ])
+        );
+
+        const visualRoot = [...pageRoot.children].find(
+            child => child.namespaceURI === NS.page &&
+                    child.localName !== 'meta'
+        );
+
+        if (!visualRoot) {
+            throw Error('Page contains no visual root component');
+        }
+
+        const { node, instances } = await components.render(
+            visualRoot,
+            variables
+        );
 
         const courseCode = this.ctx.settings.get('course.code');
         const courseTitle = this.ctx.settings.get('course.title');

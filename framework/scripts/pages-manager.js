@@ -134,9 +134,11 @@ export class PagesManager {
             }
         }
     }
+
     getType(xml) {
         return xml.documentElement.getAttribute('page-type');
     }
+
     checkParams(xml, page) {
         const el = xml.documentElement;
         for (const a of [...el.attributes]) {
@@ -162,6 +164,96 @@ export class PagesManager {
                 throw Error(`Page ${page.id}: invalid ${name}`);
         }
     }
+
+    resolveVariables(pageXML) {
+        const variables = new Map();
+        const root = pageXML.documentElement;
+
+        const meta = [...root.children].find(
+            node => node.namespaceURI === NS.page &&
+                    node.localName === 'meta'
+        );
+
+        if (!meta) {
+            throw new Error('Page metadata <meta> is missing.');
+        }
+
+        for (const variable of [...meta.children]) {
+            if (variable.namespaceURI !== NS.page ||
+                variable.localName !== 'var') {
+                continue;
+            }
+
+            const name = variable.getAttribute('name');
+            const hasValue = variable.hasAttribute('value');
+            const hasRef = variable.hasAttribute('ref');
+
+            if (!name || hasValue === hasRef) {
+                throw new Error(
+                    `Invalid page variable ${name || '(unnamed)'}: ` +
+                    'exactly one of value or ref is required.'
+                );
+            }
+
+            if (variables.has(name)) {
+                throw new Error(`Duplicate page variable: ${name}`);
+            }
+
+            let value;
+
+            if (hasRef) {
+                const ref = variable.getAttribute('ref');
+                value = this.ctx.settings.get(ref, null);
+
+                if (value === null || typeof value === 'object') {
+                    throw new Error(`Unknown or invalid JSON variable: ${ref}`);
+                }
+            } else {
+                value = variable.getAttribute('value');
+            }
+
+            variables.set(name, String(value));
+            variable.setAttribute('value', String(value));
+            variable.removeAttribute('ref');
+        }
+
+        return variables;
+    }
+
+    interpolateVariables(pageXML, variables) {
+        const resolve = (text) => String(text).replace(
+            /\$\{([^{}]+)\}/g,
+            (_, rawName) => {
+                const name = rawName.trim();
+
+                if (!variables.has(name)) {
+                    throw new Error(`Unknown page variable: ${name}`);
+                }
+
+                return variables.get(name);
+            }
+        );
+
+        const walker = pageXML.createTreeWalker(
+            pageXML,
+            NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT
+        );
+
+        let node;
+
+        while ((node = walker.nextNode())) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                node.textContent = resolve(node.textContent);
+            } else {
+                for (const attribute of [...node.attributes]) {
+                    attribute.value = resolve(attribute.value);
+                }
+            }
+        }
+
+        return pageXML;
+    }
+
     async render(content) {
         const page = this.pages.get(this.getType(content));
         if (!page)
@@ -170,6 +262,8 @@ export class PagesManager {
         const output = transform(content, page.transformDoc);
         if (!output?.documentElement)
             throw Error('Page XSLT produced no XML');
+        const variables = this.resolveVariables(output);
+        this.interpolateVariables(output, variables);
         await page.validator.validate(serialize(output));
         for (const css of page.styles || [])
             await this.ctx.styleLoader.loadUrl(this.ctx.resources.relative(css, page.manifestUrl));

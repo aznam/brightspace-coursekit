@@ -4,7 +4,18 @@
 
     <xs:import namespace="urn:coursekit:visual" schemaLocation="virtual_components.xsd" />
 
-    <xs:element name="link" type="c:LinkType"/>
+    <xs:element name="link">
+        <xs:complexType mixed="true">
+            <xs:complexContent>
+                <xs:extension base="c:LinkType">
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element ref="p:paragraph"/>
+                        <xs:element ref="p:picture"/>
+                    </xs:choice>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
 
     <xs:element name="hoverbox" type="c:HoverboxType"/>
 

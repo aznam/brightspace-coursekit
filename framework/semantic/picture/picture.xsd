@@ -3,13 +3,12 @@
     <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
 
     <xs:complexType name="PictureType">
-        <xs:sequence>
-            <xs:element name="alt" type="xs:string" minOccurs="0" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="src" type="xs:string" use="required"/>
-        <xs:attributeGroup ref="s:CommonAttr"/>
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="src" type="xs:string" use="required"/>
+                <xs:attributeGroup ref="s:CommonAttr"/>
+            </xs:extension>
+        </xs:simpleContent>
     </xs:complexType>
-
-    <xs:element name="picture" type="s:PictureType" substitutionGroup="s:component"/>
 
 </xs:schema>

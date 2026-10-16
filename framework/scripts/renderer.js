@@ -24,18 +24,48 @@ export class Renderer {
     }
 
     async build() {
-        const input = document.implementation.createDocument(this.xml.namespaceURI, this.xml.nodeName, null);
-        input.replaceChild(input.importNode(this.xml, true), input.documentElement);
-        const rendered = transform(input, this.manifest.templateDoc);
+        const input = document.implementation.createDocument(
+            this.xml.namespaceURI,
+            this.xml.nodeName,
+            null
+        );
+
+        input.replaceChild(
+            input.importNode(this.xml, true),
+            input.documentElement
+        );
+
+        const processor = new XSLTProcessor();
+        processor.importStylesheet(this.manifest.templateDoc);
+
+        for (const [name, value] of this.variables || []) {
+            processor.setParameter(null, name, value);
+        }
+
+        const rendered = processor.transformToDocument(input);
         this.element = document.importNode(rendered.documentElement, true);
-        
-        for (const slot of [...this.element.querySelectorAll('ck-children,ck-slot')]) {
+
+        for (const slot of [
+            ...this.element.querySelectorAll('ck-children,ck-slot')
+        ]) {
             const nodes = document.createDocumentFragment();
+
             for (const child of [...this.xml.childNodes]) {
-                if (slot.localName === 'ck-slot' && child.localName !== slot.getAttribute('name')) continue;
-                if (slot.localName === 'ck-children' && this.xml.localName === 'layout' && ['central-content', 'sidebar-before', 'sidebar-after'].includes(child.localName)) continue;
+                if (
+                    slot.localName === 'ck-slot' &&
+                    child.localName !== slot.getAttribute('name')
+                ) continue;
+
+                if (
+                    slot.localName === 'ck-children' &&
+                    this.xml.localName === 'layout' &&
+                    ['central-content', 'sidebar-before', 'sidebar-after']
+                        .includes(child.localName)
+                ) continue;
+
                 nodes.append(await this.renderChild(child));
             }
+
             slot.replaceWith(nodes);
         }
     }

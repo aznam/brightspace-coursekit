@@ -72,14 +72,14 @@ function generatePage({
 
     if (manifestPath) {
         lines.push(
-            `**Manifest:** [${path.basename(manifestPath)}](${relativeLink(outputPath, manifestPath)})`,
+            `**Manifest:** \`${path.relative(root, manifestPath).replaceAll(path.sep, '/')}\``,
             ''
         );
     }
 
     if (schemaPath) {
         lines.push(
-            `**Schema:** [${path.basename(schemaPath)}](${relativeLink(outputPath, schemaPath)})`,
+            `**Schema:** \`${path.relative(root, schemaPath).replaceAll(path.sep, '/')}\``,
             ''
         );
     }
@@ -144,10 +144,12 @@ function synchronize(catalog) {
         if (fs.existsSync(documentationPath)) {
             content = fs.readFileSync(documentationPath, 'utf8');
 
-            content = content.replaceAll(
-                `(./${catalog.manifest || 'component.json'})`,
-                `(${relativeLink(outputPath, manifestPath)})`
-            );
+            if (manifestPath) {
+                content = content.replaceAll(
+                    `(./${path.basename(manifestPath)})`,
+                    `\`${path.relative(root, manifestPath).replaceAll(path.sep, '/')}\``
+                );
+            }
         } else {
             const manifest = manifestPath && fs.existsSync(manifestPath)
                 ? readJSON(manifestPath)

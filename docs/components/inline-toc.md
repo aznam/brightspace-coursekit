@@ -1,34 +1,28 @@
----
-id: inline-toc
-element: inline-toc
-status: public
-manifest: ./component.json
----
-
 # `inline-toc`
 
-In-page table of contents built from page navigation sections.
+In-page table of contents
 
-## XML contract
+**Source:** `framework/visual/inline-toc/`
 
-| Attribute | Required | Description |
-|---|---|---|
-| `aria-label` | No | XML attribute validated by `course-page.xsd`. |
-| `label` | No | XML attribute validated by `course-page.xsd`. |
-| `style-ref` | No | XML attribute validated by `course-page.xsd`. |
+## Manifest contract
 
-## Example
+| Field | Value |
+| --- | --- |
+| `id` | `inline-toc` |
+| `template` | `$(frameworkRoot)/visual/inline-toc/template.xslt` |
+| `renderer` | `$(frameworkRoot)/visual/inline-toc/renderer.js` |
+| `schema` | `$(frameworkRoot)/visual/inline-toc/inline-toc.xsd` |
+| `extends` | `not declared` |
+| `styles` | `$(frameworkRoot)/visual/inline-toc/inline-toc.css` |
+| `scripts` | None declared |
+| `variants` | `default` |
 
-```xml
-<inline-toc label="On this page"/>
-```
+## Direct XSD attributes
 
-## Behavior and constraints
+No direct named attributes in this component XSD; inspect its base type and page composition XSD.
 
-Items are generated from sections marked for navigation; it has no item children.
+The XSD named type(s): None declared. Inherited attributes, default component attributes (`id`, `variant`, `style-ref`, `init-ref` when supported), and **allowed children** may be defined elsewhere, particularly in `framework/visual/base-component/base-component.xsd` and `framework/pages/course-page/course-page.xsd`. A standalone visual-type XSD does not necessarily enumerate the child combinations available on a specific page.
 
-## Implementation
+## Rendering
 
-- Manifest: [`component.json`](../../framework/components/inline-toc/component.json)
-- XML structure: `framework/schemas/course-page.xsd`
-- Rendering and styling: see the files listed in `component.json` (including inherited files).
+This component uses `$(frameworkRoot)/visual/inline-toc/template.xslt` to generate HTML and `$(frameworkRoot)/visual/inline-toc/renderer.js` for renderer lifecycle hooks. Where present, CSS and behavior scripts are listed in the manifest. Course-specific CSS may target the `data-style-ref` attribute independently of `data-variant`.

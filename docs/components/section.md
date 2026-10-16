@@ -1,35 +1,28 @@
----
-id: section
-element: section
-status: public
-manifest: ./component.json
----
-
 # `section`
 
-Content section with optional identifier, heading and nested content.
+Section block
 
-## XML contract
+**Source:** `framework/visual/section/`
 
-| Attribute | Required | Description |
-|---|---|---|
-| `id` | No | XML attribute validated by `course-page.xsd`. |
-| `nav` | No | XML attribute validated by `course-page.xsd`. |
-| `nav-label` | No | XML attribute validated by `course-page.xsd`. |
-| `style-ref` | No | XML attribute validated by `course-page.xsd`. |
+## Manifest contract
 
-## Example
+| Field | Value |
+| --- | --- |
+| `id` | `section` |
+| `template` | `$(frameworkRoot)/visual/section/template.xslt` |
+| `renderer` | `$(frameworkRoot)/visual/section/renderer.js` |
+| `schema` | `$(frameworkRoot)/visual/section/section.xsd` |
+| `extends` | `not declared` |
+| `styles` | `$(frameworkRoot)/visual/section/section.css` |
+| `scripts` | None declared |
+| `variants` | `default` |
 
-```xml
-<section id="intro"><title>Introduction</title><p>Content</p></section>
-```
+## Direct XSD attributes
 
-## Behavior and constraints
+No direct named attributes in this component XSD; inspect its base type and page composition XSD.
 
-The section heading level depends on nesting depth.
+The XSD named type(s): None declared. Inherited attributes, default component attributes (`id`, `variant`, `style-ref`, `init-ref` when supported), and **allowed children** may be defined elsewhere, particularly in `framework/visual/base-component/base-component.xsd` and `framework/pages/course-page/course-page.xsd`. A standalone visual-type XSD does not necessarily enumerate the child combinations available on a specific page.
 
-## Implementation
+## Rendering
 
-- Manifest: [`component.json`](../../framework/components/section/component.json)
-- XML structure: `framework/schemas/course-page.xsd`
-- Rendering and styling: see the files listed in `component.json` (including inherited files).
+This component uses `$(frameworkRoot)/visual/section/template.xslt` to generate HTML and `$(frameworkRoot)/visual/section/renderer.js` for renderer lifecycle hooks. Where present, CSS and behavior scripts are listed in the manifest. Course-specific CSS may target the `data-style-ref` attribute independently of `data-variant`.

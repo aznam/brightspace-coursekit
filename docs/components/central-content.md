@@ -1,32 +1,28 @@
----
-id: central-content
-element: central-content
-status: public
-manifest: ./component.json
----
-
 # `central-content`
 
-Main page content container for sections and other content elements.
+Primary area for page content
 
-## XML contract
+**Source:** `framework/visual/central-content/`
 
-| Attribute | Required | Description |
-|---|---|---|
-| `style-ref` | No | XML attribute validated by `course-page.xsd`. |
+## Manifest contract
 
-## Example
+| Field | Value |
+| --- | --- |
+| `id` | `central-content` |
+| `template` | `$(frameworkRoot)/visual/central-content/template.xslt` |
+| `renderer` | `$(frameworkRoot)/visual/central-content/renderer.js` |
+| `schema` | `$(frameworkRoot)/visual/central-content/central-content.xsd` |
+| `extends` | `not declared` |
+| `styles` | `$(frameworkRoot)/visual/central-content/central-content.css` |
+| `scripts` | None declared |
+| `variants` | `default` |
 
-```xml
-<central-content><section id="overview"><title>Overview</title><p>Welcome.</p></section></central-content>
-```
+## Direct XSD attributes
 
-## Behavior and constraints
+No direct named attributes in this component XSD; inspect its base type and page composition XSD.
 
-Required once in the page layout.
+The XSD named type(s): None declared. Inherited attributes, default component attributes (`id`, `variant`, `style-ref`, `init-ref` when supported), and **allowed children** may be defined elsewhere, particularly in `framework/visual/base-component/base-component.xsd` and `framework/pages/course-page/course-page.xsd`. A standalone visual-type XSD does not necessarily enumerate the child combinations available on a specific page.
 
-## Implementation
+## Rendering
 
-- Manifest: [`component.json`](../../framework/components/central-content/component.json)
-- XML structure: `framework/schemas/course-page.xsd`
-- Rendering and styling: see the files listed in `component.json` (including inherited files).
+This component uses `$(frameworkRoot)/visual/central-content/template.xslt` to generate HTML and `$(frameworkRoot)/visual/central-content/renderer.js` for renderer lifecycle hooks. Where present, CSS and behavior scripts are listed in the manifest. Course-specific CSS may target the `data-style-ref` attribute independently of `data-variant`.

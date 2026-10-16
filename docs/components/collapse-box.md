@@ -1,34 +1,28 @@
----
-id: collapse-box
-element: collapse-box
-status: public
-manifest: ./component.json
----
-
 # `collapse-box`
 
-Disclosure panel rendered as a native HTML details element.
+Expandable content container
 
-## XML contract
+**Source:** `framework/visual/collapse-box/`
 
-| Attribute | Required | Description |
-|---|---|---|
-| `title` | No | XML attribute validated by `course-page.xsd`. |
-| `open` | No | XML attribute validated by `course-page.xsd`. |
-| `style-ref` | No | XML attribute validated by `course-page.xsd`. |
+## Manifest contract
 
-## Example
+| Field | Value |
+| --- | --- |
+| `id` | `collapse-box` |
+| `template` | `$(frameworkRoot)/visual/collapse-box/template.xslt` |
+| `renderer` | `$(frameworkRoot)/visual/collapse-box/renderer.js` |
+| `schema` | `$(frameworkRoot)/visual/collapse-box/collapse-box.xsd` |
+| `extends` | `not declared` |
+| `styles` | `$(frameworkRoot)/visual/collapse-box/collapse-box.css` |
+| `scripts` | None declared |
+| `variants` | `default` |
 
-```xml
-<collapse-box open="false"><title>Read more</title><p>Details.</p></collapse-box>
-```
+## Direct XSD attributes
 
-## Behavior and constraints
+No direct named attributes in this component XSD; inspect its base type and page composition XSD.
 
-The open attribute controls the initial state.
+The XSD named type(s): None declared. Inherited attributes, default component attributes (`id`, `variant`, `style-ref`, `init-ref` when supported), and **allowed children** may be defined elsewhere, particularly in `framework/visual/base-component/base-component.xsd` and `framework/pages/course-page/course-page.xsd`. A standalone visual-type XSD does not necessarily enumerate the child combinations available on a specific page.
 
-## Implementation
+## Rendering
 
-- Manifest: [`component.json`](../../framework/components/collapse-box/component.json)
-- XML structure: `framework/schemas/course-page.xsd`
-- Rendering and styling: see the files listed in `component.json` (including inherited files).
+This component uses `$(frameworkRoot)/visual/collapse-box/template.xslt` to generate HTML and `$(frameworkRoot)/visual/collapse-box/renderer.js` for renderer lifecycle hooks. Where present, CSS and behavior scripts are listed in the manifest. Course-specific CSS may target the `data-style-ref` attribute independently of `data-variant`.

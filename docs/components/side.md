@@ -1,33 +1,28 @@
----
-id: side
-element: side
-status: public
-manifest: ./component.json
----
-
 # `side`
 
-Optional sidebar for facts, links and supplemental content.
+Sidebar panel
 
-## XML contract
+**Source:** `framework/visual/side/`
 
-| Attribute | Required | Description |
-|---|---|---|
-| `position` | No | XML attribute validated by `course-page.xsd`. |
-| `style-ref` | No | XML attribute validated by `course-page.xsd`. |
+## Manifest contract
 
-## Example
+| Field | Value |
+| --- | --- |
+| `id` | `side` |
+| `template` | `$(frameworkRoot)/visual/side/template.xslt` |
+| `renderer` | `$(frameworkRoot)/visual/side/renderer.js` |
+| `schema` | `$(frameworkRoot)/visual/side/side.xsd` |
+| `extends` | `not declared` |
+| `styles` | `$(frameworkRoot)/visual/side/side.css` |
+| `scripts` | None declared |
+| `variants` | `default` |
 
-```xml
-<side position="before"><title>Quick facts</title><facts><fact label="Term" value="Fall"/></facts></side>
-```
+## Direct XSD attributes
 
-## Behavior and constraints
+No direct named attributes in this component XSD; inspect its base type and page composition XSD.
 
-A page may contain zero, one or two sidebars. Placement depends on page structure and the position attribute.
+The XSD named type(s): None declared. Inherited attributes, default component attributes (`id`, `variant`, `style-ref`, `init-ref` when supported), and **allowed children** may be defined elsewhere, particularly in `framework/visual/base-component/base-component.xsd` and `framework/pages/course-page/course-page.xsd`. A standalone visual-type XSD does not necessarily enumerate the child combinations available on a specific page.
 
-## Implementation
+## Rendering
 
-- Manifest: [`component.json`](../../framework/components/side/component.json)
-- XML structure: `framework/schemas/course-page.xsd`
-- Rendering and styling: see the files listed in `component.json` (including inherited files).
+This component uses `$(frameworkRoot)/visual/side/template.xslt` to generate HTML and `$(frameworkRoot)/visual/side/renderer.js` for renderer lifecycle hooks. Where present, CSS and behavior scripts are listed in the manifest. Course-specific CSS may target the `data-style-ref` attribute independently of `data-variant`.

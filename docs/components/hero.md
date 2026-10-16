@@ -1,33 +1,28 @@
----
-id: hero
-element: hero
-status: public
-manifest: ./component.json
----
-
 # `hero`
 
-Page introduction featuring title, subtitle and an optional background image.
+Hero/header banner
 
-## XML contract
+**Source:** `framework/visual/hero/`
 
-| Attribute | Required | Description |
-|---|---|---|
-| `image` | No | XML attribute validated by `course-page.xsd`. |
-| `style-ref` | No | XML attribute validated by `course-page.xsd`. |
+## Manifest contract
 
-## Example
+| Field | Value |
+| --- | --- |
+| `id` | `hero` |
+| `template` | `$(frameworkRoot)/visual/hero/template.xslt` |
+| `renderer` | `$(frameworkRoot)/visual/hero/renderer.js` |
+| `schema` | `$(frameworkRoot)/visual/hero/hero.xsd` |
+| `extends` | `not declared` |
+| `styles` | `$(frameworkRoot)/visual/hero/hero.css` |
+| `scripts` | None declared |
+| `variants` | `default` |
 
-```xml
-<hero image="hero-sample.svg"><title>${course.title}</title><subtitle>Introduction</subtitle></hero>
-```
+## Direct XSD attributes
 
-## Behavior and constraints
+No direct named attributes in this component XSD; inspect its base type and page composition XSD.
 
-The image is a course asset reference resolved by the resource provider.
+The XSD named type(s): None declared. Inherited attributes, default component attributes (`id`, `variant`, `style-ref`, `init-ref` when supported), and **allowed children** may be defined elsewhere, particularly in `framework/visual/base-component/base-component.xsd` and `framework/pages/course-page/course-page.xsd`. A standalone visual-type XSD does not necessarily enumerate the child combinations available on a specific page.
 
-## Implementation
+## Rendering
 
-- Manifest: [`component.json`](../../framework/components/hero/component.json)
-- XML structure: `framework/schemas/course-page.xsd`
-- Rendering and styling: see the files listed in `component.json` (including inherited files).
+This component uses `$(frameworkRoot)/visual/hero/template.xslt` to generate HTML and `$(frameworkRoot)/visual/hero/renderer.js` for renderer lifecycle hooks. Where present, CSS and behavior scripts are listed in the manifest. Course-specific CSS may target the `data-style-ref` attribute independently of `data-variant`.

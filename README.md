@@ -2,15 +2,21 @@
 
 **A declarative, component-based framework for creating and maintaining course content in D2L Brightspace.**
 
-Developed at the School of Computer Science, University of Windsor.
-
 This repository contains the **dev branch** of Brightspace CourseKit.
+
+## Why CourseKit?
+
+Maintaining a collection of visually coherent course pages in D2L Brightspace can be tedious. Repeatedly editing markup, layouts, navigation, and styling across pages takes time away from developing instructional material, and small changes can produce inconsistencies between pages.
+
+**CourseKit separates instructional meaning from presentation.** Authors describe content in semantic XML; page definitions and reusable visual components determine how that content is organized and rendered. Its modular architecture lets a course reuse or extend a consistent presentation without continually rebuilding layouts.
+
+This separation can also make LLM-assisted authoring more focused: a language model can work primarily on the semantic content and its contract, rather than spending output tokens reproducing course-specific HTML and CSS on every page. Generated material still requires review for instructional accuracy, accessibility, and correctness.
 
 ## Overview
 
-CourseKit follows a **Model–View–Presenter (MVP)** architecture implemented through a component-oriented rendering system.
+CourseKit uses a staged semantic-content → page-definition → visual-component pipeline, supported by dedicated managers, schema validation, and XSLT transformations. The separation is compatible with an MVP-oriented design, but the pipeline is the more precise description of the current runtime.
 
-The architecture separates three responsibilities:
+This **Model–View–Presenter (MVP)** architecture implemented through a component-oriented rendering system separates three responsibilities:
 
 - **Model:** Course configuration in JSON and page content in XML.
 - **Presenter:** The framework engine that interprets content, resolves dependencies, and renders components.
@@ -18,7 +24,7 @@ The architecture separates three responsibilities:
 
 This separation allows course content to evolve independently from its presentation, while keeping pages visually consistent and reusable.
 
-**The current version supports standard course pages (`course-page`).** Additional page types and modules can be introduced through the framework's extension system.
+**The framework includes `course-page` and an example `learning-page` extension.** Modules register additional semantic contracts, page definitions, and visual components.
 
 ## Features
 
@@ -32,16 +38,12 @@ This separation allows course content to evolve independently from its presentat
 - Automatic resource and schema resolution.
 - Minimal HTTP server for local development.
 - Example course and module templates.
-- Local development tools and optional tools deployable on GA-restricted Brightspace pages.
+- Python-based local development server scripts.
 
 ## Repository structure
 
 ```text
 /
-├── bootstrap-config.js       # Generic bootstrap configuration
-├── course.json               # Generic course template
-├── module.json               # Generic module template
-│
 ├── framework/                # Shared CourseKit runtime
 │   ├── bootstrap.js
 │   ├── registry.json
@@ -65,9 +67,12 @@ This separation allows course content to evolve independently from its presentat
 │   └── modules/
 │
 ├── templates/                # Reusable templates
-└── tools/
-    ├── local/                # Local development tools
-    └── deployed/             # Optional GA-restricted tools
+│   
+├── tools/
+|   ├── local/                # Local development tools
+│   └── deployed/             # Optional GA-restricted tools
+│
+└── start-server.* / stop-server.*   # Local development scripts
 ```
 
 The `framework/` directory contains the reusable rendering system. Course-specific content and resources are kept within individual course directories.
@@ -83,7 +88,7 @@ The repository includes a minimal HTTP development server based on the Python st
 Clone the `dev` branch:
 
 ```bash
-git clone --branch dev https://github.com/aznam/brigthspace-coursekit.git
+git clone --branch dev https://github.com/aznam/brightspace-coursekit.git
 ```
 
 Alternatively, download and extract the repository.
@@ -116,7 +121,7 @@ The server runs in the background.
 
 Open the following URL:
 
-http://127.0.0.1:8000/example-course/page.html
+http://127.0.0.1:8000/example-course/index.html
 
 During development, keep **Disable cache** enabled in the browser's developer tools if changes to CSS or JavaScript do not appear immediately.
 
@@ -160,7 +165,7 @@ const courseConfig = 'course.json';
 | `courseRoot` | Root directory of the course |
 | `courseConfig` | Course configuration file, relative to the course root |
 
-These paths are resolved relative to `bootstrap-config.js`.
+`frameworkPath` and `courseRoot` are resolved relative to `bootstrap-config.js`; `courseConfig` is resolved relative to `courseRoot`.
 
 The configuration script automatically loads `framework/bootstrap.js`. The framework then handles its own registry, components, schemas, styles, and scripts.
 
@@ -192,45 +197,34 @@ If the HTML page is stored elsewhere, adjust the `src` attribute so it points to
 
 The `data-content` attribute identifies the XML document relative to the course root.
 
-CourseKit determines the page type from the XML namespace and the framework registry. It is not necessary to declare the page type separately in the HTML host.
+CourseKit determines the page type from the semantic XML document’s `page-type` attribute. It is not necessary to declare the type in the HTML host.
 
 ### Editing course content
 
-Course pages are composed of XML elements representing reusable components.
-
-For example:
+Write **semantic XML** under `content/`. The `page-type` attribute selects the page definition that transforms the content; the page definition produces a validated page XML document, which is rendered by visual components.
 
 ```xml
-<page xmlns="urn:coursekit:page" title="${page-label}">
-
-  <variables>
-    <var name="page-label">The Course</var>
-  </variables>
-
-  <navbar page-title="${page-label}"/>
-
-  <hero>
-    <title>${course-title}</title>
-    <subtitle>Course introduction</subtitle>
-  </hero>
-
-  <central-content>
-    <inline-toc/>
-
-    <section id="overview">
-      <title>Overview</title>
-      <p>Welcome to the course.</p>
-    </section>
-  </central-content>
-
-</page>
+<s:content xmlns:s="urn:coursekit:semantic"
+           page-type="course-page"
+           title="${course.title}"
+           module-name="Introduction"
+           toc="true">
+    <s:section id="overview" title="Overview" nav="true">
+        <s:paragraph>Welcome to ${course.title}.</s:paragraph>
+        <s:picture src="example-diagram.svg" title="Diagram description">
+            Caption shown below the image.
+        </s:picture>
+    </s:section>
+</s:content>
 ```
 
 CourseKit interprets this content and renders the corresponding HTML and styles.
 
-Variables can be defined in `course.json` or within a page. Page variables take precedence over course variables.
+Variables can be defined in `course.json` or within a page.
 
-The example at `example-course/content/course-page.xml` demonstrates the available standard-page components.
+For a complete example, see `example-course/content/overview.xml`.
+
+See the [VitePress documentation](docs/index.md) for the architecture, configuration, page contracts, components, modules, and preprocessors.
 
 ## Customizing a course
 
@@ -258,40 +252,28 @@ Components can also be customized through their supported attributes and `style-
 
 **Modules** are reusable libraries that can provide components, page types, styles, scripts, schemas, and dependencies.
 
-A module template is available under `templates/module/`.
+The supplied example in `example-course/modules/learning/` demonstrates a module manifest, semantic definitions, and a page extension.
 
-## Schema resolution
+## Resource and schema resolution
 
-CourseKit resolves framework and course resources automatically, independently of the location of the HTML host page.
+CourseKit resolves framework and course resources automatically, independently of the location of the HTML host page. It uses `courseRoot` supplied by `bootstrap-config.js`. When `siteId` is set, `ResourceLoader` redirects course resources under `/content/enforced/<siteId>/<courseRoot path>`; otherwise it preserves the bootstrap root. JSON and XSD references can use `$(frameworkRoot)/...` and `$(courseRoot)/...`. `ResourceLoader` resolves them to URLs and maintains virtual resource identities for compilation. The XSD preprocessor resolves `xs:include`/`xs:import` against the registered virtual schemas, without discarding directory structure.
 
-When resolving a schema, the framework follows this priority:
-
-1. A course-specific schema, if available.
-2. The corresponding framework schema.
-3. An explicit error if neither exists.
-
-Course-specific schemas can be placed in the course's `schemas/` directory or declared in `course.json`.
-
-This allows courses to customize supported XML definitions while retaining the framework's default schemas as fallbacks.
+Resource paths declared in `course.json` can be customized using `customPaths`. See [Resource resolution](docs/architecture/resources.md).
 
 ## Brightspace deployment
 
 CourseKit is designed to load XML content and its associated resources directly in Brightspace.
 
-Set `siteId` in the deployed course's `course.json`. Course-owned resources can then be resolved under:
-
-```text
-/content/enforced/<siteId>/
-```
+Set `siteId` in `course.json` for Brightspace deployment. `ResourceLoader` then prefixes the bootstrap-defined course path with `/content/enforced/<siteId>/`. Leave `siteId` null for local development. Do not prefix `courseRoot` manually with `/content/enforced/<siteId>/` for this deployment mode.
 
 Deploy the required framework files, course configuration, HTML host pages, XML content, and associated course resources.
 
 **Do not deploy:**
 
 - Local HTTP server files and start/stop scripts.
-- `tools/local/`.
+- Any local-only tooling not required by the runtime.
 
-Tools under `tools/deployed/` may be hosted separately on Brightspace pages with access restricted to GA users.
+If you maintain optional tooling outside this snapshot, deploy and permission it separately from course content.
 
 ## Development status and disclaimer
 
@@ -306,8 +288,6 @@ Users and contributors should review and test the software before relying on it,
 ## Author
 
 Aznam Yacoub  
-School of Computer Science  
-University of Windsor
 
 ## License
 
@@ -319,4 +299,4 @@ You may use, modify, and redistribute this software for any noncommercial purpos
 
 Any copy or derivative work must include the license terms (or their URL) and the following notice:
 
-**Required Notice:** Copyright © 2026 Aznam Yacoub (https://github.com/aznam/brigthspace-coursekit)
+**Required Notice:** Copyright © 2026 Aznam Yacoub (https://github.com/aznam/brightspace-coursekit)

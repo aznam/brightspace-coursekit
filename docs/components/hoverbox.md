@@ -1,32 +1,28 @@
----
-id: hoverbox
-element: hoverbox
-status: public
-manifest: ./component.json
----
-
 # `hoverbox`
 
-Inline trigger exposing a supporting content panel.
+Inline popover or hover information
 
-## XML contract
+**Source:** `framework/visual/hoverbox/`
 
-| Attribute | Required | Description |
-|---|---|---|
-| `style-ref` | No | XML attribute validated by `course-page.xsd`. |
+## Manifest contract
 
-## Example
+| Field | Value |
+| --- | --- |
+| `id` | `hoverbox` |
+| `template` | `$(frameworkRoot)/visual/hoverbox/template.xslt` |
+| `renderer` | `$(frameworkRoot)/visual/hoverbox/renderer.js` |
+| `schema` | `$(frameworkRoot)/visual/hoverbox/hoverbox.xsd` |
+| `extends` | `not declared` |
+| `styles` | `$(frameworkRoot)/visual/hoverbox/hoverbox.css` |
+| `scripts` | `$(frameworkRoot)/visual/hoverbox/hoverbox.js` |
+| `variants` | `default` |
 
-```xml
-<hoverbox><trigger>Key term</trigger><panel><title>Definition</title><span>Explanation.</span></panel></hoverbox>
-```
+## Direct XSD attributes
 
-## Behavior and constraints
+No direct named attributes in this component XSD; inspect its base type and page composition XSD.
 
-Uses a trigger and a panel; review keyboard interaction in the runtime implementation.
+The XSD named type(s): None declared. Inherited attributes, default component attributes (`id`, `variant`, `style-ref`, `init-ref` when supported), and **allowed children** may be defined elsewhere, particularly in `framework/visual/base-component/base-component.xsd` and `framework/pages/course-page/course-page.xsd`. A standalone visual-type XSD does not necessarily enumerate the child combinations available on a specific page.
 
-## Implementation
+## Rendering
 
-- Manifest: [`component.json`](../../framework/components/hoverbox/component.json)
-- XML structure: `framework/schemas/course-page.xsd`
-- Rendering and styling: see the files listed in `component.json` (including inherited files).
+This component uses `$(frameworkRoot)/visual/hoverbox/template.xslt` to generate HTML and `$(frameworkRoot)/visual/hoverbox/renderer.js` for renderer lifecycle hooks. Where present, CSS and behavior scripts are listed in the manifest. Course-specific CSS may target the `data-style-ref` attribute independently of `data-variant`.

@@ -35,7 +35,7 @@
     </xsl:template>
 
     <xsl:template match="l:infonote">
-        <p:infobox variant="info" style-ref="course-note">
+        <p:infobox variant="info" icon="info" style-ref="course-note">
             <xsl:copy-of select="@id|@title"/>
             <xsl:apply-templates select="node()"/>
         </p:infobox>

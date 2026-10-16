@@ -4,9 +4,9 @@
     <xs:include schemaLocation="$(frameworkRoot)/semantic/paragraph/paragraph.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/picture/picture.xsd"/>
 
-    <xs:complexType name="LinkType">
-        <xs:complexContent>
-            <xs:extension base="s:Container">
+    <xs:complexType name="LinkType" mixed="true">
+        <xs:complexContent mixed="true">
+            <xs:extension base="s:Text">
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element ref="s:paragraph"/>
                     <xs:element ref="s:picture"/>

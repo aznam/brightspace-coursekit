@@ -3,6 +3,7 @@
            xmlns:l="urn:coursekit:semantic:learning"
            page-type="learning-page"
            title="${course.title}"
+           module-name="Module Test"
            subtitle="From design intent to playable systems"
            image="hero-sample.svg"
            toc="true">
@@ -24,7 +25,7 @@
             inline in your prose.
         </l:paragraph>
 
-        <l:infonote title="ℹ️ Note">
+        <l:infonote title="Note">
             <s:paragraph>Content of the info note.</s:paragraph>
             <s:list>
                 <s:item>Lists use the infobox component's own spacing rules.</s:item>
@@ -58,14 +59,10 @@
     <s:information id="useful-links" title="Useful Links">
         <s:list>
             <s:item>
-                <s:link href="#">
-                    <s:paragraph>Course Syllabus</s:paragraph>
-                </s:link>
+                <s:link href="#">Course Syllabus</s:link>
             </s:item>
             <s:item>
-                <s:link href="#">
-                    <s:paragraph>Evaluation</s:paragraph>
-                </s:link>
+                <s:link href="#">Evaluation</s:link>
             </s:item>
         </s:list>
     </s:information>

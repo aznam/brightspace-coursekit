@@ -13,6 +13,10 @@
             "type": "string",
             "default": ""
         },
+        "module-name": { 
+            "type": "string", 
+            "default": "" 
+        },
         "image": {
             "type": "string",
             "default": ""

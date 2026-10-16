@@ -10,8 +10,23 @@ export class ResourceLoader {
     }
 
     configure(course = {}) {
-        // The bootstrap supplies courseRoot explicitly. siteId is not a path override.
-        this.courseRoot = this.initialCourseRoot;
+        // Without a Brightspace site ID, preserve the bootstrap's local course root.
+        // With one, retain its course subpath under Brightspace's enforced-content root.
+        const siteId = course.siteId;
+        if (siteId === null || siteId === undefined || String(siteId).trim() === '') {
+            this.courseRoot = new URL(this.initialCourseRoot.href);
+        } else {
+            const id = String(siteId).trim();
+            if (!/^[A-Za-z0-9_-]+$/.test(id)) {
+                throw new Error(`Invalid Brightspace siteId: ${id}`);
+            }
+            const initialPath = this.initialCourseRoot.pathname;
+            // Avoid duplicating /content/enforced/<siteId>/ if the bootstrap is
+            // already hosted within Brightspace's enforced-content directory.
+            const existing = /^\/content\/enforced\/[^/]+\/(.*)$/.exec(initialPath);
+            const coursePath = existing ? existing[1] : initialPath.replace(/^\/+/, '');
+            this.courseRoot = new URL(`/content/enforced/${encodeURIComponent(id)}/${coursePath}`, this.initialCourseRoot.origin);
+        }
 
         const mergedPaths = {
             assets: 'assets/',
@@ -27,7 +42,6 @@ export class ResourceLoader {
 
         this.customPaths = {};
         
-        // On boucle pour s'assurer que chaque chemin finit bien par un slash (sauf s'il est vide)
         for (const [key, value] of Object.entries(mergedPaths)) {
             if (value && typeof value === 'string' && !value.endsWith('/')) {
                 this.customPaths[key] = value + '/';

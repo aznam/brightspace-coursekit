@@ -2,6 +2,8 @@ import { parseXML, serialize, transform, NS } from './xml.js';
 import { compileXSD } from './xsd.js';
 import { loadManifest, mergeDefinition } from './manifest.js';
 import { XSDPreprocessor } from './xsd-preprocessor.js'; // Import du pré-processeur
+import { XSLTPreprocessor } from './xslt-preprocessor.js';
+
 function diagnoseXSD(entry, files) {
     console.log('🔍 Diagnostic XSD VFS - Entrée :', entry);
     const fileKeys = Object.keys(files);
@@ -36,15 +38,41 @@ export class PagesManager {
         this.ctx = context;
         this.pages = new Map();
     }
+
     async init() {
         const r = this.ctx.resources, registry = await r.json(r.framework('registry.json'));
         for (const item of registry.pages || [])
             await this.register(r.framework(item));
     }
+
     async register(url, operation = 'add') {
         const m = await loadManifest(this.ctx.resources, url, 'page', ['schema', 'transform']);
         const previous = this.pages.get(m.id);
         this.pages.set(m.id, mergeDefinition(previous, m, operation));
+    }
+
+    registerExtension(extension) {
+        const parent = this.pages.get(extension.page);
+        if (!parent) throw Error(`Unknown page extension target: ${extension.page}`);
+        const id = extension.id;
+        if (!id || typeof id !== 'string')
+            throw Error(`Page extension of ${extension.page} requires an explicit id`);
+        if (id === parent.id || this.pages.has(id))
+            throw Error(`Duplicate page definition: ${id}`);
+        if (!extension.transform)
+            throw Error(`Page extension ${id} requires a transform`);
+
+        this.pages.set(id, {
+            ...parent,
+            id,
+            basePage: parent.id,
+            parameters: { ...(parent.parameters || {}), ...(extension.parameters || {}) },
+            styles: [...(parent.styles || [])],
+            scripts: [...(parent.scripts || [])],
+            overlays: [...(parent.overlays || []), extension.transform],
+            transformDoc: null,
+            transformPromise: null
+        });
     }
 
     async prepare() {
@@ -69,12 +97,17 @@ export class PagesManager {
             componentSchemas.push(key);
         }
 
+        const registeredSchemas = new Set();
         for (const page of this.pages.values()) {
             const url = r.relative(page.schema, page.manifestUrl);
+            const key = r.virtualKey(url);
+            page.schemaKey = key;
+            if (registeredSchemas.has(key)) continue;
             const xsd = await r.text(url);
             const doc = parseXML(xsd, page.schema);
             page.schemaKey = r.virtualKey(url);
             preprocessor.addSchema(page.schemaKey, doc, doc.documentElement.getAttribute('targetNamespace'), url);
+            registeredSchemas.add(key);
         }
 
         // A synthetic schema gathers the visual component declarations.
@@ -103,26 +136,11 @@ export class PagesManager {
         }
 
         for (const page of this.pages.values()) {
-            const schema = await r.text(r.relative(page.schema, page.manifestUrl));
+            //const schema = await r.text(r.relative(page.schema, page.manifestUrl));
             // diagnoseXSD(page.schemaKey, files);
             page.validator = await compileXSD(page.schemaKey, files);
-            page.transformDoc = parseXML(await r.text(r.relative(page.transform, page.manifestUrl)), page.transform);
-            for (const url of page.overlays || []) {
-                const overlay = parseXML(await r.text(url), url);
-                for (const a of [...overlay.documentElement.attributes])
-                    if (a.name.startsWith('xmlns:') && !page.transformDoc.documentElement.hasAttribute(a.name))
-                        page.transformDoc.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', a.name, a.value);
-                for (const rule of [...overlay.documentElement.children]) {
-                    if (!['template', 'param', 'variable', 'key'].includes(rule.localName))
-                        throw Error('Unsupported XSLT overlay rule ' + rule.localName);
-                    const key = rule.getAttribute('name') || [rule.getAttribute('match'), rule.getAttribute('mode')].join('|');
-                    for (const old of [...page.transformDoc.documentElement.children]) {
-                        if (old.localName === rule.localName && (old.getAttribute('name') || [old.getAttribute('match'), old.getAttribute('mode')].join('|')) === key)
-                            old.remove();
-                    }
-                    page.transformDoc.documentElement.append(page.transformDoc.importNode(rule, true));
-                }
-            }
+            page.transformDoc = null;
+            page.transformPromise = null;
             page.behaviors = [];
             for (const script of page.scripts || []) {
                 const url = r.relative(script, page.manifestUrl);
@@ -259,9 +277,36 @@ export class PagesManager {
         if (!page)
             throw Error('Unknown page type ' + this.getType(content));
         this.checkParams(content, page);
+        // Only the selected page's XSLT and its explicit dependencies are composed.
+        if (!page.transformPromise) {
+            const sourceURL = this.ctx.resources.relative(page.transform, page.manifestUrl);
+            page.transformPromise = new XSLTPreprocessor(this.ctx.resources)
+                .process(sourceURL, page.overlays || [])
+                .catch(error => {
+                    page.transformPromise = null;
+                    throw error;
+                });
+        }
+        page.transformDoc = await page.transformPromise;
         const output = transform(content, page.transformDoc);
-        if (!output?.documentElement)
-            throw Error('Page XSLT produced no XML');
+        if (!output?.documentElement) {
+            throw new Error(`Page "${page.id}": XSLT produced no XML`);
+        }
+        const unknown = output.getElementsByTagNameNS(
+            'urn:coursekit:diagnostics',
+            'unknown'
+        );
+
+        if (unknown.length > 0) {
+            const elements = [...unknown].map(node =>
+                node.getAttribute('element')
+            );
+
+            throw new Error(
+                `Page "${page.id}" cannot transform semantic elements: ` +
+                [...new Set(elements)].join(', ')
+            );
+        }
         const variables = this.resolveVariables(output);
         this.interpolateVariables(output, variables);
         await page.validator.validate(serialize(output));

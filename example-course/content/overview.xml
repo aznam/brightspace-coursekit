@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <s:content xmlns:s="urn:coursekit:semantic"
            xmlns:l="urn:coursekit:semantic:learning"
-           page-type="course-page"
+           page-type="learning-page"
            title="${course.title}"
            subtitle="From design intent to playable systems"
            image="hero-sample.svg"
@@ -44,12 +44,8 @@
     <!-- Section 2 utilisant la sémantique native s:section et s:picture -->
     <s:section id="section-2" title="Another Section" nav="true">
         <s:paragraph>More content here.</s:paragraph>
-        <s:picture src="example-diagram.svg" title="Example of a responsive picture with a legend.">
-            <s:alt>Simple example diagram</s:alt>
-        </s:picture>
-        <s:picture src="example-diagram.svg">
-            <s:alt>Same example diagram without a legend</s:alt>
-        </s:picture>
+        <s:picture src="example-diagram.svg" title="Example of a responsive picture with a legend.">Simple example diagram</s:picture>
+        <s:picture src="example-diagram.svg" />
     </s:section>
 
     <!-- Objectifs pédagogiques du module learning -->

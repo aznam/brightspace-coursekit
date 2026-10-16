@@ -2,11 +2,12 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
                 xmlns:s="urn:coursekit:semantic" 
                 xmlns:p="urn:coursekit:page" 
+                xmlns:xsp="urn:coursekit:preprocessor"
+                xmlns:ckerr="urn:coursekit:diagnostics" 
                 version="1.0">
     
     <xsl:output method="xml"/>
 
-    <!-- L'enveloppe principale (Layout et Zones) -->
     <xsl:template match="/s:content">
         <p:course-page>
             <p:meta>
@@ -22,11 +23,9 @@
                     page-title="${course-title}"
                     module-title="${module-name}">
 
-                    <xsl:for-each select="s:section[@nav='true']">
-                        <p:link href="#{@id}">
-                            <xsl:value-of select="@title"/>
-                        </p:link>
-                    </xsl:for-each>
+                    <xsp:slot name="navbar-items">
+                        <xsl:apply-templates select="*" mode="navbar"/>
+                    </xsp:slot>
 
                 </p:navbar>
                 
@@ -35,27 +34,41 @@
                 </p:hero>
                 
                 <p:sidebar-before>
-                    <xsl:apply-templates select="s:information[not(preceding-sibling::s:section)]"/>
+                    <xsl:apply-templates select="s:information[not(preceding-sibling::*[local-name()='section'])]"/>
                 </p:sidebar-before>
                 
                 <p:central-content>
                     <xsl:if test="@toc='true'">
                         <p:inline-toc>
-                            <xsl:for-each select="s:section">
-                                <p:link href="#{@id}">
-                                    <xsl:value-of select="@title"/>
-                                </p:link>
-                            </xsl:for-each>
+                            <xsp:slot name="toc-items">
+                            <xsl:apply-templates select="*" mode="toc"/>
+                        </xsp:slot>
                         </p:inline-toc>
                     </xsl:if>
                     <xsl:apply-templates select="*[not(self::s:information)]"/>
                 </p:central-content>
                 
                 <p:sidebar-after>
-                    <xsl:apply-templates select="s:information[preceding-sibling::s:section]"/>
+                    <xsl:apply-templates select="s:information[preceding-sibling::*[local-name()='section']]"/>
                 </p:sidebar-after>
             </p:layout>
         </p:course-page>
+    </xsl:template>
+
+    <!-- Contributions à la navigation, dans l'ordre du XML source -->
+    <xsl:template match="*" mode="navbar" priority="-1"/>
+
+    <xsl:template match="s:section" mode="navbar">
+        <xsl:if test="@nav='true'">
+            <p:link href="#{@id}"><xsl:value-of select="@title"/></p:link>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- Contributions à la table des matières -->
+    <xsl:template match="*" mode="toc" priority="-1"/>
+
+    <xsl:template match="s:section" mode="toc">
+        <p:link href="#{@id}"><xsl:value-of select="@title"/></p:link>
     </xsl:template>
 
     <xsl:template match="s:section">
@@ -112,7 +125,9 @@
     </xsl:template>
 
     <xsl:template match="*">
-        <xsl:message terminate="yes">Unknown semantic element</xsl:message>
+        <ckerr:unknown
+            element="{name()}"
+            namespace="{namespace-uri()}"/>
     </xsl:template>
 
 </xsl:stylesheet>

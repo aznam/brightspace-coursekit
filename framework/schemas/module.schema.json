@@ -90,7 +90,9 @@
             "items": {
                 "type": "object",
                 "required": [
-                    "page"
+                    "id",
+                    "page",
+                    "transform"
                 ],
                 "properties": {
                     "page": {
@@ -101,6 +103,10 @@
                     },
                     "transform": {
                         "type": "string"
+                    },
+                    "id": {
+                        "type": "string",
+                        "minLength": 1
                     }
                 },
                 "additionalProperties": false

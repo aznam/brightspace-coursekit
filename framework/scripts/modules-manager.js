@@ -59,16 +59,15 @@ export class ModulesManager {
                 await this.managers.components.register(resources.relative(reference, module.manifestUrl), typeof item === 'string' ? 'add' : (item.operation || 'add'));
             }
             for (const extension of module.pageExtensions || []) {
-                const page = this.managers.pages.pages.get(extension.page);
-                if (!page) {
-                    throw new Error(`Unknown page extension target: ${extension.page}`);
-                }
-                Object.assign(page.parameters || (page.parameters = {}), extension.parameters || {});
-                if (extension.transform) {
-                    const overlay = resources.relative(extension.transform, module.manifestUrl);
-                    await resources.verify(overlay);
-                    (page.overlays ||= []).push(overlay);
-                }
+                // Register an independently selectable page; never mutate its base.
+                const overlay = extension.transform
+                    ? resources.relative(extension.transform, module.manifestUrl)
+                    : null;
+                if (overlay) await resources.verify(overlay);
+                this.managers.pages.registerExtension({
+                    ...extension,
+                    transform: overlay
+                });
             }
             loaded.add(module.id);
             this.modules.push(module);

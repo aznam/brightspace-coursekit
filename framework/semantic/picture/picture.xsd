@@ -11,4 +11,8 @@
         </xs:simpleContent>
     </xs:complexType>
 
+    <xs:element name="picture"
+                type="s:PictureType"
+                substitutionGroup="s:component"/>
+
 </xs:schema>

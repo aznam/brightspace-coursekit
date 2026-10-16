@@ -9,6 +9,7 @@ import { PagesManager } from './scripts/pages-manager.js';
 import { ComponentsManager } from './scripts/components-manager.js';
 import { ModulesManager } from './scripts/modules-manager.js';
 import { ResourceLoader } from './scripts/resources.js';
+import { ContentResolver } from './scripts/content-resolver.js';
 import { ManifestValidator } from './scripts/manifest-validator.js';
 import { LinkResolver } from './scripts/link-resolver.js';
 import { FontLoader } from './scripts/font-loader.js';
@@ -20,7 +21,7 @@ function readBootstrapSettings() {
     if (!loader) {
         throw new Error('[CourseKit] Bootstrap loader script not found.');
     }
-    const { courseRoot, courseConfig, content } = loader.dataset;
+    const { courseRoot, courseConfig, content, table } = loader.dataset;
     if (!courseRoot || !courseConfig) {
         throw new Error('[CourseKit] Missing courseRoot or courseConfig.');
     }
@@ -28,7 +29,8 @@ function readBootstrapSettings() {
         frameworkRoot: new URL('.', bootstrapURL),
         courseRoot: new URL(courseRoot),
         courseConfig,
-        content
+        content,
+        table
     };
 }
 export async function start() {
@@ -76,10 +78,11 @@ export async function start() {
         (courseResources.scripts || []).map(path => resources.resolve(path, 'scripts'))
     ));
     await modules.loadResources({ styleLoader, scriptLoader, fontLoader });
-    if (!config.content) {
-        throw new Error('[CourseKit] Missing data-content on bootstrap-config.js script.');
-    }
-    await content.show(config.content, { pages, components });
+    const contentPath = await new ContentResolver(resources).resolve({
+        content: config.content,
+        table: config.table
+    });
+    await content.show(contentPath, { pages, components });
     return { settings, content, pages, components, modules };
 }
 start().catch(error => {

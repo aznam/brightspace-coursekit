@@ -4,6 +4,7 @@ const require = createRequire(import.meta.url);
 const vitepress = require('vitepress');
 
 export default vitepress.defineConfig({
+  base: '/brightspace-coursekit/',
   title: 'Brightspace CourseKit',
   description: 'Declarative course content and component framework for Brightspace',
   cleanUrls: true,

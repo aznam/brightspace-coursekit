@@ -7,6 +7,7 @@ export class XSDPreprocessor {
         this.resources = resources;
         this.vfs = resources.createVirtualFS();
         this.documents = new Map();
+        this.expandedIncludes = new Set();
     }
 
     addSchema(filename, doc, namespace, sourceURL = null) {
@@ -15,12 +16,18 @@ export class XSDPreprocessor {
     }
 
     processAll() {
+        // A derived schema is expanded in its own document. Registered base
+        // schemas remain independent and are never altered by extensions.
         for (const [key, entry] of this.documents) {
-            this._flattenImports(key, entry);
+            if (entry.doc.getElementsByTagNameNS(XSP_NS, 'extend').length) {
+                this._expandIncludes(key, entry);
+            }
         }
-
-        for (const { doc } of this.documents.values()) {
-            this._resolveInheritance(doc);
+        for (const [key, entry] of this.documents) {
+            this._applyExtensions(key, entry.doc);
+            this._unwrapSlots(entry.doc);
+            this._resolveInheritance(entry.doc);
+            this._flattenImports(key, entry);
         }
 
         const result = {};
@@ -29,6 +36,127 @@ export class XSDPreprocessor {
             this.vfs.put(filename, result[filename]);
         }
         return result;
+    }
+
+    // Expand xs:include only for schemas using xsp:extend. This makes the
+    // included declarations locally editable without redefining a shared XSD.
+    _expandIncludes(key, entry) {
+        this.expandedIncludes.add(key);
+        const doc = entry.doc;
+        const root = doc.documentElement;
+        const seen = new Set([key]);
+        const imports = new Map();
+        const declarations = new Map();
+        const self = this;
+
+        function locate(loc, parentKey, parentEntry) {
+            if (loc === 'virtual_components.xsd') return '__generated__/virtual_components.xsd';
+            if (loc.startsWith('__generated__/')) return loc;
+            return parentEntry.sourceURL
+                ? self.resources.virtualKey(loc, parentEntry.sourceURL)
+                : new URL(loc, new URL(parentKey, 'https://vfs.coursekit.invalid/')).pathname.slice(1);
+        }
+
+        function scan(parentKey, parentEntry) {
+            const sourceRoot = parentEntry.doc.documentElement;
+            if (sourceRoot.getAttribute('targetNamespace') !== root.getAttribute('targetNamespace')) {
+                throw Error(`XSD include namespace mismatch: ${parentKey}`);
+            }
+            for (const child of [...sourceRoot.children]) {
+                if (child.namespaceURI !== NS.xs) continue;
+                if (child.localName === 'include') {
+                    const target = locate(child.getAttribute('schemaLocation'), parentKey, parentEntry);
+                    if (seen.has(target)) continue;
+                    const next = self.documents.get(target);
+                    if (!next) throw Error(`Unregistered XSD include: ${target}`);
+                    seen.add(target);
+                    scan(target, next);
+                } else if (child.localName === 'import') {
+                    const loc = child.getAttribute('schemaLocation');
+                    const target = loc ? locate(loc, parentKey, parentEntry) : '';
+                    const unique = `${child.getAttribute('namespace')}|${target}`;
+                    if (!imports.has(unique)) {
+                        const clone = doc.importNode(child, true);
+                        if (loc) clone.setAttribute('schemaLocation', self.resources.virtualRelative(key, target));
+                        imports.set(unique, clone);
+                    }
+                } else if (child.localName !== 'annotation' && child.localName !== 'redefine' && child.localName !== 'override') {
+                    const name = child.getAttribute('name');
+                    const unique = `${child.localName}:${name}`;
+                    if (name && declarations.has(unique)) {
+                        throw Error(`Duplicate XSD declaration in ${key}: ${unique}`);
+                    }
+                    if (name) declarations.set(unique, doc.importNode(child, true));
+                }
+            }
+        }
+
+        // Start from included schemas, then retain local declarations and
+        // xsp:extend instructions in their original order.
+        const local = [...root.children];
+        for (const child of local) {
+            if (child.namespaceURI === NS.xs && child.localName === 'include') {
+                const target = locate(child.getAttribute('schemaLocation'), key, entry);
+                const included = this.documents.get(target);
+                if (!included) throw Error(`Unregistered XSD include: ${target}`);
+                if (!seen.has(target)) { seen.add(target); scan(target, included); }
+                child.remove();
+            } else if (child.namespaceURI === NS.xs && child.localName === 'import') {
+                const loc = child.getAttribute('schemaLocation');
+                const target = loc ? locate(loc, key, entry) : '';
+                const unique = `${child.getAttribute('namespace')}|${target}`;
+                if (!imports.has(unique)) {
+                    const clone = doc.importNode(child, true);
+                    if (loc) clone.setAttribute('schemaLocation', this.resources.virtualRelative(key, target));
+                    imports.set(unique, clone);
+                }
+                child.remove();
+            } else if (child.namespaceURI === NS.xs && child.hasAttribute('name')) {
+                const unique = `${child.localName}:${child.getAttribute('name')}`;
+                if (declarations.has(unique)) throw Error(`Duplicate XSD declaration in ${key}: ${unique}`);
+                declarations.set(unique, child);
+                child.remove();
+            }
+        }
+        // XSD 1.0 requires xs:import before declarations.
+        const anchor = root.firstChild;
+        for (const imported of imports.values()) root.insertBefore(imported, anchor);
+        for (const declaration of declarations.values()) root.appendChild(declaration);
+    }
+
+    _applyExtensions(key, doc) {
+        for (const extend of [...doc.getElementsByTagNameNS(XSP_NS, 'extend')]) {
+            const target = extend.getAttribute('target');
+            const slotName = extend.getAttribute('slot');
+            if (!target || !slotName) throw Error('XSD xsp:extend requires target and slot.');
+            const [prefix, name] = target.includes(':') ? target.split(':') : ['', target];
+            const ns = prefix ? extend.lookupNamespaceURI(prefix) : doc.documentElement.getAttribute('targetNamespace');
+            if (ns !== doc.documentElement.getAttribute('targetNamespace')) {
+                throw Error(`XSD xsp:extend target must belong to page namespace: ${target}`);
+            }
+            const definitions = [...doc.documentElement.children].filter(n =>
+                n.namespaceURI === NS.xs && n.localName === 'element' && n.getAttribute('name') === name
+            );
+            if (definitions.length !== 1) throw Error(`XSD xsp:extend target not uniquely found: ${target} (${key})`);
+            const slots = [...definitions[0].getElementsByTagNameNS(XSP_NS, 'slot')].filter(n => n.getAttribute('name') === slotName);
+            if (slots.length !== 1) throw Error(`XSD xsp:slot '${slotName}' not uniquely found in ${target} (${key})`);
+            const slot = slots[0];
+            if (!slot.parentNode || slot.parentNode.namespaceURI !== NS.xs || !['choice', 'sequence', 'all'].includes(slot.parentNode.localName)) {
+                throw Error(`XSD xsp:slot '${slotName}' must be inside xs:choice, xs:sequence or xs:all`);
+            }
+            for (const child of [...extend.children]) {
+                if (child.namespaceURI !== NS.xs) throw Error('XSD xsp:extend accepts only XSD particles.');
+                slot.appendChild(doc.importNode(child, true));
+            }
+            extend.remove();
+        }
+    }
+
+    _unwrapSlots(doc) {
+        for (const slot of [...doc.getElementsByTagNameNS(XSP_NS, 'slot')]) {
+            while (slot.firstChild) slot.parentNode.insertBefore(slot.firstChild, slot);
+            slot.remove();
+        }
     }
 
     _flattenImports(key, { doc, sourceURL }) {
@@ -45,13 +173,15 @@ export class XSDPreprocessor {
                 target = '__generated__/virtual_components.xsd';
             } else if (loc.startsWith('__generated__/')) {
                 target = loc;
+            } else if (this.expandedIncludes.has(key) || !sourceURL) {
+                // xs:include expansion rewrites imported schemaLocation values
+                // relative to the derived VFS key, not the original HTTP URL.
+                // Resolve those references within the VFS to avoid interpreting
+                // ../../__generated__/... as a URL outside framework/course roots.
+                const virtualURL = new URL(loc, new URL(key, 'https://vfs.coursekit.invalid/'));
+                target = virtualURL.pathname.slice(1);
             } else {
-                if (!sourceURL) {
-                    const virtualURL = new URL(loc, new URL(key, 'https://vfs.coursekit.invalid/'));
-                    target = virtualURL.pathname.slice(1);
-                } else {
-                    target = this.resources.virtualKey(loc, sourceURL);
-                }
+                target = this.resources.virtualKey(loc, sourceURL);
             }
             if (!this.documents.has(target)) {
                 throw Error(`Unregistered XSD reference ${loc} (${key} -> ${target})`);

@@ -29,9 +29,13 @@ export class FontLoader {
                         weight: String(file.weight || '400'),
                         style: file.style || 'normal'
                     });
-                    await face.load();
+                    // Register immediately so rendering may use it as soon as it loads.
+                    // Failures preserve the site-defined fallback without blocking a page.
                     document.fonts.add(face);
                     this.loaded.add(key);
+                    void face.load().catch(error => {
+                        console.warn(`[CourseKit] Font unavailable (${font.family}):`, error);
+                    });
                 }
             }
             else {

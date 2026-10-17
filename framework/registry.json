@@ -38,7 +38,8 @@
     "resources": {
         "styles": [
             "$(frameworkRoot)/styles/tokens.css",
-            "$(frameworkRoot)/styles/reset.css"
+            "$(frameworkRoot)/styles/reset.css",
+            "$(frameworkRoot)/styles/theme-control.css"
         ],
         "scripts": [],
         "fonts": [],

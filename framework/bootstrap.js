@@ -41,6 +41,7 @@ export async function start() {
     await settings.init(config.courseConfig);
     const links = new LinkResolver(settings.data);
     const styleLoader = new StyleLoader(resources);
+    await styleLoader.initBreakpoints(resources.framework('styles/breakpoints.json'));
     const fontLoader = new FontLoader(resources, styleLoader);
     const scriptLoader = new ScriptLoader(resources);
     const context = { resources, settings, links, styleLoader, scriptLoader };

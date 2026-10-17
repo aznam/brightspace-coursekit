@@ -1,0 +1,14 @@
+/* Framework-wide, accessible, manual color mode switcher. */
+.ck-theme-control {
+    position: fixed; inset-inline-end: var(--ck-space-md); inset-block-end: var(--ck-space-md);
+    z-index: var(--ck-z-toast); border: 1px solid var(--ck-border); border-radius: var(--ck-radius);
+    padding: var(--ck-space-xs) var(--ck-space-sm);
+    background: var(--ck-surface); color: var(--ck-text-dark);
+    font: var(--ck-font-weight-semibold) var(--ck-font-box-size)/var(--ck-leading-box) var(--ck-font-body);
+    cursor: pointer; box-shadow: var(--ck-shadow);
+    transition: background-color var(--ck-motion-fast) var(--ck-easing-default), border-color var(--ck-motion-fast) var(--ck-easing-default);
+}
+.ck-theme-control:hover { background: var(--ck-surface-muted); }
+.ck-theme-control:focus-visible { outline: 3px solid var(--ck-accent); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .ck-theme-control { transition: none; } }
+@media print { .ck-theme-control { display: none; } }

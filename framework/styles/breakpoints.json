@@ -1,0 +1,8 @@
+{
+  "mobile-sm": "30rem",
+  "mobile": "40rem",
+  "tablet": "48rem",
+  "tablet-lg": "64rem",
+  "desktop": "80rem",
+  "desktop-lg": "96rem"
+}

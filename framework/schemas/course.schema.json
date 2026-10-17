@@ -48,28 +48,302 @@
             "properties": {
                 "palette": {
                     "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    }
+                    "properties": {
+                        "accent": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "accent-light": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "structure": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "text-main": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "text-dark": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "border": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "bg-base": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "surface": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "surface-muted": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "color-info": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "color-warning": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "color-error": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "color-success": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        }
+                    },
+                    "additionalProperties": false
                 },
                 "backgroundImage": {
                     "type": [
                         "string",
                         "null"
                     ]
+                },
+                "mode": {
+                    "enum": [
+                        "auto",
+                        "light",
+                        "dark"
+                    ]
+                },
+                "dark": {
+                    "type": "object",
+                    "properties": {
+                        "accent": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "accent-light": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "structure": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "text-main": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "text-dark": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "border": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "bg-base": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "surface": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "surface-muted": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "color-info": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "color-warning": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "color-error": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        },
+                        "color-success": {
+                            "type": "string",
+                            "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "palettes": {
+                    "type": "object",
+                    "properties": {
+                        "light": {
+                            "type": "object",
+                            "properties": {
+                                "accent": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "accent-light": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "structure": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "text-main": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "text-dark": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "border": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "bg-base": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "surface": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "surface-muted": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "color-info": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "color-warning": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "color-error": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "color-success": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "dark": {
+                            "type": "object",
+                            "properties": {
+                                "accent": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "accent-light": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "structure": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "text-main": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "text-dark": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "border": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "bg-base": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "surface": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "surface-muted": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "color-info": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "color-warning": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "color-error": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                },
+                                "color-success": {
+                                    "type": "string",
+                                    "pattern": "^#(?:[0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
                 }
             }
         },
         "customPaths": {
             "type": "object",
             "properties": {
-                "assets": { "type": ["string", "null"] },
-                "attachments": { "type": ["string", "null"] },
-                "content": { "type": ["string", "null"] },
-                "styles": { "type": ["string", "null"] },
-                "scripts": { "type": ["string", "null"] },
-                "fonts": { "type": ["string", "null"] },
-                "schemas": { "type": ["string", "null"] }
+                "assets": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "attachments": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "content": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "styles": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "scripts": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "fonts": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "schemas": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
             }
         },
         "resources": {

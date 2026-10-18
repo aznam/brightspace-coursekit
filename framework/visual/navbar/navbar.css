@@ -45,6 +45,16 @@
  * --ck-navbar-dropdown-viewport-inset
  *                                 Minimum horizontal clearance from viewport edges.
  *                                 Default: var(--ck-space-sm).
+ * Typography (§1.2, §1.5):
+ * --ck-navbar-course-letter-spacing
+ *                                 Letter spacing of the course identifier.
+ *                                 Default: var(--ck-letter-spacing-normal).
+ * --ck-navbar-trigger-letter-spacing
+ *                                 Letter spacing of the navigation trigger.
+ *                                 Default: var(--ck-letter-spacing-normal).
+ * --ck-navbar-module-letter-spacing
+ *                                 Letter spacing of the module title.
+ *                                 Default: var(--ck-letter-spacing-normal).
  */
 
 /* ========================================================
@@ -97,10 +107,16 @@
 
 /* Course Code Badge */
 .ck-navbar__course {
-    font-size: var(--ck-font-footnote);
+    font-size: var(--ck-font-box-size);
     font-weight: var(--ck-font-weight-bold);
+    line-height: var(--ck-leading-box);
     text-transform: uppercase;
-    letter-spacing: 0.095rem;
+    letter-spacing: var(
+        --ck-navbar-course-letter-spacing,
+        var(--ck-letter-spacing-normal)
+    );
+    border-inline-end: 1px solid var(--ck-navbar-internal-divider);
+    padding-inline-end: var(--ck-space-md);
     color: var(--ck-navbar-course-color, var(--ck-navbar-internal-course-color));
     white-space: nowrap;
 }
@@ -119,9 +135,13 @@
 .ck-navbar__module {
     display: none;
     font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
     color: var(--ck-navbar-module-color, color-mix(in srgb, var(--ck-navbar-internal-foreground) 65%, transparent));
     text-transform: uppercase;
-    letter-spacing: 0.06rem;
+    letter-spacing: var(
+        --ck-navbar-module-letter-spacing,
+        var(--ck-letter-spacing-normal)
+    );
     text-align: end;
     white-space: nowrap;
 }
@@ -132,6 +152,7 @@
 .ck-navbar__nav {
     position: relative;
     flex: 0 0 auto;
+    align-items: center;
     border-inline-start: 1px solid var(--ck-navbar-internal-divider);
     padding-inline-start: var(--ck-space-sm);
 }
@@ -140,10 +161,14 @@
     display: inline-flex;
     align-items: center;
     color: color-mix(in srgb, var(--ck-navbar-internal-foreground) 85%, transparent);
-    font-size: var(--ck-font-footnote);
+    font-size: var(--ck-font-box-size);
     font-weight: var(--ck-font-weight-bold);
+    line-height: var(--ck-leading-box);
     text-transform: uppercase;
-    letter-spacing: 0.06rem;
+    letter-spacing: var(
+        --ck-navbar-trigger-letter-spacing,
+        var(--ck-letter-spacing-normal)
+    );
     cursor: pointer;
     user-select: none;
     border-radius: var(--ck-space-2xs);
@@ -256,11 +281,6 @@
 
     .ck-navbar__info {
         gap: var(--ck-space-md);
-    }
-
-    .ck-navbar__course {
-        border-inline-end: 1px solid var(--ck-navbar-internal-divider);
-        padding-inline-end: var(--ck-space-md);
     }
 
     .ck-navbar__module {

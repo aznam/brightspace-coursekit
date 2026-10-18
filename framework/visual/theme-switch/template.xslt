@@ -4,6 +4,8 @@
     <xsl:template match="/">
         <button type="button" class="ck-theme-switch" role="switch" aria-checked="false" aria-label="Dark mode">
             <span class="ck-theme-switch__track" aria-hidden="true">
+                <span class="ck-theme-switch__icon ck-theme-switch__icon--sun fa-solid fa-sun" aria-hidden="true"/>
+                <span class="ck-theme-switch__icon ck-theme-switch__icon--moon fa-solid fa-moon" aria-hidden="true"/>
                 <span class="ck-theme-switch__thumb"/>
             </span>
         </button>

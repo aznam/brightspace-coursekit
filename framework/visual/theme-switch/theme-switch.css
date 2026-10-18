@@ -1,23 +1,55 @@
 /*
  * CourseKit — Theme Switch
- * Public customization variables:
- * --ck-theme-switch-inline-size       Track width; default 2.75rem.
- * --ck-theme-switch-block-size        Track height; default 1.5rem.
- * --ck-theme-switch-padding           Internal track padding; default var(--ck-space-2xs).
- * --ck-theme-switch-track-background  Off state surface; default var(--ck-border).
- * --ck-theme-switch-active-background On state surface; default var(--ck-accent).
- * --ck-theme-switch-thumb-color       Thumb surface; default var(--ck-text-dark).
- * --ck-theme-switch-focus-color       Keyboard focus outline; default var(--ck-accent).
- * --ck-theme-switch-motion-duration   Thumb movement duration; default var(--ck-motion-fast).
+ *
+ * Responsibility:
+ * Toggle between the effective light and dark themes with a fixed sun/moon
+ * glyph pair. The opaque thumb covers the inactive mode's glyph.
+ *
+ * Public Customization Variables:
+ * --ck-theme-switch-inline-size       Track width; default 3.5rem.
+ * --ck-theme-switch-block-size        Track height; default 1.75rem.
+ * --ck-theme-switch-padding           Internal track clearance; default 0.1875rem.
+ * --ck-theme-switch-track-background  Light-mode track background; default var(--ck-accent).
+ * --ck-theme-switch-active-background Dark-mode track background; default contrast-enhanced structural surface.
+ * --ck-theme-switch-thumb-color       Opaque thumb color; default white.
+ * --ck-theme-switch-focus-color       Visible focus indicator; default var(--ck-accent).
+ * --ck-theme-switch-motion-duration   Thumb transition; default var(--ck-motion-fast).
+ * --ck-theme-switch-icon-size         Glyph font size; default var(--ck-font-box-size).
+ * --ck-theme-switch-icon-color        Light-mode sun color; default var(--ck-structure).
+ * --ck-theme-switch-dark-icon-color   Dark-mode moon color; default white.
  */
+
+/* ========================================================
+   1. Control and Component Geometry
+   ======================================================== */
 .ck-theme-switch {
-    --ck-theme-switch-internal-track-inline-size: 2.75rem;
-    --ck-theme-switch-internal-track-block-size: 1.5rem;
-    --ck-theme-switch-internal-padding: var(--ck-space-2xs);
-    --ck-theme-switch-internal-thumb-size: calc(
-        var(--ck-theme-switch-block-size, var(--ck-theme-switch-internal-track-block-size))
-        - 2 * var(--ck-theme-switch-padding, var(--ck-theme-switch-internal-padding))
+    --ck-theme-switch-internal-track-inline-size: 3.5rem;
+    --ck-theme-switch-internal-track-block-size: 1.75rem;
+    --ck-theme-switch-internal-padding: 0.1875rem;
+    --ck-theme-switch-internal-thumb-color: #ffffff;
+
+    --ck-theme-switch-internal-effective-inline-size: var(
+        --ck-theme-switch-inline-size,
+        var(--ck-theme-switch-internal-track-inline-size)
     );
+    --ck-theme-switch-internal-effective-block-size: var(
+        --ck-theme-switch-block-size,
+        var(--ck-theme-switch-internal-track-block-size)
+    );
+    --ck-theme-switch-internal-effective-padding: var(
+        --ck-theme-switch-padding,
+        var(--ck-theme-switch-internal-padding)
+    );
+    --ck-theme-switch-internal-thumb-size: calc(
+        var(--ck-theme-switch-internal-effective-block-size)
+        - 2 * var(--ck-theme-switch-internal-effective-padding)
+    );
+    --ck-theme-switch-internal-end-position: calc(
+        var(--ck-theme-switch-internal-effective-inline-size)
+        - var(--ck-theme-switch-internal-effective-padding)
+        - var(--ck-theme-switch-internal-thumb-size)
+    );
+
     appearance: none;
     display: inline-grid;
     place-items: center;
@@ -32,40 +64,104 @@
     cursor: pointer;
     border-radius: var(--ck-radius);
 }
+
+/* ========================================================
+   2. Track and Fixed Glyphs
+   ======================================================== */
 .ck-theme-switch__track {
     display: block;
-    box-sizing: border-box;
     position: relative;
-    inline-size: var(--ck-theme-switch-inline-size, var(--ck-theme-switch-internal-track-inline-size));
-    block-size: var(--ck-theme-switch-block-size, var(--ck-theme-switch-internal-track-block-size));
+    isolation: isolate;
+    overflow: hidden;
+    inline-size: var(--ck-theme-switch-internal-effective-inline-size);
+    block-size: var(--ck-theme-switch-internal-effective-block-size);
     border-radius: 100vmax;
-    padding: var(--ck-theme-switch-padding, var(--ck-theme-switch-internal-padding));
-    background: var(--ck-theme-switch-track-background, var(--ck-border));
+    background-color: var(--ck-theme-switch-track-background, var(--ck-accent));
     transition: background-color var(--ck-theme-switch-motion-duration, var(--ck-motion-fast)) var(--ck-easing-default);
 }
-.ck-theme-switch__thumb {
+
+/* The icon boxes and thumb have identical dimensions and vertical centers.
+ * Font Awesome supplies only the glyph; the component owns its geometry.
+ */
+.ck-theme-switch__track > .ck-theme-switch__icon {
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--ck-theme-switch-internal-thumb-size);
+    block-size: var(--ck-theme-switch-internal-thumb-size);
+    font-size: var(--ck-theme-switch-icon-size, var(--ck-font-box-size));
+    line-height: 1;
+    color: var(--ck-theme-switch-icon-color, var(--ck-structure));
+    pointer-events: none;
+}
+
+.ck-theme-switch__icon--sun {
+    inset-inline-start: var(--ck-theme-switch-internal-effective-padding);
+}
+
+.ck-theme-switch__icon--moon {
+    inset-inline-end: var(--ck-theme-switch-internal-effective-padding);
+}
+
+/* ========================================================
+   3. Thumb: Covers the Inactive Glyph
+   ======================================================== */
+.ck-theme-switch__track > .ck-theme-switch__thumb {
     display: block;
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: var(--ck-theme-switch-internal-end-position);
+    transform: translateY(-50%);
+    z-index: 1;
     inline-size: var(--ck-theme-switch-internal-thumb-size);
     block-size: var(--ck-theme-switch-internal-thumb-size);
     border-radius: 50%;
-    background: var(--ck-theme-switch-thumb-color, var(--ck-text-dark));
-    transform: translateX(0);
-    transition: transform var(--ck-theme-switch-motion-duration, var(--ck-motion-fast)) var(--ck-easing-default);
+    background-color: var(
+        --ck-theme-switch-thumb-color,
+        var(--ck-theme-switch-internal-thumb-color)
+    );
+    pointer-events: none;
+    transition: inset-inline-start var(--ck-theme-switch-motion-duration, var(--ck-motion-fast)) var(--ck-easing-default);
 }
+
+/* Dark: the thumb moves left to hide the inactive sun, revealing the moon. */
 .ck-theme-switch[aria-checked="true"] .ck-theme-switch__track {
-    background: var(--ck-theme-switch-active-background, var(--ck-accent));
+    background-color: var(
+        --ck-theme-switch-active-background,
+        color-mix(in srgb, var(--ck-text-dark) 30%, var(--ck-structure))
+    );
 }
-.ck-theme-switch[aria-checked="true"] .ck-theme-switch__thumb {
-    transform: translateX(calc(
-        var(--ck-theme-switch-inline-size, var(--ck-theme-switch-internal-track-inline-size))
-        - var(--ck-theme-switch-block-size, var(--ck-theme-switch-internal-track-block-size))
-    ));
+
+.ck-theme-switch[aria-checked="true"] .ck-theme-switch__track > .ck-theme-switch__thumb {
+    inset-inline-start: var(--ck-theme-switch-internal-effective-padding);
 }
+
+.ck-theme-switch[aria-checked="true"] .ck-theme-switch__track > .ck-theme-switch__icon {
+    color: var(
+        --ck-theme-switch-dark-icon-color,
+        var(--ck-theme-switch-internal-thumb-color)
+    );
+}
+
+/* ========================================================
+   4. Accessibility, Motion, and Print
+   ======================================================== */
 .ck-theme-switch:focus-visible {
     outline: 2px solid var(--ck-theme-switch-focus-color, var(--ck-accent));
     outline-offset: 2px;
 }
+
 @media (prefers-reduced-motion: reduce) {
-    .ck-theme-switch__track, .ck-theme-switch__thumb { transition: none; }
+    .ck-theme-switch__track,
+    .ck-theme-switch__thumb {
+        transition: none;
+    }
 }
-@media print { .ck-theme-switch { display: none; } }
+
+@media print {
+    .ck-theme-switch {
+        display: none;
+    }
+}

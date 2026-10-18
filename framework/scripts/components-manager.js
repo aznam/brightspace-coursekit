@@ -1,9 +1,12 @@
+import { IconResolver } from './icon-resolver.js';
+
 import { loadManifest, mergeDefinition } from './manifest.js';
 import { parseXML, NS, qname } from './xml.js';
 export class ComponentsManager {
     constructor(ctx) {
         this.ctx = ctx;
         this.components = new Map();
+        this.icons = new IconResolver(ctx.settings);
     }
     async init() {
         const r = this.ctx.resources, registry = await r.json(r.framework('registry.json'));
@@ -53,7 +56,7 @@ export class ComponentsManager {
             const m = this.components.get(xml.localName);
             if (!m)
                 throw Error('No visual component registered: ' + qname(xml));
-            const renderer = new m.Renderer({ xml, manifest: m, resources: this.ctx.resources, settings: this.ctx.settings, links: this.ctx.links, variables, renderChild: walk });
+            const renderer = new m.Renderer({ xml, manifest: m, resources: this.ctx.resources, settings: this.ctx.settings, icons: this.icons, links: this.ctx.links, variables, renderChild: walk });
             const node = await renderer.render();
             if (!(node instanceof Node))
                 throw Error(m.id + ' renderer did not return a Node');

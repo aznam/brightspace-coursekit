@@ -431,8 +431,48 @@
         },
         "icons": {
             "type": "object",
+            "description": "Site overrides for logical icon identifiers. Scoped keys such as infobox.warning take precedence over warning.",
             "additionalProperties": {
-                "type": "object"
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "type",
+                            "value"
+                        ],
+                        "properties": {
+                            "type": {
+                                "const": "text"
+                            },
+                            "value": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "type",
+                            "classes"
+                        ],
+                        "properties": {
+                            "type": {
+                                "const": "font"
+                            },
+                            "classes": {
+                                "type": "array",
+                                "minItems": 1,
+                                "uniqueItems": true,
+                                "items": {
+                                    "type": "string",
+                                    "pattern": "^[A-Za-z_][A-Za-z0-9_-]*$"
+                                }
+                            }
+                        }
+                    }
+                ]
             }
         },
         "learningOutcomes": {

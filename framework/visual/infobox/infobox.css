@@ -36,6 +36,10 @@
  *                                 Default: var(--ck-leading-box) (1.5 per §1.2.2).
  * --ck-infobox-title-weight       Title font weight.
  *                                 Default: var(--ck-font-weight-bold) (700 per §1.5.2).
+ * --ck-infobox-icon-size          Font size of the infobox icon, including
+ *                                 icon-font glyphs supplied by IconResolver.
+ *                                 Default: var(--ck-font-box-size).
+ *                                 Independent of the title and body font sizes.
  */
 
 /* ========================================================
@@ -123,7 +127,7 @@
    ======================================================== */
 .ck-infobox__header {
     display: flex;
-    align-items: flex-start; /* Aligned to top: accommodates multi-line titles without jumping */
+    align-items: center; /* Aligned to top: accommodates multi-line titles without jumping */
     gap: var(--ck-space-xs);
     margin-block-end: var(--ck-space-xs);
     color: var(--ck-infobox-accent);
@@ -135,7 +139,11 @@
     place-items: center;
     min-inline-size: 1.15rem;
     line-height: var(--ck-leading-heading-component);
-    font-size: var(--ck-font-box-size);
+    font-size: var(
+        --ck-infobox-icon-size,
+        var(--ck-font-box-size)
+    );
+    line-height: var(--ck-leading-heading-component);
 }
 
 .ck-infobox__title {

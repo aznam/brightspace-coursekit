@@ -1,0 +1,5 @@
+{
+  "id": "people-semantic",
+  "schema": "$(frameworkRoot)/modules/people/semantic/people.xsd",
+  "namespace": "urn:coursekit:semantic"
+}

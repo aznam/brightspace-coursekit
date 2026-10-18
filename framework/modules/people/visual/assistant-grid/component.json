@@ -1,0 +1,13 @@
+{
+  "id": "assistant-grid",
+  "schema": "$(frameworkRoot)/modules/people/visual/assistant-grid/assistant-grid.xsd",
+  "template": "$(frameworkRoot)/modules/people/visual/assistant-grid/template.xslt",
+  "renderer": "$(frameworkRoot)/modules/people/visual/assistant-grid/renderer.js",
+  "styles": [
+    "$(frameworkRoot)/modules/people/visual/assistant-grid/assistant-grid.css"
+  ],
+  "scripts": [],
+  "variants": [
+    "default"
+  ]
+}

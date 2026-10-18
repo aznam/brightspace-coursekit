@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:s="urn:coursekit:semantic"
+           xmlns:xsp="urn:coursekit:preprocessor"
+           targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+
+  <xs:complexType name="OfficeHoursType" mixed="true">
+    <xs:attribute name="location" type="xs:string" use="required"/>
+    <xs:attribute name="directions-url" type="xs:anyURI"/>
+  </xs:complexType>
+  <xs:element name="office-hours" type="s:OfficeHoursType"/>
+
+  <xs:complexType name="PersonDescriptionType">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="s:paragraph"/>
+        <xs:element ref="s:list"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="title" type="xs:string" use="required"/>
+    <xs:attribute name="background" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="description" type="s:PersonDescriptionType"/>
+
+  <xs:complexType name="PersonType">
+    <xs:sequence>
+      <xs:element ref="s:office-hours" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="s:description" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="s:CommonAttr"/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="role" type="xs:string" use="required"/>
+    <xs:attribute name="photo" type="xs:string"/>
+    <xs:attribute name="email" type="xs:string"/>
+    <xs:attribute name="booking-url" type="xs:anyURI"/>
+    <xs:attribute name="online-hours" type="xs:string"/>
+  </xs:complexType>
+  <xs:element name="person" type="s:PersonType" substitutionGroup="s:component"/>
+
+  <xs:complexType name="TeamType">
+    <xs:sequence>
+      <xs:element ref="s:person" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="s:CommonAttr"/>
+  </xs:complexType>
+  <xs:element name="team" type="s:TeamType" substitutionGroup="s:component"/>
+
+  <!-- Section supports the new semantic blocks without changing core SectionType. -->
+  <xs:complexType name="PeopleSectionType">
+    <xsp:inherit base="s:SectionType">
+      <xs:element ref="s:person"/>
+      <xs:element ref="s:team"/>
+    </xsp:inherit>
+  </xs:complexType>
+  <xs:element name="people-section" type="s:PeopleSectionType" substitutionGroup="s:component"/>
+</xs:schema>

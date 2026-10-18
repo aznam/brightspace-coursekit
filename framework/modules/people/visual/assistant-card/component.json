@@ -1,0 +1,16 @@
+{
+  "id": "assistant-card",
+  "schema": "$(frameworkRoot)/modules/people/visual/assistant-card/assistant-card.xsd",
+  "template": "$(frameworkRoot)/modules/people/visual/assistant-card/template.xslt",
+  "renderer": "$(frameworkRoot)/modules/people/visual/assistant-card/renderer.js",
+  "styles": [
+    "$(frameworkRoot)/modules/people/visual/assistant-card/assistant-card.css"
+  ],
+  "scripts": [
+    "$(frameworkRoot)/modules/people/visual/assistant-card/assistant-card.js"
+  ],
+  "variants": [
+    "split",
+    "compact"
+  ]
+}

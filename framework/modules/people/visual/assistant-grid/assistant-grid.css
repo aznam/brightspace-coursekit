@@ -1,0 +1,29 @@
+/* CourseKit — Assistant Grid
+ * Public customization:
+ * --ck-assistant-grid-gap: separation between cards.
+ * --ck-assistant-grid-min-card-width: width at which two compact cards remain readable.
+ * --ck-assistant-grid-single-max-width: maximum visual measure for one compact card.
+ * --ck-assistant-grid-avatar-clearance: reserved space for a raised compact avatar.
+ */
+.ck-assistant-grid {
+    --ck-assistant-grid-internal-min-card-width: 22rem;
+    --ck-assistant-grid-internal-single-max-width: 30rem;
+    --ck-assistant-grid-internal-avatar-clearance: 2.5rem;
+    display: grid;
+    container: assistant-grid / inline-size;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--ck-assistant-grid-min-card-width, var(--ck-assistant-grid-internal-min-card-width))), 1fr));
+    gap: var(--ck-assistant-grid-gap, var(--ck-space-lg));
+    align-items: start;
+    min-inline-size: 0;
+    inline-size: 100%;
+}
+/* Reserve the overhanging avatar clearance as parent-owned composition spacing. */
+.ck-assistant-grid:has(> .ck-assistant-card[data-variant="compact"]) {
+    padding-block-start: var(--ck-assistant-grid-avatar-clearance, var(--ck-assistant-grid-internal-avatar-clearance));
+}
+/* One compact profile stays centered, while a single split instructor uses the available width. */
+.ck-assistant-grid:has(> .ck-assistant-card[data-variant="compact"]:only-child) {
+    grid-template-columns: minmax(0, min(100%, var(--ck-assistant-grid-single-max-width, var(--ck-assistant-grid-internal-single-max-width))));
+    justify-content: center;
+}
+.ck-assistant-grid > .ck-assistant-card { min-inline-size: 0; }

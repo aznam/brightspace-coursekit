@@ -1,0 +1,494 @@
+/*
+ * CourseKit — Assistant Card Component (People Module)
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0.6, 1.1–1.5, 2.1–2.6, 3.1–3.5, 4.1–4.6, 5.1–5.3, 6.1–6.4, 7.3.
+ *
+ * Responsibility:
+ * Present an individual course instructor or assistant in the split or compact
+ * variant. Owns the card's internal typography, surfaces, profile image,
+ * information and action regions, interactive drawer appearance, and local
+ * stacking order. Adapts its own presentation to the available space.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT control the width or spacing of the enclosing assistant grid;
+ *    those composition decisions belong to assistant-grid (§2.4).
+ * 2. Does NOT resolve photo or background-image URLs; the renderer supplies
+ *    the corresponding component resources.
+ * 3. Does NOT implement drawer interactions; those belong to the component's
+ *    behavior script. This stylesheet defines their visual states only.
+ * 4. Does NOT define global palette colors or typography scales; it consumes
+ *    the shared tokens provided by CourseKit (§0.6, §5.1, §6.1).
+ *
+ * Public Customization Variables:
+ *
+ * Surfaces & Colors (§6.1, §6.3):
+ * --ck-assistant-card-bg                 Card and profile surface.
+ *                                        Default: var(--ck-surface).
+ * --ck-assistant-card-muted-bg           Action region surface.
+ *                                        Default: var(--ck-surface-muted).
+ * --ck-assistant-card-text               Profile details and supporting text.
+ *                                        Default: var(--ck-text-main).
+ * --ck-assistant-card-heading            Name and emphasized-label color.
+ *                                        Default: var(--ck-text-dark).
+ * --ck-assistant-card-title-color        Muted professional-position title color.
+ *                                        Default: a theme-derived mix of --ck-text-main and --ck-surface.
+ * --ck-assistant-card-accent             Accent, links and interactive states.
+ *                                        Default: var(--ck-accent).
+ * --ck-assistant-card-banner-start       First banner gradient stop.
+ *                                        Default: var(--ck-assistant-card-internal-banner-light).
+ * --ck-assistant-card-banner-end         Second banner gradient stop.
+ *                                        Default: var(--ck-assistant-card-internal-banner-dark).
+ *
+ * Borders, Shape & Elevation (§3.1, §6.1, §7.3):
+ * --ck-assistant-card-border             Thin separators and outer border.
+ *                                        Default: var(--ck-border).
+ * --ck-assistant-card-strong-border      Strong top boundary.
+ *                                        Default: var(--ck-outline-strong, var(--ck-border)).
+ * --ck-assistant-card-border-width       Standard border thickness.
+ *                                        Default: var(--ck-assistant-card-internal-border-width).
+ * --ck-assistant-card-top-border-width   Strong top border thickness.
+ *                                        Default: 0.375rem.
+ * --ck-assistant-card-radius             Outer corner radius.
+ *                                        Default: var(--ck-radius).
+ * --ck-assistant-card-shadow             Outer shadow.
+ *                                        Default: var(--ck-shadow).
+ * --ck-assistant-card-photo-border-width Profile image border thickness.
+ *                                        Default: 0.1875rem.
+ * --ck-assistant-card-photo-shadow       Profile image shadow.
+ *                                        Default: 0 0.1875rem 0.625rem color-mix(in srgb, var(--ck-structure) 15%, transparent).
+ *
+ * Geometry & Internal Spacing (§2.1–2.6, §3.2–3.5):
+ * --ck-assistant-card-rail-size          Split variant's drawer trigger rail.
+ *                                        Default: var(--ck-assistant-card-internal-rail-size).
+ * --ck-assistant-card-actions-width      Preferred split action-pane width.
+ *                                        Default: var(--ck-assistant-card-internal-actions-width).
+ * --ck-assistant-card-photo-size         Profile image diameter.
+ *                                        Default: var(--ck-assistant-card-internal-photo-size).
+ * --ck-assistant-card-banner-height      Profile banner height.
+ *                                        Default: var(--ck-assistant-card-internal-banner-height).
+ * --ck-assistant-card-padding            Internal content and drawer padding.
+ *                                        Default: var(--ck-assistant-card-internal-padding).
+ * --ck-assistant-card-gap                Spacing between internal elements.
+ *                                        Default: var(--ck-assistant-card-internal-gap).
+ *
+ * Typography (§1.2, §1.3, §1.5):
+ * --ck-assistant-card-role-letter-spacing Tracking for the role label.
+ *                                         Default: var(--ck-assistant-card-internal-role-letter-spacing).
+ * --ck-assistant-card-name-size          Profile name font size.
+ *                                        Default: var(--ck-heading-2-size) (split) or var(--ck-heading-3-size) (compact).
+ * --ck-assistant-card-role-size          Profile role label size.
+ *                                        Default: var(--ck-font-footnote).
+ * --ck-assistant-card-title-size         Professional title text size.
+ *                                        Default: var(--ck-font-box-size).
+ * --ck-assistant-card-detail-size        Email and profile details size.
+ *                                        Default: var(--ck-font-box-size) in both variants.
+ * --ck-assistant-card-hours-heading-size Office location label size.
+ *                                        Default: var(--ck-assistant-card-internal-hours-heading-size).
+ * --ck-assistant-card-hours-size         Office hours text size.
+ *                                        Default: var(--ck-assistant-card-internal-hours-size).
+ * --ck-assistant-card-action-size        Action label size.
+ *                                        Default: var(--ck-assistant-card-internal-action-size).
+ * --ck-assistant-card-drawer-body-size   Drawer content text size.
+ *                                        Default: var(--ck-assistant-card-internal-drawer-body-size).
+ * --ck-assistant-card-directions-size    Directions link font size.
+ *                                        Default: var(--ck-assistant-card-internal-directions-size).
+ * --ck-assistant-card-hint-size          Compact help hint font size.
+ *                                        Default: var(--ck-font-footnote).
+ * --ck-assistant-card-drawer-title-size  Drawer heading font size.
+ *                                        Default: var(--ck-assistant-card-internal-drawer-title-size).
+ *
+ * Drawer Appearance (§6.1, §6.3):
+ * --ck-assistant-card-drawer-bg           Drawer overlay base color.
+ *                                        Default: var(--ck-assistant-card-internal-drawer-base).
+ * --ck-assistant-card-drawer-text         Drawer body text color.
+ *                                        Default: var(--ck-assistant-card-internal-drawer-text).
+ * --ck-assistant-card-drawer-title        Drawer heading color.
+ *                                        Default: var(--ck-assistant-card-internal-drawer-title).
+ * --ck-assistant-card-drawer-border-width Visible drawer accent rule thickness in both states.
+ *                                         Default: 0.25rem.
+ *
+ * Action Buttons (§6.1, §6.3):
+ * --ck-assistant-card-action-bg           Primary button fill and border.
+ *                                        Default: var(--ck-structure).
+ * --ck-assistant-card-action-text         Primary button text color.
+ *                                        Default: var(--ck-assistant-card-internal-button-text).
+ *
+ * Public properties take precedence at their use sites. Internal properties
+ * are component-owned implementation details, not a site customization API.
+ */
+.ck-assistant-card {
+    /* Local stacking order (not part of CourseKit's global z-index scale). */
+    --ck-assistant-card-internal-layer-base: 0;
+    --ck-assistant-card-internal-layer-actions: 1;
+    --ck-assistant-card-internal-border-width: 1px;
+    --ck-assistant-card-internal-banner-angle: 135deg;
+    --ck-assistant-card-internal-button-text: #ffffff;
+    --ck-assistant-card-internal-rail-size: 2.5rem;
+    --ck-assistant-card-internal-actions-width: 16.25rem;
+    --ck-assistant-card-internal-photo-size: 5rem;
+    --ck-assistant-card-internal-banner-height: 4.375rem;
+    --ck-assistant-card-internal-padding: var(--ck-space-lg);
+    --ck-assistant-card-internal-gap: var(--ck-space-sm);
+    --ck-assistant-card-internal-drawer-opacity-start: 80%;
+    --ck-assistant-card-internal-drawer-opacity-end: 88%;
+    --ck-assistant-card-internal-drawer-base: #0f172a;
+    --ck-assistant-card-internal-drawer-text: #f8fafc;
+    --ck-assistant-card-internal-drawer-title: #fdba74;
+    /* Secondary label retains the palette hue while softening its emphasis. */
+    --ck-assistant-card-internal-title-color: color-mix(in srgb, var(--ck-text-main) 78%, var(--ck-surface));
+    --ck-assistant-card-internal-role-letter-spacing: 0.09em;
+    --ck-assistant-card-internal-name-size: var(--ck-heading-2-size);
+    --ck-assistant-card-internal-role-size: var(--ck-font-footnote);
+    /* Preserve relative hierarchy, not the historical em numbers.
+     * 0.8125rem is the component-specific intermediate reading level;
+     * 0.9375rem gives the compact drawer heading a distinct emphasis. */
+    --ck-assistant-card-internal-title-size: var(--ck-font-box-size);
+    --ck-assistant-card-internal-detail-size: var(--ck-font-box-size);
+    --ck-assistant-card-internal-hours-heading-size: 0.8125rem;
+    --ck-assistant-card-internal-hours-size: 0.8125rem;
+    --ck-assistant-card-internal-directions-size: var(--ck-font-footnote);
+    --ck-assistant-card-internal-action-size: 0.8125rem;
+    --ck-assistant-card-internal-drawer-title-size: var(--ck-font-body-size);
+    --ck-assistant-card-internal-drawer-body-size: var(--ck-font-box-size);
+    /* Original blue-grey banner artwork: component-owned, not structural
+     * background colors. Dark mode derives separate stops from the palette. */
+    --ck-assistant-card-internal-banner-light: #cbd5e1;
+    --ck-assistant-card-internal-banner-dark: #94a3b8;
+    --ck-assistant-card-internal-motion: var(--ck-motion-slow);
+    position: relative;
+    isolation: isolate;
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: 100%;
+    background: var(--ck-assistant-card-bg, var(--ck-surface));
+    color: var(--ck-assistant-card-text, var(--ck-text-main));
+    border: var(--ck-assistant-card-border-width, var(--ck-assistant-card-internal-border-width)) solid var(--ck-assistant-card-border, var(--ck-border));
+    border-block-start: var(--ck-assistant-card-top-border-width, 0.375rem) solid var(--ck-assistant-card-strong-border, var(--ck-outline-strong, var(--ck-border)));
+    border-radius: var(--ck-assistant-card-radius, var(--ck-radius));
+    box-shadow: var(--ck-assistant-card-shadow, var(--ck-shadow));
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
+}
+
+/* The banner is decorative artwork: preserve its light reference appearance,
+ * but use palette-relative stops against the dark theme's surfaces. */
+:root[data-ck-theme="dark"] .ck-assistant-card {
+    --ck-assistant-card-internal-banner-light: color-mix(in srgb, var(--ck-border) 65%, var(--ck-structure));
+    --ck-assistant-card-internal-banner-dark: color-mix(in srgb, var(--ck-border) 35%, var(--ck-structure));
+}
+
+.ck-assistant-card__profile {
+    position: relative;
+    min-inline-size: 0;
+    background: var(--ck-assistant-card-bg, var(--ck-surface));
+}
+.ck-assistant-card__banner {
+    block-size: var(--ck-assistant-card-banner-height, var(--ck-assistant-card-internal-banner-height));
+    background: linear-gradient(var(--ck-assistant-card-internal-banner-angle), var(--ck-assistant-card-banner-start, var(--ck-assistant-card-internal-banner-light)), var(--ck-assistant-card-banner-end, var(--ck-assistant-card-internal-banner-dark)));
+    border-block-end: var(--ck-assistant-card-internal-border-width) solid var(--ck-assistant-card-border, var(--ck-border));
+}
+.ck-assistant-card__photo {
+    position: relative;
+    z-index: var(--ck-assistant-card-internal-layer-photo);
+    inline-size: var(--ck-assistant-card-photo-size, var(--ck-assistant-card-internal-photo-size));
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 50%;
+    border: var(--ck-assistant-card-photo-border-width, 0.1875rem) solid var(--ck-assistant-card-bg, var(--ck-surface));
+    background: var(--ck-assistant-card-internal-banner-light);
+    box-shadow: var(--ck-assistant-card-photo-shadow, 0 0.1875rem 0.625rem color-mix(in srgb, var(--ck-structure) 15%, transparent));
+}
+.ck-assistant-card__photo img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+.ck-assistant-card__identity {
+    min-inline-size: 0;
+    padding: var(--ck-assistant-card-padding, var(--ck-assistant-card-internal-padding));
+    overflow-wrap: anywhere;
+}
+.ck-assistant-card__role {
+    color: var(--ck-assistant-card-accent, var(--ck-accent));
+    font-size: var(--ck-assistant-card-role-size, var(--ck-assistant-card-internal-role-size));
+    font-weight: var(--ck-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--ck-assistant-card-role-letter-spacing, var(--ck-assistant-card-internal-role-letter-spacing));
+}
+.ck-assistant-card__name {
+    margin: var(--ck-space-2xs) 0 0;
+    color: var(--ck-assistant-card-heading, var(--ck-text-dark));
+    font-size: var(--ck-assistant-card-name-size, var(--ck-assistant-card-internal-name-size));
+    line-height: var(--ck-leading-heading-component);
+    font-weight: var(--ck-font-weight-bold);
+}
+.ck-assistant-card__title { margin-block-start: 0; color: var(--ck-assistant-card-title-color, var(--ck-assistant-card-internal-title-color)); font-size: var(--ck-assistant-card-title-size, var(--ck-assistant-card-internal-title-size)); font-weight: var(--ck-font-weight-medium); }
+.ck-assistant-card__email { margin-block-start: var(--ck-space-xs); font-size: var(--ck-assistant-card-detail-size, var(--ck-assistant-card-internal-detail-size)); }
+.ck-assistant-card__email strong,
+.ck-assistant-card__hour strong { color: var(--ck-assistant-card-heading, var(--ck-text-dark)); }
+.ck-assistant-card :is(.ck-assistant-card__email-link, .ck-assistant-card__directions) {
+    color: var(--ck-assistant-card-accent, var(--ck-accent));
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+.ck-assistant-card :is(.ck-assistant-card__email-link, .ck-assistant-card__directions):is(:hover, :focus-visible) { text-decoration: underline; }
+.ck-assistant-card__directions { font-size: var(--ck-assistant-card-directions-size, var(--ck-assistant-card-internal-directions-size)); font-weight: var(--ck-font-weight-semibold); }
+.ck-assistant-card__hours {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Shared tracks keep locations, schedules and links aligned across columns. */
+    grid-template-rows: repeat(3, auto);
+    gap: var(--ck-assistant-card-gap, var(--ck-assistant-card-internal-gap));
+    margin-block-start: var(--ck-space-md);
+    padding-block-start: var(--ck-space-md);
+    border-block-start: var(--ck-assistant-card-internal-border-width) solid var(--ck-assistant-card-border, var(--ck-border));
+}
+.ck-assistant-card__hour {
+    min-inline-size: 0;
+    display: grid;
+    grid-row: 1 / span 3;
+    grid-template-rows: subgrid;
+    align-content: start;
+}
+.ck-assistant-card__hour > .ck-assistant-card__directions { align-self: start; }
+.ck-assistant-card__hour strong { display: block; font-size: var(--ck-assistant-card-hours-heading-size, var(--ck-assistant-card-internal-hours-heading-size)); font-weight: var(--ck-font-weight-bold); text-transform: uppercase; letter-spacing: var(--ck-letter-spacing-normal); }
+.ck-assistant-card__hour p { margin: 0; white-space: pre-line; font-size: var(--ck-assistant-card-hours-size, var(--ck-assistant-card-internal-hours-size)); line-height: var(--ck-leading-box); }
+.ck-assistant-card__online {
+    margin: var(--ck-space-md) 0 0;
+    padding-block-start: var(--ck-space-sm);
+    color: var(--ck-assistant-card-text, var(--ck-text-main));
+    border-block-start: var(--ck-assistant-card-internal-border-width) dashed var(--ck-assistant-card-border, var(--ck-border));
+}
+.ck-assistant-card__actions {
+    position: relative;
+    z-index: var(--ck-assistant-card-internal-layer-actions);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-inline-size: 0;
+    gap: var(--ck-assistant-card-gap, var(--ck-assistant-card-internal-gap));
+    padding: var(--ck-assistant-card-padding, var(--ck-assistant-card-internal-padding));
+    background: var(--ck-assistant-card-muted-bg, var(--ck-surface-muted));
+}
+.ck-assistant-card a.ck-assistant-card__action,
+.ck-assistant-card a.ck-assistant-card__action:link,
+.ck-assistant-card a.ck-assistant-card__action:visited {
+    display: block;
+    min-inline-size: 0;
+    inline-size: 100%;
+    padding: var(--ck-space-sm) var(--ck-space-md);
+    border: var(--ck-assistant-card-internal-border-width) solid var(--ck-assistant-card-action-bg, var(--ck-structure));
+    border-radius: var(--ck-radius);
+    background: var(--ck-assistant-card-action-bg, var(--ck-structure));
+    color: var(--ck-assistant-card-action-text, var(--ck-assistant-card-internal-button-text));
+    font-size: var(--ck-assistant-card-action-size, var(--ck-assistant-card-internal-action-size));
+    font-weight: var(--ck-font-weight-semibold);
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: background-color var(--ck-motion-fast), border-color var(--ck-motion-fast), color var(--ck-motion-fast);
+}
+.ck-assistant-card a.ck-assistant-card__action:is(:hover, :focus-visible) { background: var(--ck-assistant-card-accent, var(--ck-accent)); border-color: var(--ck-assistant-card-accent, var(--ck-accent)); color: var(--ck-assistant-card-action-text, var(--ck-assistant-card-internal-button-text)); }
+.ck-assistant-card a.ck-assistant-card__action--secondary,
+.ck-assistant-card a.ck-assistant-card__action--secondary:link,
+.ck-assistant-card a.ck-assistant-card__action--secondary:visited {
+    background: var(--ck-assistant-card-bg, var(--ck-surface));
+    color: var(--ck-assistant-card-heading, var(--ck-text-dark));
+    border-color: var(--ck-assistant-card-border, var(--ck-border));
+}
+.ck-assistant-card a.ck-assistant-card__action--secondary:is(:hover, :focus-visible) {
+    background: var(--ck-accent-light);
+    color: var(--ck-assistant-card-accent, var(--ck-accent));
+    border-color: var(--ck-assistant-card-accent, var(--ck-accent));
+}
+.ck-assistant-card__trigger {
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    touch-action: manipulation;
+}
+.ck-assistant-card__trigger:focus-visible,
+.ck-assistant-card a:focus-visible { outline: 0.1875rem solid var(--ck-assistant-card-accent, var(--ck-accent)); outline-offset: 0.1875rem; }
+.ck-assistant-card__drawer {
+    position: absolute;
+    z-index: var(--ck-assistant-card-internal-layer-drawer);
+    box-sizing: border-box;
+    overflow: hidden;
+    /* Preserve the collapsed accent border; clipped geometry hides the panel content. */
+    pointer-events: none;
+    color: var(--ck-assistant-card-drawer-text, var(--ck-assistant-card-internal-drawer-text));
+    background-color: var(--ck-assistant-card-drawer-bg, var(--ck-assistant-card-internal-drawer-base));
+    background-image: linear-gradient(
+        color-mix(in srgb, var(--ck-assistant-card-drawer-bg, var(--ck-assistant-card-internal-drawer-base)) var(--ck-assistant-card-internal-drawer-opacity-start), transparent),
+        color-mix(in srgb, var(--ck-assistant-card-drawer-bg, var(--ck-assistant-card-internal-drawer-base)) var(--ck-assistant-card-internal-drawer-opacity-end), transparent)
+    ), var(--ck-assistant-drawer-image, none);
+    background-position: center top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: inline-size var(--ck-assistant-card-internal-motion), block-size var(--ck-assistant-card-internal-motion), padding var(--ck-assistant-card-internal-motion);
+}
+.ck-assistant-card--open .ck-assistant-card__drawer { pointer-events: auto; }
+.ck-assistant-card__drawer-title { display: block; margin-block-end: var(--ck-space-sm); font-size: var(--ck-assistant-card-drawer-title-size, var(--ck-assistant-card-internal-drawer-title-size)); color: var(--ck-assistant-card-drawer-title, var(--ck-assistant-card-internal-drawer-title)); text-transform: uppercase; }
+.ck-assistant-card__drawer-body { min-inline-size: 0; font-size: var(--ck-assistant-card-drawer-body-size, var(--ck-assistant-card-internal-drawer-body-size)); line-height: var(--ck-leading-box); }
+.ck-assistant-card__drawer-body :is(.ck-paragraph, .ck-list) { color: inherit; }
+
+/* Split: the trigger belongs to the profile. Reserve its rail INSIDE that profile.
+ * This fixes the former margin-inline-start offset, which placed the trigger on top of the text. */
+.ck-assistant-card[data-variant="split"] {
+    /* Split stack: the drawer stays above the photo throughout its transition. */
+    --ck-assistant-card-internal-layer-photo: 1;
+    --ck-assistant-card-internal-layer-drawer: 2;
+    --ck-assistant-card-internal-layer-trigger: 3;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    overflow: hidden;
+}
+.ck-assistant-card[data-variant="split"] .ck-assistant-card__profile {
+    flex: 100 1 max-content;
+    min-inline-size: min(100%, max-content);
+    padding-inline-start: var(--ck-assistant-card-rail-size, var(--ck-assistant-card-internal-rail-size));
+    min-block-size: max-content;
+}
+.ck-assistant-card[data-variant="split"] .ck-assistant-card__identity { padding-block-start: calc(var(--ck-assistant-card-photo-size, var(--ck-assistant-card-internal-photo-size)) / 2 + var(--ck-space-md)); }
+.ck-assistant-card[data-variant="split"] .ck-assistant-card__photo {
+    position: absolute;
+    inset-block-start: calc(var(--ck-assistant-card-banner-height, var(--ck-assistant-card-internal-banner-height)) - var(--ck-assistant-card-photo-size, var(--ck-assistant-card-internal-photo-size)) / 2);
+    inset-inline-start: calc(var(--ck-assistant-card-rail-size, var(--ck-assistant-card-internal-rail-size)) + var(--ck-assistant-card-padding, var(--ck-assistant-card-internal-padding)));
+}
+.ck-assistant-card[data-variant="split"] .ck-assistant-card__trigger {
+    position: absolute;
+    z-index: var(--ck-assistant-card-internal-layer-trigger);
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: var(--ck-assistant-card-rail-size, var(--ck-assistant-card-internal-rail-size));
+    background: var(--ck-accent-light);
+    color: var(--ck-assistant-card-accent, var(--ck-accent));
+    border-inline-end: var(--ck-assistant-card-internal-border-width) solid var(--ck-assistant-card-border, var(--ck-border));
+    font-size: var(--ck-font-body-size);
+    font-weight: var(--ck-font-weight-bold);
+}
+.ck-assistant-card[data-variant="split"] .ck-assistant-card__trigger:is(:hover, :focus-visible),
+.ck-assistant-card[data-variant="split"].ck-assistant-card--open .ck-assistant-card__trigger { background: var(--ck-assistant-card-accent, var(--ck-accent)); color: var(--ck-assistant-card-action-text, var(--ck-assistant-card-internal-button-text)); }
+.ck-assistant-card[data-variant="split"] .ck-assistant-card__drawer {
+    inset-block: 0;
+    inset-inline-start: var(--ck-assistant-card-rail-size, var(--ck-assistant-card-internal-rail-size));
+    inline-size: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-inline-end: var(--ck-assistant-card-drawer-border-width, 0.25rem) solid var(--ck-assistant-card-accent, var(--ck-accent));
+}
+.ck-assistant-card[data-variant="split"].ck-assistant-card--open .ck-assistant-card__drawer {
+    inline-size: calc(100% - var(--ck-assistant-card-rail-size, var(--ck-assistant-card-internal-rail-size)));
+    padding: var(--ck-assistant-card-padding, var(--ck-assistant-card-internal-padding));
+}
+/* An actions pane wraps naturally below the profile when both cannot fit.
+ * A top separator remains meaningful in either arrangement. */
+.ck-assistant-card[data-variant="split"] .ck-assistant-card__actions {
+    /* Keep the preferred action width alongside the profile; grow across the full row when wrapped. */
+    flex: 1 0 var(--ck-assistant-card-actions-width, var(--ck-assistant-card-internal-actions-width));
+    min-inline-size: min(100%, var(--ck-assistant-card-actions-width, var(--ck-assistant-card-internal-actions-width)));
+    align-items: center;
+    border-inline-start: var(--ck-assistant-card-internal-border-width) solid var(--ck-assistant-card-border, var(--ck-border));
+    border-block-start: var(--ck-assistant-card-internal-border-width) solid var(--ck-assistant-card-border, var(--ck-border));
+}
+
+.ck-assistant-card[data-variant="split"] .ck-assistant-card__actions > .ck-assistant-card__action {
+    max-inline-size: var(--ck-assistant-card-actions-width, var(--ck-assistant-card-internal-actions-width));
+}
+
+/* Compact: avatar triggers the vertical reveal, with the information centered.
+ * The parent grid reserves room above compact cards for the protruding photo. */
+.ck-assistant-card[data-variant="compact"] {
+    /* Compact stack: the photo stays above the drawer; the trigger stays on top. */
+    --ck-assistant-card-internal-layer-drawer: 1;
+    --ck-assistant-card-internal-layer-photo: 2;
+    --ck-assistant-card-internal-layer-trigger: 3;
+    --ck-assistant-card-internal-name-size: var(--ck-heading-3-size);
+    --ck-assistant-card-internal-title-size: 0.8125rem;
+    --ck-assistant-card-internal-detail-size: var(--ck-font-box-size);
+    --ck-assistant-card-internal-hours-heading-size: 0.8125rem;
+    --ck-assistant-card-internal-hours-size: 0.8125rem;
+    --ck-assistant-card-internal-directions-size: var(--ck-font-footnote);
+    --ck-assistant-card-internal-action-size: var(--ck-font-footnote);
+    --ck-assistant-card-internal-drawer-title-size: 0.9375rem;
+    --ck-assistant-card-internal-drawer-body-size: 0.8125rem;
+}
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__banner { display: none; }
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__profile { border-radius: inherit; }
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__photo {
+    position: absolute;
+    /* The avatar remains visible; the transparent button above it receives input. */
+    pointer-events: none;
+    inset-block-start: calc(-1 * var(--ck-assistant-card-photo-size, var(--ck-assistant-card-internal-photo-size)) / 2);
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+}
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__identity {
+    padding-block-start: calc(var(--ck-assistant-card-photo-size, var(--ck-assistant-card-internal-photo-size)) / 2 + var(--ck-space-md));
+    text-align: center;
+}
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__hours { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; text-align: start; }
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__hour {
+    display: grid;
+    grid-row: auto;
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--ck-space-sm);
+    align-items: center;
+}
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__hour strong {
+    grid-column: 1;
+    grid-row: 1;
+}
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__hour p {
+    grid-column: 1;
+    grid-row: 2;
+    min-inline-size: 0;
+    margin-block: var(--ck-space-2xs) 0;
+}
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__directions {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    justify-self: end;
+    text-align: end;
+}
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__actions { flex-direction: row; flex-wrap: wrap; background: var(--ck-assistant-card-bg, var(--ck-surface)); border-block-start: var(--ck-assistant-card-internal-border-width) solid var(--ck-assistant-card-border, var(--ck-border)); }
+.ck-assistant-card[data-variant="compact"] a.ck-assistant-card__action { flex: 1 1 0; }
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__trigger {
+    position: absolute;
+    z-index: var(--ck-assistant-card-internal-layer-trigger);
+    inset-block-start: calc(-1 * var(--ck-assistant-card-photo-size, var(--ck-assistant-card-internal-photo-size)) / 2);
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    inline-size: var(--ck-assistant-card-photo-size, var(--ck-assistant-card-internal-photo-size));
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: transparent;
+    background: transparent;
+    font-size: 0;
+}
+.ck-assistant-card[data-variant="compact"] .ck-assistant-card__drawer {
+    inset: 0 0 auto;
+    block-size: 0;
+    inline-size: 100%;
+    padding-inline: var(--ck-assistant-card-padding, var(--ck-assistant-card-internal-padding));
+    border-block-end: var(--ck-assistant-card-drawer-border-width, 0.25rem) solid var(--ck-assistant-card-accent, var(--ck-accent));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.ck-assistant-card[data-variant="compact"].ck-assistant-card--open .ck-assistant-card__drawer {
+    block-size: 100%;
+    padding-block: var(--ck-assistant-card-padding, var(--ck-assistant-card-internal-padding));
+}
+.ck-assistant-card__help-hint { margin: var(--ck-space-sm) 0 0; font-size: var(--ck-assistant-card-hint-size, var(--ck-font-footnote)); color: var(--ck-assistant-card-text, var(--ck-text-main)); font-style: italic; text-align: center; }
+
+/* Intrinsic reflow replaces unverified width thresholds.
+ * Split panes wrap according to their content and owned actions width.
+ * Hours and actions can wrap without changing text sizes. */
+@media (prefers-reduced-motion: reduce) {
+    .ck-assistant-card__drawer, .ck-assistant-card__trigger, .ck-assistant-card__action { transition: none !important; }
+}

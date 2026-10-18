@@ -7,6 +7,8 @@ export class Renderer {
     constructor(context) {
         Object.assign(this, context);
         this.element = null;
+        this.parentRenderer = null;
+        this.childRenderers = [];
 
         this.supportsDefaultAttributes = true;
         this.supportsDefaultStyles = true;
@@ -100,6 +102,47 @@ export class Renderer {
     async rendered() {}
 
     async mounted() {}
+
+    /**
+     * Called once, after every renderer in the visual tree has completed
+     * mounted() and setBehavior(). DOM measurements are safe here.
+     * Override this to initiate messages after initialization.
+     */
+    async postMounted() {}
+
+    /**
+     * Receive a message from a parent/child branch. Return false to stop
+     * propagation beyond this renderer on the current branch.
+     * message = { type, payload, source, direction }
+     */
+    async onMessage(message) {}
+
+    /**
+     * Send a message to descendants (depth-first). No renderer class names,
+     * DOM selectors or CSS variables are required to address descendants.
+     */
+    async messageChildren(type, payload) {
+        if (typeof type !== 'string' || !type) throw new TypeError('Message type must be a non-empty string');
+        const message = { type, payload, source: this, direction: 'down' };
+        const visit = async (renderer) => {
+            const result = await renderer.onMessage(message);
+            if (result === false) return;
+            for (const child of renderer.childRenderers) await visit(child);
+        };
+        for (const child of this.childRenderers) await visit(child);
+    }
+
+    /**
+     * Send a message to ancestors (nearest first). Return false from an
+     * ancestor's onMessage() to stop bubbling.
+     */
+    async messageParents(type, payload) {
+        if (typeof type !== 'string' || !type) throw new TypeError('Message type must be a non-empty string');
+        const message = { type, payload, source: this, direction: 'up' };
+        for (let parent = this.parentRenderer; parent; parent = parent.parentRenderer) {
+            if (await parent.onMessage(message) === false) break;
+        }
+    }
 
     async setBehavior() {
 

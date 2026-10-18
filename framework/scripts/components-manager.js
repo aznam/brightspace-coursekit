@@ -1,5 +1,4 @@
 import { IconResolver } from './icon-resolver.js';
-
 import { loadManifest, mergeDefinition } from './manifest.js';
 import { parseXML, NS, qname } from './xml.js';
 export class ComponentsManager {
@@ -46,7 +45,7 @@ export class ComponentsManager {
     }
     async render(root, variables = new Map())  {
         const instances = [];
-        const walk = async (xml) => {
+        const walk = async (xml, parent = null) => {
             if (xml.nodeType === Node.TEXT_NODE)
                 return document.createTextNode(xml.textContent);
             if (xml.nodeType !== Node.ELEMENT_NODE)
@@ -56,7 +55,18 @@ export class ComponentsManager {
             const m = this.components.get(xml.localName);
             if (!m)
                 throw Error('No visual component registered: ' + qname(xml));
-            const renderer = new m.Renderer({ xml, manifest: m, resources: this.ctx.resources, settings: this.ctx.settings, icons: this.icons, links: this.ctx.links, variables, renderChild: walk });
+            const renderer = new m.Renderer({
+                xml,
+                manifest: m,
+                resources: this.ctx.resources,
+                settings: this.ctx.settings,
+                links: this.ctx.links,
+                variables,
+                icons: this.icons,
+                renderChild: child => walk(child, renderer)
+            });
+            renderer.parentRenderer = parent;
+            if (parent) parent.childRenderers.push(renderer);
             const node = await renderer.render();
             if (!(node instanceof Node))
                 throw Error(m.id + ' renderer did not return a Node');

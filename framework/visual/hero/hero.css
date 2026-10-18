@@ -8,7 +8,8 @@
  * Full-width visual banner located below the navigation bar. Provides
  * atmospheric course branding with a responsive fixed-height canvas. The text
  * (title and subtitle) dynamically scales and stays perfectly centered both
- * vertically and horizontally, independent of text length.
+ * vertically and horizontally within the visible canvas. Runtime postMounted
+ * measurements adapt the content to any region obscured by the page grid.
  *
  * Public Customization Variables:
  *
@@ -21,30 +22,51 @@
  * Typography & Fluid Scaling (§1.1, §1.3, §1.4):
  * --ck-hero-title-size            Dynamic fluid font size for the main title.
  *                                 Default: clamp(1.75rem, 4vw + 0.5rem, 2.8rem).
+ * --ck-hero-title-letter-spacing  Tracking of the main title.
+ *                                 Default: -0.02em (original component typography).
+ * --ck-hero-inner-max-width       Maximum width of the centered hero content.
+ *                                 Default: 56rem (existing component geometry).
  * --ck-hero-title-color           Title text color.
- *                                 Default: var(--ck-surface) (#ffffff).
+ *                                 Default: #ffffff (hero-owned, independent of surface theme).
  * --ck-hero-title-font            Title typeface family.
  *                                 Default: var(--ck-font-display).
  * --ck-hero-subtitle-size         Dynamic fluid font size for the subtitle.
  *                                 Default: clamp(0.95rem, 1.25vw + 0.5rem, 1.25rem).
  * --ck-hero-subtitle-color        Subtitle text color.
- *                                 Default: color-mix(in srgb, var(--ck-surface) 88%, transparent).
+ *                                 Default: #e2e8f0 (hero-owned, independent of surface theme).
  * --ck-hero-subtitle-max-width    Maximum reading width constraint for the subtitle.
  *                                 Default: 50rem.
  *
  * Background & Surfaces (§6.1, §6.3):
  * --ck-hero-overlay-start         Gradient top color overlay over background image.
- *                                 Default: color-mix(in srgb, var(--ck-text-dark) 85%, transparent).
+ *                                 Default: color-mix(in srgb, #0f172a 85%, transparent), matching the original Hero overlay.
  * --ck-hero-overlay-end           Gradient bottom color overlay over background image.
- *                                 Default: color-mix(in srgb, var(--ck-structure) 95%, transparent).
- * --ck-hero-border-color          Bottom boundary border color.
+ *                                 Default (light theme): color-mix(in srgb, var(--ck-surface) 70%, transparent).
+ *                                 Dark theme: original #1e293b overlay at 95%.
+ * --ck-hero-border-color          Optional bottom boundary border color.
  *                                 Default: color-mix(in srgb, var(--ck-structure) 80%, var(--ck-border)).
+ * --ck-hero-border-width          Optional bottom boundary border thickness.
+ *                                 Default: 0 (no visible border).
  */
 
 /* ========================================================
    1. Hero Banner Canvas & Viewport-Adaptive Sizing (§3.2)
    ======================================================== */
 .ck-hero {
+    /* Component-owned overlay defaults. Light theme fades to the page surface. */
+    --ck-hero-internal-default-inner-max-width: 56rem;
+    --ck-hero-internal-default-title-size: clamp(1.75rem, 4vw + 0.5rem, 2.8rem);
+    --ck-hero-internal-default-subtitle-size: clamp(0.95rem, 1.25vw + 0.5rem, 1.25rem);
+    --ck-hero-internal-default-subtitle-max-width: 50rem;
+    --ck-hero-internal-default-title-letter-spacing: -0.02em;
+
+    --ck-hero-internal-title-color: #ffffff;
+    --ck-hero-internal-subtitle-color: #e2e8f0;
+    --ck-hero-internal-overlay-start-color: #0f172a;
+    --ck-hero-internal-overlay-end-color: var(--ck-surface);
+    --ck-hero-internal-overlay-start-opacity: 45%;
+    --ck-hero-internal-overlay-end-opacity: 40%;
+
     /* Responsive fixed-height canvas: height is determined by screen space, NOT text volume */
     min-block-size: var(--ck-hero-height, clamp(18rem, 36dvh, 26rem));
     box-sizing: border-box;
@@ -56,7 +78,10 @@
     text-align: center;
 
     /* Padding accommodates screen edges and horizontal fluid spacing */
-    padding-block: var(--ck-space-xl);
+    /* Runtime geometry measured after mount; independent of the layout CSS. */
+    --ck-hero-internal-obstructed-end: 0rem;
+    padding-block-start: var(--ck-space-xl);
+    padding-block-end: calc(var(--ck-space-xl) + var(--ck-hero-internal-obstructed-end));
     padding-inline: var(
         --ck-hero-padding-inline,
         clamp(var(--ck-space-md), 4vw, var(--ck-space-xl))
@@ -65,20 +90,49 @@
     /* Atmospheric image & gradient overlay */
     background:
         linear-gradient(
-            var(--ck-hero-overlay-start, color-mix(in srgb, var(--ck-text-dark) 85%, transparent)),
-            var(--ck-hero-overlay-end, color-mix(in srgb, var(--ck-structure) 95%, transparent))
+            var(
+                --ck-hero-overlay-start,
+                color-mix(
+                    in srgb,
+                    var(--ck-hero-internal-overlay-start-color)
+                        var(--ck-hero-internal-overlay-start-opacity),
+                    transparent
+                )
+            ),
+            var(
+                --ck-hero-overlay-end,
+                color-mix(
+                    in srgb,
+                    var(--ck-hero-internal-overlay-end-color)
+                        var(--ck-hero-internal-overlay-end-opacity),
+                    transparent
+                )
+            )
         ),
         var(--ck-hero-image, none) center / cover no-repeat;
-    color: var(--ck-hero-title-color, var(--ck-surface));
-    border-block-end: 1px solid var(--ck-hero-border-color, color-mix(in srgb, var(--ck-structure) 80%, var(--ck-border)));
+    color: var(--ck-hero-title-color, var(--ck-hero-internal-title-color));
+    border-block-end: var(--ck-hero-border-width, 0) solid var(--ck-hero-border-color, color-mix(in srgb, var(--ck-structure) 80%, var(--ck-border)));
 }
 
 /* ========================================================
-   2. Centered Content Container (§1.4, §3.2)
+   2. Dark Theme Overlay (§6.3)
+   ======================================================== */
+/* Preserve a dark image treatment in night mode. The public
+ * --ck-hero-overlay-end override still has precedence. */
+:root[data-ck-theme="dark"] .ck-hero {
+    --ck-hero-internal-overlay-end-color: #1e293b;
+    --ck-hero-internal-overlay-end-opacity: 95%;
+}
+
+/* ========================================================
+   3. Centered Content Container (§1.4, §3.2)
    ======================================================== */
 .ck-hero__inner {
     inline-size: 100%;
-    max-inline-size: 56rem;
+    max-inline-size: var(
+        --ck-hero-inner-max-width,
+        var(--ck-hero-internal-default-inner-max-width)
+    );
     margin-inline: auto;
     display: flex;
     flex-direction: column;
@@ -87,52 +141,43 @@
 }
 
 /* ========================================================
-   3. Dynamically Scaled Title (§1.3.1, §1.3.2)
+   4. Dynamically Scaled Title (§1.3.1, §1.3.2)
    ======================================================== */
 .ck-hero__title {
     margin-block: 0 var(--ck-space-xs);
     font-family: var(--ck-hero-title-font, var(--ck-font-display));
     font-size: var(
-        --ck-hero-title-size,
-        clamp(1.75rem, 4vw + 0.5rem, 2.8rem)
+        --ck-hero-internal-runtime-title-size,
+        var(--ck-hero-title-size, var(--ck-hero-internal-default-title-size))
     );
     line-height: var(--ck-leading-heading-large); /* 1.2 unitless per §1.3.2 */
     font-weight: var(--ck-font-weight-bold);
-    letter-spacing: -0.02em;
+    letter-spacing: var(
+        --ck-hero-title-letter-spacing,
+        var(--ck-hero-internal-default-title-letter-spacing)
+    );
     text-transform: uppercase;
-    color: var(--ck-hero-title-color, var(--ck-surface));
+    color: var(--ck-hero-title-color, var(--ck-hero-internal-title-color));
 }
 
 /* ========================================================
-   4. Dynamically Scaled Subtitle (§1.2.1, §1.4.3)
+   5. Dynamically Scaled Subtitle (§1.2.1, §1.4.3)
    ======================================================== */
 .ck-hero__subtitle {
     margin-block: 0;
     margin-inline: auto;
-    max-inline-size: var(--ck-hero-subtitle-max-width, 50rem);
+    max-inline-size: min(
+        100%,
+        var(
+            --ck-hero-subtitle-max-width,
+            var(--ck-hero-internal-default-subtitle-max-width)
+        )
+    );
     font-size: var(
-        --ck-hero-subtitle-size,
-        clamp(0.95rem, 1.25vw + 0.5rem, 1.25rem)
+        --ck-hero-internal-runtime-subtitle-size,
+        var(--ck-hero-subtitle-size, var(--ck-hero-internal-default-subtitle-size))
     );
     line-height: var(--ck-leading-body);
     font-weight: var(--ck-font-weight-regular);
-    color: var(--ck-hero-subtitle-color, color-mix(in srgb, var(--ck-surface) 88%, transparent));
-}
-
-/* ========================================================
-   5. Desktop Layout Grid Overlap Compensation (§4.1, §4.3)
-   ======================================================== */
-/*
- * On desktop and tablet-landscape, .ck-layout__grid pulls upward by
- * var(--ck-page-layout-hero-overlap, 5.625rem). We add corresponding
- * bottom padding to ensure the text remains optically centered in the
- * visible (uncovered) portion of the hero.
- */
-@media (--ck-bp-tablet-lg) and (orientation: landscape),
-       (--ck-bp-desktop) {
-    .ck-hero {
-        padding-block-end: calc(
-            var(--ck-space-xl) + var(--ck-page-layout-hero-overlap, 5.625rem)
-        );
-    }
+    color: var(--ck-hero-subtitle-color, var(--ck-hero-internal-subtitle-color));
 }

@@ -170,6 +170,13 @@ export class ContentManager {
             }
         }
 
+        // Post-initialization message phase: every component is mounted,
+        // and all behaviors have been attached before any messages are sent.
+        // Preserve the existing renderer order (descendants before ancestors).
+        for (const renderer of instances) {
+            await renderer.postMounted();
+        }
+
         const pageType = xml.documentElement.getAttribute('page-type');
         const pageManifest = pages.pages.get(pageType);
         

@@ -48,7 +48,7 @@
 .ck-layout {
     /* Component internal defaults */
     --ck-page-layout-internal-max-width: 77.5rem;
-    --ck-page-layout-internal-single-max-width: 58.75rem;
+    --ck-page-layout-internal-single-max-width: 70.75rem;
     --ck-page-layout-internal-sidebar-width: 21.25rem;
     --ck-page-layout-internal-hero-overlap: 5.625rem;
 

@@ -1,3 +1,4 @@
+
 /*
  * CourseKit — Navigation Bar Component
  *
@@ -191,6 +192,7 @@
  * A hidden panel cannot intercept pointer events.
  */
 .ck-navbar__dropdown {
+    display: none;
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
@@ -214,7 +216,9 @@
     box-shadow: 4px 4px 0 color-mix(in srgb, #000 25%, transparent);
     transition:
         opacity var(--ck-motion-fast) var(--ck-easing-default),
-        visibility var(--ck-motion-fast) var(--ck-easing-default);
+        visibility var(--ck-motion-fast) var(--ck-easing-default),
+        display var(--ck-motion-fast) allow-discrete;
+    transition-behavior: allow-discrete;
 }
 
 /* Transparent pointer bridge across the visual gap below NAVIGATE.
@@ -231,9 +235,17 @@
 
 /* Open states: JavaScript owns state for consistent pointer/keyboard behavior. */
 .ck-navbar__nav.is-open .ck-navbar__dropdown {
+    display: block;
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
+}
+
+/* Preserve the fade-in when transitioning from display: none. */
+@starting-style {
+    .ck-navbar__nav.is-open .ck-navbar__dropdown {
+        opacity: 0;
+    }
 }
 
 /* Dropdown Navigation Links */

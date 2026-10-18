@@ -1,19 +1,104 @@
-.ck-central-content { 
-    grid-area: main; 
-    background: #fff; 
-    padding: var(--ck-content-padding); 
-    min-width: 0; 
-    border: 1px solid var(--ck-border); 
-    border-top: 8px solid var(--ck-structure); 
-    box-shadow: 8px 8px 0 rgba(30,41,59,.05); 
-    display: flex; 
-    flex-direction: column; 
-    gap: var(--ck-content-gap); 
-    container-type: normal; 
+/*
+ * CourseKit — Central Content Container
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 4.4, 5.1, 5.2, 6.1, 6.3, 7.3.
+ *
+ * Responsibility:
+ * The primary structural surface for core reading material, sections,
+ * figures, and interactive components. Controls outer containment, surface
+ * background, signature structural borders, and the vertical rhythm between
+ * direct child blocks.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally provided by reset.css per §3.1).
+ * 2. Does NOT style descendant elements (h2, p, ul) directly. Nested typography,
+ *    text measurement, and prose flow are owned by the respective child components
+ *    (section, paragraph, list, etc.) pursuant to §5.2.
+ *
+ * Public Customization Variables:
+ *
+ * Spacing & Layout Rhythm (§2.1, §2.2, §2.3, §2.4):
+ * --ck-central-content-padding-block      Vertical interior padding.
+ *                                         Default: clamp(var(--ck-space-lg), 7.5%, var(--ck-space-2xl)) (23px on mobile to 60px on desktop).
+ * --ck-central-content-padding-inline     Horizontal interior padding.
+ *                                         Default: clamp(var(--ck-space-lg), 7.5%, var(--ck-space-2xl)) (23px on mobile to 60px on desktop).
+ * --ck-central-content-gap                Vertical gap between top-level child components.
+ *                                         Default: var(--ck-section-gap) (2.4375rem / 39px per §2.2.1).
+ *
+ * Colors & Surfaces (§6.1, §6.3):
+ * --ck-central-content-background         Card surface background color.
+ *                                         Default: var(--ck-surface) (#ffffff in light mode).
+ * --ck-central-content-color              Default reading text color.
+ *                                         Default: var(--ck-text-main) (#334155).
+ *
+ * Borders & Structure (§1.1.3, §6.1):
+ * --ck-central-content-border-width       Outer border thickness.
+ *                                         Default: 1px.
+ * --ck-central-content-border-color       Outer border color.
+ *                                         Default: var(--ck-border) (#e2e8f0).
+ * --ck-central-content-top-border-width   Signature top accent rule thickness.
+ *                                         Default: 8px.
+ * --ck-central-content-top-border-color   Signature top accent rule color.
+ *                                         Default: var(--ck-structure) (#1e293b).
+ *
+ * Elevation & Shadow (§7.3):
+ * --ck-central-content-shadow             Card drop shadow.
+ *                                         Default: 8px 8px 0 color-mix(in srgb, var(--ck-structure) 5%, transparent).
+ */
+
+/* ========================================================
+   1. Central Content Surface & Box Geometry (§3.1, §3.2)
+   ======================================================== */
+.ck-central-content {
+    grid-area: main;
+    min-inline-size: 0;
+
+    /*
+     * Adaptive padding responds fluidly to the containing block's inline size (§2.3).
+     * 7.5% of an 800px desktop column reaches exactly 60px (the approved --ck-space-2xl maximum).
+     * On narrow mobile viewports, clamp locks at --ck-space-lg (23px), preserving historical mobile comfort.
+     */
+    padding-block: var(
+        --ck-central-content-padding-block,
+        clamp(var(--ck-space-lg), 7.5%, var(--ck-space-2xl))
+    );
+    padding-inline: var(
+        --ck-central-content-padding-inline,
+        clamp(var(--ck-space-lg), 7.5%, var(--ck-space-2xl))
+    );
+
+    background-color: var(--ck-central-content-background, var(--ck-surface));
+    color: var(--ck-central-content-color, var(--ck-text-main));
+    text-align: start;
+
+    /* Structural borders & signature 8px top boundary */
+    border: var(--ck-central-content-border-width, 1px)
+        solid var(--ck-central-content-border-color, var(--ck-border));
+    border-block-start: var(--ck-central-content-top-border-width, 8px)
+        solid var(--ck-central-content-top-border-color, var(--ck-structure));
+
+    /* Signature 8px shadow elevation */
+    box-shadow: var(
+        --ck-central-content-shadow,
+        8px 8px 0 color-mix(in srgb, var(--ck-structure) 5%, transparent)
+    );
+
+    /* Flex column orchestrating the vertical rhythm between direct children */
+    display: flex;
+    flex-direction: column;
+    gap: var(--ck-central-content-gap, var(--ck-section-gap));
 }
-.ck-central-content > * { 
-    margin-block: 0; 
-}
-@media (max-width: 37.5rem) { 
-    .ck-central-content { --ck-content-gap: 1.5rem; } 
+
+/* ========================================================
+   2. Direct Children Isolation & Spacing Ownership (§2.4, §4.4, §5.2)
+   ======================================================== */
+/*
+ * Spacing between sibling components is parent-owned via flex gap (§2.4).
+ * Direct children MUST NOT inject competing external vertical margins.
+ * min-inline-size: 0 prevents child content from forcing grid blowout (§4.4).
+ */
+.ck-central-content > * {
+    min-inline-size: 0;
+    margin-block: 0;
 }

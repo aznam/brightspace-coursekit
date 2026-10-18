@@ -1,4 +1,4 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:p="urn:coursekit:page" xmlns:c="urn:coursekit:visual" targetNamespace="urn:coursekit:page" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:p="urn:coursekit:page" xmlns:c="urn:coursekit:visual" xmlns:xsp="urn:coursekit:preprocessor" targetNamespace="urn:coursekit:page" elementFormDefault="qualified">
 
     <xs:include schemaLocation="$(frameworkRoot)/pages/base/base.xsd"/>
 
@@ -94,7 +94,9 @@
                 <xs:group ref="p:StandardBlocks"/>
                 <xs:element ref="p:infobox"/>
                 <xs:element ref="p:collapse-box"/>
+                <xsp:slot name="content">
                 <xs:element ref="p:section"/>
+                </xsp:slot>
             </xs:choice>
         </xs:extension></xs:complexContent></xs:complexType>
     </xs:element>
@@ -107,7 +109,9 @@
                 <xs:element ref="p:infobox"/>
                 <xs:element ref="p:collapse-box"/>
                 <xs:element ref="p:side"/>
+                <xsp:slot name="content">
                 <xs:group ref="p:StandardBlocks"/>
+                </xsp:slot>
             </xs:choice>
         </xs:extension></xs:complexContent></xs:complexType>
     </xs:element>

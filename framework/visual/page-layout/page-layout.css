@@ -1,57 +1,214 @@
+/*
+ * CourseKit — Page Layout Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 4.1, 4.3, 4.4, 5.1, 5.3, 6.1, 7.3.
+ *
+ * Responsibility:
+ * Controls the primary page canvas, background image rendering with an
+ * accessible contrast veil, and the multi-region responsive grid that houses
+ * the main content and sidebars.
+ *
+ * Public Customization Variables:
+ *
+ * Geometry & Width Constraints (§3.1, §3.2, §3.5):
+ * --ck-page-layout-max-width          Maximum width of the 2-column layout.
+ *                                     Default: 77.5rem (1240px: preserves historical 1200px content + 40px padding in border-box).
+ * --ck-page-layout-single-max-width   Maximum width for single-column (no-sidebar) mode.
+ *                                     Default: 58.75rem (940px: preserves historical 900px content + 40px padding in border-box).
+ * --ck-page-layout-sidebar-width      Width of the sidebar column.
+ *                                     Default: 21.25rem (340px historical width).
+ * --ck-page-layout-hero-overlap       Vertical upward overlap of the layout grid onto the hero banner.
+ *                                     Default: 5.625rem (90px historical overlap).
+ *
+ * Spacing, Gaps & Gutters (§2.1, §2.2, §2.3, §2.4):
+ * --ck-page-layout-stacked-padding    Inline/block padding when regions stack on compact viewports.
+ *                                     Default: clamp(var(--ck-space-sm), 2vw, var(--ck-space-lg)) (13px to 23px).
+ * --ck-page-layout-padding-inline     Horizontal padding on wide/desktop viewports.
+ *                                     Default: clamp(var(--ck-space-sm), 2vw, var(--ck-space-lg)) (13px to 23px).
+ * --ck-page-layout-stacked-gap        Vertical gap between regions when stacked on mobile.
+ *                                     Default: var(--ck-subsection-gap) (1.4375rem / 23px per §2.2.1).
+ * --ck-page-layout-column-gap         Horizontal gutter between main content and sidebar columns.
+ *                                     Default: var(--ck-section-gap) (2.4375rem / 39px per §2.2.1).
+ * --ck-page-layout-sidebar-gap        Vertical gap between multiple cards stacked within a sidebar.
+ *                                     Default: var(--ck-subsection-gap) (1.4375rem / 23px per §2.4).
+ * --ck-page-layout-bottom-gap         Bottom margin below the grid.
+ *                                     Default: var(--ck-section-gap) (2.4375rem / 39px).
+ *
+ * Background Contrast Veil (§6.1, §6.3):
+ * --ck-page-layout-overlay-start      Top gradient stop of the background veil.
+ *                                     Default: color-mix(in srgb, var(--ck-bg-base) 92%, transparent).
+ * --ck-page-layout-overlay-end        Bottom gradient stop of the background veil.
+ *                                     Default: color-mix(in srgb, var(--ck-bg-base) 97%, transparent).
+ */
+
+/* ========================================================
+   1. Canvas Wrapper & Background Stacking Context (§7.3)
+   ======================================================== */
 .ck-layout {
+    /* Component internal defaults */
+    --ck-page-layout-internal-max-width: 77.5rem;
+    --ck-page-layout-internal-single-max-width: 58.75rem;
+    --ck-page-layout-internal-sidebar-width: 21.25rem;
+    --ck-page-layout-internal-hero-overlap: 5.625rem;
+
+    /* Theme-aware veil opacities */
+    --ck-page-layout-internal-overlay-start-opacity: 92%;
+    --ck-page-layout-internal-overlay-end-opacity: 97%;
+
+    position: relative;
+    isolation: isolate;
+    min-inline-size: 0;
+    min-block-size: 100dvh;
     margin: 0;
     padding: 0;
-    color: var(--ck-text, #222);
-    font-family: var(--ck-font-family, system-ui, sans-serif);
+
+    color: var(--ck-text-main);
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-font-body-size);
+    line-height: var(--ck-leading-body);
+
+    background-color: var(--ck-bg-base);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* Translucent veil for content contrast over background image (§6.1, §6.3) */
+.ck-layout::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+        var(
+            --ck-page-layout-overlay-start,
+            color-mix(
+                in srgb,
+                var(--ck-bg-base) var(--ck-page-layout-internal-overlay-start-opacity),
+                transparent
+            )
+        ),
+        var(
+            --ck-page-layout-overlay-end,
+            color-mix(
+                in srgb,
+                var(--ck-bg-base) var(--ck-page-layout-internal-overlay-end-opacity),
+                transparent
+            )
+        )
+    );
 }
 
 .ck-layout__header {
     display: contents;
 }
 
+/* ========================================================
+   2. Responsive Grid Container (Mobile-First) (§4.1, §4.4)
+   ======================================================== */
 .ck-layout__grid {
-    max-width: 1350px;
-    margin: -90px auto 40px;
-    padding: 0 20px;
     display: grid;
-    grid-template-columns: 1fr 300px;
-    grid-template-areas: 
-        "main sb-before" 
-        "main sb-after" 
-        "main .";
-    gap: 40px;
+    inline-size: 100%;
+    max-inline-size: var(
+        --ck-page-layout-max-width,
+        var(--ck-page-layout-internal-max-width)
+    );
+    min-inline-size: 0;
+    margin: 0 auto var(--ck-page-layout-bottom-gap, var(--ck-section-gap));
+    padding: var(
+        --ck-page-layout-stacked-padding,
+        clamp(var(--ck-space-sm), 2vw, var(--ck-space-lg))
+    );
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "sb-before"
+        "main"
+        "sb-after";
+    row-gap: var(--ck-page-layout-stacked-gap, var(--ck-subsection-gap));
     position: relative;
-    z-index: 10;
+    z-index: var(--ck-z-base);
 }
 
+/* ========================================================
+   3. Grid Area Assignments (§2.4, §3.2)
+   ======================================================== */
 .ck-layout__main {
     grid-area: main;
-}
-.ck-sidebar-before {
-    grid-area: sb-before;
-    align-self: start;
-    min-width: 0;
-}
-.ck-sidebar-after {
-    grid-area: sb-after;
-    align-self: start;
-    min-width: 0;
+    min-inline-size: 0;
 }
 
-.ck-layout__sidebar:empty {
+.ck-sidebar-before {
+    grid-area: sb-before;
+    min-inline-size: 0;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ck-page-layout-sidebar-gap, var(--ck-subsection-gap));
+}
+
+.ck-sidebar-after {
+    grid-area: sb-after;
+    min-inline-size: 0;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ck-page-layout-sidebar-gap, var(--ck-subsection-gap));
+}
+
+/* Collapse empty sidebar containers */
+.ck-sidebar-before:empty,
+.ck-sidebar-after:empty,
+.ck-layout__grid > :empty {
     display: none;
 }
 
+/* ========================================================
+   4. Single Column Layout (No Sidebars) (§3.2)
+   ======================================================== */
 .ck-layout--single .ck-layout__grid {
-    grid-template-columns: 1fr;
+    max-inline-size: var(
+        --ck-page-layout-single-max-width,
+        var(--ck-page-layout-internal-single-max-width)
+    );
+    grid-template-areas: "main";
 }
 
-@media (max-width: 1000px) {
+/* ========================================================
+   5. Horizontal Desktop & Tablet-Landscape Composition (§4.1, §4.3)
+   ======================================================== */
+@media (--ck-bp-tablet-lg) and (orientation: landscape),
+       (--ck-bp-desktop) {
     .ck-layout__grid {
-        grid-template-columns: 1fr;
+        margin-block-start: calc(
+            -1 * var(
+                --ck-page-layout-hero-overlap,
+                var(--ck-page-layout-internal-hero-overlap)
+            )
+        );
+        padding-block: 0;
+        padding-inline: var(
+            --ck-page-layout-padding-inline,
+            clamp(var(--ck-space-sm), 2vw, var(--ck-space-lg))
+        );
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, var(
+                --ck-page-layout-sidebar-width,
+                var(--ck-page-layout-internal-sidebar-width)
+            ));
         grid-template-areas:
-            "sb-before"
-            "main"
-            "sb-after";
+            "main sb-before"
+            "main sb-after"
+            "main .";
+        column-gap: var(--ck-page-layout-column-gap, var(--ck-section-gap));
+        row-gap: var(--ck-page-layout-stacked-gap, var(--ck-subsection-gap));
+    }
+
+    .ck-layout--single .ck-layout__grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "main";
     }
 }

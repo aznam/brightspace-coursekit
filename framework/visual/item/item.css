@@ -1,0 +1,59 @@
+/*
+ * CourseKit — List Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.4, 2.1, 2.4, 2.5, 3.1, 4.4, 5.1, 5.2, 5.3.
+ *
+ * Responsibility:
+ * Block-level container for ordered (<ol>) and unordered (<ul>) lists.
+ * Controls block vertical cushion, proportional list indentation, reading measure
+ * constraints, item spacing, safe text wrapping, and typography inheritance.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally supplied by reset.css per §3.1).
+ * 2. Does NOT set external layout margins (managed by the parent container per §2.4).
+ *
+ * Public Customization Variables:
+ *
+ * Spacing & Layout (§1.1.3, §1.4.3, §2.1, §2.4):
+ * --ck-list-padding-block         Vertical cushion applied to the list block.
+ *                                 Default: var(--ck-space-xs) (0.5625rem / 9px per §2.1).
+ * --ck-list-indentation           Typographic indentation for bullets and numbers.
+ *                                 Default: var(--ck-list-indent) (1.45em per Appendix A.1).
+ * --ck-list-max-width             Maximum reading constraint for prose lists.
+ *                                 Default: var(--ck-reading-width) (70ch per §1.4.3).
+ * --ck-list-item-gap              Vertical spacing between consecutive list items.
+ *                                 Default: var(--ck-space-2xs) (0.375rem / 6px per §2.1).
+ */
+
+/* ========================================================
+   1. List Container & Block Cushion (§1.1, §2.4, §5.3)
+   ======================================================== */
+.ck-list {
+    /* Prevent external margin contamination: spacing is parent-owned (§2.4) */
+    margin-block: 0;
+
+    /* Ergonomic reading measure constraint (§1.4.3) */
+    max-inline-size: min(100%, var(--ck-list-max-width, var(--ck-reading-width)));
+    min-inline-size: 0;
+
+    /* Block cushion: creates distinct breathing room above and below list block */
+    padding-block: var(--ck-list-padding-block, var(--ck-space-xs));
+
+    /* Logical typographic bullet indentation relative to font size (§1.1.3) */
+    padding-inline-start: var(--ck-list-indentation, var(--ck-list-indent));
+    padding-inline-end: 0;
+
+    /* Natural typographic inheritance across body and compact boxes (§5.3) */
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+}
+
+/* ========================================================
+   2. Item Rhythm within List (§2.1, §2.4)
+   ======================================================== */
+.ck-list > .ck-item + .ck-item,
+.ck-list > li + li {
+    margin-block-start: var(--ck-list-item-gap, var(--ck-space-2xs));
+}

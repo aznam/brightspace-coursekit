@@ -1,82 +1,168 @@
-.ck-section { 
-    margin: 0; 
-    min-width: 0; 
-    scroll-margin-top: calc(var(--ck-navbar-offset, 4rem) + var(--ck-space-md)); 
+/*
+ * CourseKit — Section Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.2, 2.4, 2.5, 3.1, 4.4, 5.1, 5.2, 6.1.
+ *
+ * Responsibility:
+ * Structural content division supporting hierarchical nesting (data-level 1 to 6).
+ * Controls section heading typography, divider rules, scroll anchor offset,
+ * and the vertical rhythm between internal paragraphs and nested subsections.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally supplied by reset.css per §3.1).
+ * 2. Does NOT set external layout margins (vertical rhythm is managed by the parent container per §2.4).
+ * 3. Does NOT alter the internal presentation of nested modular components (infobox, collapse-box, etc.).
+ *
+ * Public Customization Variables:
+ *
+ * Heading Sizes by Depth (§1.3.1):
+ * --ck-section-level-1-title-size   Level 1 heading size. Default: var(--ck-heading-2-size) (1.5rem / 24px).
+ * --ck-section-level-2-title-size   Level 2 heading size. Default: var(--ck-heading-3-size) (1.25rem / 20px).
+ * --ck-section-level-3-title-size   Level 3 heading size. Default: var(--ck-heading-4-size) (1.125rem / 18px).
+ * --ck-section-level-4-title-size   Level 4 heading size. Default: var(--ck-heading-5-size) (1rem / 16px).
+ * --ck-section-level-5-title-size   Level 5 heading size. Default: var(--ck-heading-6-size) (0.875rem / 14px).
+ * --ck-section-level-6-title-size   Level 6 heading size. Default: var(--ck-heading-6-size) (0.875rem / 14px).
+ *
+ * Heading Typography & Presentation (§1.3, §1.5):
+ * --ck-section-title-color          Heading text color. Default: component depth default.
+ * --ck-section-title-font-family    Heading font family. Default: var(--ck-font-display).
+ * --ck-section-title-line-height    Heading line height. Default: var(--ck-leading-heading-section) (1.3).
+ * --ck-section-title-weight         Heading font weight. Default: var(--ck-font-weight-bold) (700).
+ * --ck-section-title-letter-spacing Tracking override. When set by site, overrides all depth defaults.
+ * --ck-section-title-transform      Text transform (uppercase/none). Default: component depth default.
+ * --ck-section-title-padding-end    Space between heading text and underline rule. Default: component depth default.
+ * --ck-section-title-border-width   Underline rule thickness. Default: component depth default.
+ * --ck-section-title-border-color   Underline rule color. Default: var(--ck-border).
+ *
+ * Functional Spacing Roles (§2.2, §2.4):
+ * --ck-section-title-gap            Gap between section heading and its content. Default: component depth default.
+ * --ck-section-content-gap          Rhythm between sibling elements in content. Default: var(--ck-prose-gap) (1rem / 16px).
+ * --ck-section-subsection-gap       Separation before nested subsections. Default: var(--ck-subsection-gap) (1.4375rem / 23px).
+ *
+ * External Anchor Dependency (§4.4):
+ * --ck-navbar-offset                Height of the sticky navbar for scroll margin. Default: 4rem.
+ */
+
+/* ========================================================
+   1. Section Container & Scroll Anchor Alignment (§4.4)
+   ======================================================== */
+.ck-section {
+    --ck-section-internal-title-color: var(--ck-text-dark);
+    --ck-section-internal-title-transform: uppercase;
+    --ck-section-internal-title-letter-spacing: -0.01em;
+    --ck-section-internal-title-border-width: 2px;
+    --ck-section-internal-title-padding-end: var(--ck-space-2xs);
+    --ck-section-internal-title-gap: var(--ck-prose-gap);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--ck-section-title-gap, var(--ck-section-internal-title-gap));
+    min-inline-size: 0;
+    margin-block: 0;
+
+    /* Scroll offset prevents sticky navbar from obscuring heading on anchor jump (§4.4) */
+    scroll-margin-block-start: calc(
+        var(--ck-navbar-offset, 4rem) + var(--ck-space-md)
+    );
 }
 
-.ck-section__title { 
-    margin: 0 0 var(--ck-space-md); 
-    padding-bottom: .4rem; 
-    color: var(--ck-text-dark); 
-    border-bottom: 2px solid var(--ck-border); 
-    font-size: 1.1rem; 
-    line-height: 1.35; 
-    font-weight: 800; 
-    letter-spacing: -.01em; 
-    text-transform: uppercase; 
+/* ========================================================
+   2. Hierarchical Depth Variations (§1.3.1, §1.3.3, §1.5.3)
+   ======================================================== */
+/* Level 2 Subsections: Softer tone, tracking adjustment, rule omitted */
+.ck-section[data-level="2"] {
+    --ck-section-internal-title-color: var(--ck-text-main);
+    --ck-section-internal-title-letter-spacing: 0.025em;
+    --ck-section-internal-title-border-width: 0px;
+    --ck-section-internal-title-padding-end: 0px;
+    --ck-section-internal-title-gap: var(--ck-space-sm);
 }
 
-.ck-section[data-level="2"] > .ck-section__title { 
-    margin-bottom: var(--ck-space-sm); 
-    border-bottom: 0; 
-    padding-bottom: 0; 
-    color: #475569; 
-    font-size: .95rem; 
-    letter-spacing: .025rem; 
+/* Level 3+ Subsections: Standard sentence case & natural tracking per §1.5.3 */
+.ck-section[data-level="3"],
+.ck-section[data-level="4"],
+.ck-section[data-level="5"],
+.ck-section[data-level="6"] {
+    --ck-section-internal-title-transform: none;
+    --ck-section-internal-title-letter-spacing: var(--ck-letter-spacing-normal);
 }
 
-.ck-section[data-level="3"] > .ck-section__title { 
-    font-size: .9rem; 
-    text-transform: none; 
-    color: var(--ck-text-dark); 
+/* ========================================================
+   3. Heading Typography & Structural Rule (§1.3, §1.5)
+   ======================================================== */
+.ck-section > .ck-section__title {
+    min-inline-size: 0;
+    margin-block: 0;
+    padding-block-end: var(
+        --ck-section-title-padding-end,
+        var(--ck-section-internal-title-padding-end)
+    );
+    border-block-end: var(
+        --ck-section-title-border-width,
+        var(--ck-section-internal-title-border-width)
+    ) solid var(--ck-section-title-border-color, var(--ck-border));
+    color: var(--ck-section-title-color, var(--ck-section-internal-title-color));
+    font-family: var(--ck-section-title-font-family, var(--ck-font-display));
+    line-height: var(--ck-section-title-line-height, var(--ck-leading-heading-section));
+    font-weight: var(--ck-section-title-weight, var(--ck-font-weight-bold));
+    letter-spacing: var(
+        --ck-section-title-letter-spacing,
+        var(--ck-section-internal-title-letter-spacing, var(--ck-letter-spacing-normal))
+    );
+    text-align: start;
+    text-transform: var(
+        --ck-section-title-transform,
+        var(--ck-section-internal-title-transform)
+    );
 }
 
-.ck-section__content { 
-    display: flex; 
-    flex-direction: column; 
-    gap: var(--ck-prose-gap); 
-    min-width: 0; 
+/* Typographic scale mapped to section depth (§1.3.1) */
+.ck-section[data-level="1"] > .ck-section__title {
+    font-size: var(--ck-section-level-1-title-size, var(--ck-heading-2-size));
+}
+.ck-section[data-level="2"] > .ck-section__title {
+    font-size: var(--ck-section-level-2-title-size, var(--ck-heading-3-size));
+}
+.ck-section[data-level="3"] > .ck-section__title {
+    font-size: var(--ck-section-level-3-title-size, var(--ck-heading-4-size));
+}
+.ck-section[data-level="4"] > .ck-section__title {
+    font-size: var(--ck-section-level-4-title-size, var(--ck-heading-5-size));
+}
+.ck-section[data-level="5"] > .ck-section__title {
+    font-size: var(--ck-section-level-5-title-size, var(--ck-heading-6-size));
+}
+.ck-section[data-level="6"] > .ck-section__title {
+    font-size: var(--ck-section-level-6-title-size, var(--ck-heading-6-size));
 }
 
-.ck-section__content > * { 
-    margin-block: 0; 
+/* ========================================================
+   4. Content Flow & Spacing Ownership (§2.2, §2.4)
+   ======================================================== */
+.ck-section > .ck-section__content {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    gap: 0; /* Gap is kept at 0 so margins strictly distinguish prose vs subsection gaps */
 }
 
-.ck-section__content > .ck-section { 
-    margin-top: calc(var(--ck-subsection-gap) - var(--ck-prose-gap)); 
+/* Spacing between ordinary sibling flow items (§2.2.1) */
+.ck-section > .ck-section__content > * + * {
+    margin-block-start: var(--ck-section-content-gap, var(--ck-prose-gap));
 }
 
-.ck-section__content p { 
-    margin: 0; 
+/* Enhanced separation preceding a nested subsection (§2.2.1) */
+.ck-section > .ck-section__content > .ck-section:not(:first-child) {
+    margin-block-start: var(--ck-section-subsection-gap, var(--ck-subsection-gap));
 }
 
-.ck-section__content ul, 
-.ck-section__content ol { 
-    margin: 0; 
-    padding-left: var(--ck-list-indent); 
-}
-
-.ck-section__content li { 
-    margin: 0; 
-    padding-left: .1rem; 
-}
-
-.ck-section__content li + li { 
-    margin-top: .35rem; 
-}
-
-.ck-section__content li > ul, 
-.ck-section__content li > ol { 
-    margin-top: .35rem; 
-}
-
-.ck-section__content blockquote { 
-    margin: 0; 
-    padding: .75rem 1rem; 
-    border-left: 4px solid var(--ck-border); 
-    color: #475569; 
-}
-
-.ck-section__content a { 
-    color: var(--ck-accent); 
+/* ========================================================
+   5. Direct Paragraph Measurement (§1.4.3, §5.2)
+   ======================================================== */
+.ck-section > .ck-section__content > .ck-paragraph,
+.ck-section > .ck-section__content > p {
+    margin-block: 0;
+    max-inline-size: min(100%, var(--ck-reading-width));
+    text-align: start;
 }

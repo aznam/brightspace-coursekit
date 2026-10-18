@@ -1,38 +1,128 @@
-.ck-inline-toc { 
-    display: flex; 
-    flex-wrap: wrap; 
-    align-items: baseline; 
-    gap: .2rem 0; 
-    padding: .9rem 0; 
-    border-top: 1px solid var(--ck-border); 
-    border-bottom: 1px solid var(--ck-border); 
-    color: #64748b; 
-    font-size: .9rem; 
-    line-height: 1.8; 
+/*
+ * CourseKit — Inline Table of Contents Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.3, 1.5, 2.1, 2.4, 2.5, 3.1, 3.2, 4.1, 4.4, 5.1, 5.3, 6.1, 7.1.
+ *
+ * Responsibility:
+ * Horizontal summary navigation banner placed at the beginning of central content.
+ * Provides direct jump links to page sections with tight mobile wrapping,
+ * touch-accessible tap targets, symmetric bullet separation, and controlled vertical rhythm.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally provided by reset.css per §3.1).
+ * 2. Does NOT set external vertical margins (managed by the parent central-content container per §2.4).
+ *
+ * Public Customization Variables:
+ *
+ * Colors & Surfaces (§6.1, §6.3):
+ * --ck-inline-toc-border-color          Horizontal divider borders color.
+ *                                       Default: var(--ck-border) (#e2e8f0).
+ * --ck-inline-toc-label-color           Label ("On this page:") text color.
+ *                                       Default: var(--ck-text-dark) (#0f172a).
+ * --ck-inline-toc-link-color            Section link text color.
+ *                                       Default: var(--ck-accent) (#c2410c).
+ * --ck-inline-toc-separator-color       Bullet separator (•) color.
+ *                                       Default: color-mix(in srgb, var(--ck-border) 70%, var(--ck-text-main)).
+ *
+ * Spacing & Layout (§2.1, §2.4, §2.5):
+ * --ck-inline-toc-padding-y             Vertical padding within the horizontal borders.
+ *                                       Default: var(--ck-space-xs) (0.5625rem / 9px for a compact height).
+ * --ck-inline-toc-row-gap               Vertical row gap when items wrap on mobile.
+ *                                       Default: var(--ck-space-2xs) (0.375rem / 6px for tight line spacing).
+ * --ck-inline-toc-column-gap            Horizontal column gap between items.
+ *                                       Default: var(--ck-space-md) (1rem / 16px).
+ *
+ * Typography (§1.2, §1.3, §1.5):
+ * --ck-inline-toc-font-size             Font size of navigation links.
+ *                                       Default: var(--ck-font-box-size) (0.875rem / 14px per §1.2.1).
+ */
+
+/* ========================================================
+   1. Inline TOC Landmark Container (§1.2, §2.4, §4.4)
+   ======================================================== */
+.ck-inline-toc {
+    margin-block: 0;
+    inline-size: 100%;
+    min-inline-size: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    /* Explicit row and column gaps: tight 6px vertical row gap prevents excessive spacing on mobile wrap */
+    column-gap: var(
+        --ck-inline-toc-column-gap,
+        var(--ck-space-2xs)
+    );
+
+    row-gap: var(
+        --ck-inline-toc-row-gap,
+        var(--ck-space-2xs)
+    );
+
+    padding-inline-start: var(--ck-inline-toc-indent, var(--ck-space-sm));
+
+    padding-block: var(--ck-inline-toc-padding-y, var(--ck-space-xs));
+    border-block-start: 1px solid var(--ck-inline-toc-border-color, var(--ck-border));
+    border-block-end: 1px solid var(--ck-inline-toc-border-color, var(--ck-border));
+
+    font-size: var(--ck-inline-toc-font-size, var(--ck-font-box-size));
+    line-height: 1.4; /* Tight leading prevents vertical line-box expansion on wrapped items */
+    color: var(--ck-text-main);
+    overflow-wrap: anywhere;
 }
 
-.ck-inline-toc__label { 
-    margin-right: .9rem; 
-    color: var(--ck-text-dark); 
-    font-size: .8rem; 
-    font-weight: 800; 
-    text-transform: uppercase; 
-    letter-spacing: .03rem; 
-    white-space: nowrap; 
+/* ========================================================
+   2. Label ("On this page:") (§1.2.1, §1.5)
+   ======================================================== */
+.ck-inline-toc__label {
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-font-footnote); /* 0.75rem / 12px per §1.2.1 */
+    font-weight: var(--ck-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--ck-letter-spacing-normal);
+    color: var(--ck-inline-toc-label-color, var(--ck-text-dark));
+    margin-inline-start: calc(-1 * var(--ck-inline-toc-indent, var(--ck-space-sm)));
+    white-space: nowrap;
 }
 
-.ck-inline-toc a { 
-    color: var(--ck-accent); 
-    text-decoration: none; 
-    font-weight: 600; 
-    white-space: nowrap; 
+/* ========================================================
+   3. Navigation Jump Links (§7.1)
+   ======================================================== */
+.ck-inline-toc a {
+    display: inline-block;
+    min-block-size: 0;
+    padding: 0;
+
+    color: var(--ck-inline-toc-link-color, var(--ck-accent));
+    text-decoration: none;
+    font-weight: var(--ck-font-weight-semibold);
+    border-radius: var(--ck-space-2xs);
+
+    overflow-wrap: anywhere;
+    transition: color var(--ck-motion-fast) var(--ck-easing-default);
 }
 
-.ck-inline-toc a:hover { 
-    text-decoration: underline; 
+.ck-inline-toc a:hover {
+    text-decoration: underline;
 }
 
-.ck-inline-toc__separator { 
-    margin: 0 .65rem; 
-    color: #cbd5e1; 
+/* WCAG 2.4.7 compliant visible focus ring (§7.1.1) */
+.ck-inline-toc a:focus-visible {
+    outline: 2px solid var(--ck-accent);
+    outline-offset: 2px;
+}
+
+/* ========================================================
+   4. Bullet Separators (Managed by Renderer JS) (§2.5, §6.1)
+   ======================================================== */
+.ck-inline-toc__separator {
+    display: inline-block;
+    margin-inline: var(--ck-space-2xs);
+    vertical-align: baseline;
+    color: var(
+        --ck-inline-toc-separator-color,
+        color-mix(in srgb, var(--ck-border) 70%, var(--ck-text-main))
+    );
+    user-select: none;
 }

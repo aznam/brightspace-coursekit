@@ -1,4 +1,108 @@
+/*
+ * CourseKit — Global Design Tokens
+ *
+ * Normative reference: CONVENTIONS.md (notably Appendix A)
+ *
+ * Responsibility:
+ * Central definition of all shared, global design tokens for CourseKit.
+ * Component-specific geometry, internal properties, and variant defaults
+ * belong to their respective component stylesheets, not in this file.
+ *
+ * Public Customization Variables (Settable in course.json or site stylesheets):
+ *
+ * 1. Global Palette Roles (§6.1):
+ *    --ck-accent               Primary brand accent, links, key interactive highlights
+ *    --ck-accent-light         Subtle accent surface / highlight background
+ *    --ck-structure            Structural elements, navigation header, dark boundaries
+ *    --ck-text-main            Standard reading text body color
+ *    --ck-text-dark            Stronger-emphasis text, section & component headings
+ *    --ck-border               Neutral borders and dividers
+ *    --ck-bg-base              Global canvas background
+ *    --ck-surface              Standard card / container surface background
+ *    --ck-surface-muted        Secondary / muted container surface background
+ *
+ * 2. Semantic Status Colors (§6.2):
+ *    --ck-color-info           Information notices, callouts, and icons
+ *    --ck-color-warning        Warning alerts, caveats, and notice highlights
+ *    --ck-color-error          Critical errors, alerts, and destructive highlights
+ *    --ck-color-success        Success indicators, completed items, tips
+ *
+ * 3. Typography Families (§8.1):
+ *    --ck-font-body            Primary typeface for prose, lists, and UI controls
+ *    --ck-font-display         Display typeface for hero and section headings
+ *
+ * 4. Text Sizes & Line Heights (§1.2, §1.3):
+ *    --ck-font-footnote        Footnotes, captions, and secondary metadata (0.75rem / 12px)
+ *    --ck-font-box-size        Compact panels, sidebars, and infoboxes (0.875rem / 14px)
+ *    --ck-font-body-size       Main prose and standard document text (1rem / 16px)
+ *    --ck-heading-1-size       Heading level 1 (2rem / 32px)
+ *    --ck-heading-2-size       Heading level 2 (1.5rem / 24px)
+ *    --ck-heading-3-size       Heading level 3 (1.25rem / 20px)
+ *    --ck-heading-4-size       Heading level 4 (1.125rem / 18px)
+ *    --ck-heading-5-size       Heading level 5 (1rem / 16px)
+ *    --ck-heading-6-size       Heading level 6 (0.875rem / 14px)
+ *    --ck-leading-footnote     Line height for footnotes and metadata (1.4)
+ *    --ck-leading-box          Line height for compact panels and cards (1.5)
+ *    --ck-leading-body         Line height for standard body prose (1.6)
+ *    --ck-leading-heading-large     Line height for hero and page titles (1.2)
+ *    --ck-leading-heading-section   Line height for section titles (1.3)
+ *    --ck-leading-heading-component Line height for card and box titles (1.4)
+ *
+ * 5. Paragraph Spacing & Reading Width (§1.4):
+ *    --ck-paragraph-gap-body       Spacing between standard prose paragraphs (1rem)
+ *    --ck-paragraph-gap-box        Spacing between paragraphs inside boxes (0.75rem)
+ *    --ck-paragraph-gap-footnote   Spacing between secondary footnotes (0.5rem)
+ *    --ck-reading-width            Maximum reading measure for prose (70ch)
+ *
+ * 6. Font Weights & Letter Spacing (§1.5):
+ *    --ck-font-weight-light        Light text styling (300)
+ *    --ck-font-weight-regular      Default regular body weight (400)
+ *    --ck-font-weight-medium       Secondary labels and metadata weight (500)
+ *    --ck-font-weight-semibold     Buttons, subtitles, active elements weight (600)
+ *    --ck-font-weight-bold         Headings and emphasized titles weight (700)
+ *    --ck-letter-spacing-normal    Default natural font tracking (normal)
+ *
+ * 7. Global Spacing Scale (§2.1):
+ *    --ck-space-2xs    0.375rem (6px)   Compact internal padding and subtle gaps
+ *    --ck-space-xs     0.5625rem (9px)  Small gaps between tightly bound elements
+ *    --ck-space-sm     0.8125rem (13px) Compact component padding
+ *    --ck-space-md     1rem (16px)      Standard spacing unit
+ *    --ck-space-lg     1.4375rem (23px) Medium component padding and group spacing
+ *    --ck-space-xl     2.4375rem (39px) Major separation between sections
+ *    --ck-space-2xl    3.75rem (60px)   Large structural and layout gutters
+ *
+ * 8. Functional Spacing Roles (§2.2):
+ *    --ck-prose-gap         Spacing between ordinary flow elements (var(--ck-space-md))
+ *    --ck-subsection-gap    Spacing between nested subsections (var(--ck-space-lg))
+ *    --ck-section-gap       Spacing between top-level sections (var(--ck-space-xl))
+ *
+ * 9. Motion & Animation Tokens (§7.2):
+ *    --ck-motion-fast       150ms hover and micro-interactions
+ *    --ck-motion-normal     250ms standard panels, reveals, and toggles
+ *    --ck-motion-slow       350ms larger drawers and view transitions
+ *    --ck-easing-default    ease transition curve
+ *    --ck-easing-enter      ease-out deceleration curve for arriving elements
+ *    --ck-easing-exit       ease-in acceleration curve for departing elements
+ *
+ * 10. Global Layering Scale (§7.3):
+ *    --ck-z-base       0    Baseline content
+ *    --ck-z-sticky     100  Sticky navigation and headers
+ *    --ck-z-dropdown   200  Dropdown menus
+ *    --ck-z-popover    300  Hoverboxes and tooltips
+ *    --ck-z-overlay    400  Modal backdrops and veils
+ *    --ck-z-modal      500  Modal dialogs
+ *    --ck-z-toast      600  Toasts and floating alerts
+ *
+ * 11. Shared Visual Primitives (Appendix A.1 & A.4):
+ *    --ck-list-indent  1.45em   Standard typographic indentation for lists
+ *    --ck-radius       0.35rem  Standard card and box corner radius
+ *    --ck-shadow       4px 4px 0 ... Signature shadow tinted with structure color
+ */
+
 :root {
+    /* ========================================================
+       1. Global Palette — Light Defaults (§6.1)
+       ======================================================== */
     --ck-accent: #c2410c;
     --ck-accent-light: #ffedd5;
     --ck-structure: #1e293b;
@@ -6,22 +110,115 @@
     --ck-text-dark: #0f172a;
     --ck-border: #e2e8f0;
     --ck-bg-base: #fafaf9;
-    --ck-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --ck-surface: #ffffff;
+    --ck-surface-muted: #f8fafc;
+
+    /* ========================================================
+       2. Semantic Status Colors (§6.2)
+       ======================================================== */
+    --ck-color-info: #185fa5;
+    --ck-color-warning: #854f0b;
+    --ck-color-error: #a32d2d;
+    --ck-color-success: #3b6d11;
+
+    /* ========================================================
+       3. Global Font Families (§8.1)
+       ======================================================== */
+    --ck-font-body: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --ck-font-display: var(--ck-font-body);
 
-    --ck-space-2xs: .25rem;
-    --ck-space-xs: .5rem;
-    --ck-space-sm: .75rem;
+    /* ========================================================
+       4. Text Sizes (§1.2, §1.3)
+       ======================================================== */
+    --ck-font-footnote: 0.75rem;
+    --ck-font-box-size: 0.875rem;
+    --ck-font-body-size: 1rem;
+
+    --ck-heading-1-size: 2rem;
+    --ck-heading-2-size: 1.5rem;
+    --ck-heading-3-size: 1.25rem;
+    --ck-heading-4-size: 1.125rem;
+    --ck-heading-5-size: 1rem;
+    --ck-heading-6-size: 0.875rem;
+
+    /* ========================================================
+       5. Unitless Line Heights (§1.2, §1.3)
+       ======================================================== */
+    --ck-leading-footnote: 1.4;
+    --ck-leading-box: 1.5;
+    --ck-leading-body: 1.6;
+    --ck-leading-heading-large: 1.2;
+    --ck-leading-heading-section: 1.3;
+    --ck-leading-heading-component: 1.4;
+
+    /* ========================================================
+       6. Paragraph Spacing & Reading Width (§1.4)
+       ======================================================== */
+    --ck-paragraph-gap-body: 1rem;
+    --ck-paragraph-gap-box: 0.75rem;
+    --ck-paragraph-gap-footnote: 0.5rem;
+    --ck-reading-width: 70ch;
+
+    /* ========================================================
+       7. Font Weights & Letter Spacing (§1.5)
+       ======================================================== */
+    --ck-font-weight-light: 300;
+    --ck-font-weight-regular: 400;
+    --ck-font-weight-medium: 500;
+    --ck-font-weight-semibold: 600;
+    --ck-font-weight-bold: 700;
+    --ck-letter-spacing-normal: normal;
+
+    /* ========================================================
+       8. Global Spacing Scale (§2.1)
+       ======================================================== */
+    --ck-space-2xs: 0.375rem;
+    --ck-space-xs: 0.5625rem;
+    --ck-space-sm: 0.8125rem;
     --ck-space-md: 1rem;
-    --ck-space-lg: 1.5rem;
-    --ck-space-xl: 2.5rem;
+    --ck-space-lg: 1.4375rem;
+    --ck-space-xl: 2.4375rem;
     --ck-space-2xl: 3.75rem;
 
-    --ck-content-padding: clamp(1.25rem, 4vw, 3.75rem);
-    --ck-content-gap: clamp(1.75rem, 3vw, 2.5rem);
-    --ck-prose-gap: 1rem;
-    --ck-subsection-gap: 1.75rem;
+    /* ========================================================
+       9. Functional Spacing Roles (§2.2)
+       ======================================================== */
+    --ck-prose-gap: var(--ck-space-md);
+    --ck-subsection-gap: var(--ck-space-lg);
+    --ck-section-gap: var(--ck-space-xl);
+
+    /* ========================================================
+       10. Motion Durations & Easings (§7.2)
+       ======================================================== */
+    --ck-motion-fast: 150ms;
+    --ck-motion-normal: 250ms;
+    --ck-motion-slow: 350ms;
+
+    --ck-easing-default: ease;
+    --ck-easing-enter: ease-out;
+    --ck-easing-exit: ease-in;
+
+    /* ========================================================
+       11. Global Layering Scale (§7.3)
+       ======================================================== */
+    --ck-z-base: 0;
+    --ck-z-sticky: 100;
+    --ck-z-dropdown: 200;
+    --ck-z-popover: 300;
+    --ck-z-overlay: 400;
+    --ck-z-modal: 500;
+    --ck-z-toast: 600;
+
+    /* ========================================================
+       12. Shared Visual Primitives (Appendix A.1 & A.4)
+       ======================================================== */
     --ck-list-indent: 1.45em;
-    --ck-radius: .35rem;
-    --ck-shadow: 4px 4px 0 rgba(30,41,59,.05);
+    --ck-radius: 0.35rem;
+    --ck-shadow: 4px 4px 0
+        color-mix(
+            in srgb,
+            var(--ck-structure) 5%,
+            transparent
+        );
 }

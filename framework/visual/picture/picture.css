@@ -1,12 +1,150 @@
-.ck-picture { margin:0; min-width:0; }
-.ck-picture__image { display:block; width:auto; max-width:100%; height:auto; margin-inline:auto; }
+/*
+ * CourseKit — Picture & Figure Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.5, 2.1, 2.4, 2.5, 3.1, 3.2, 3.4, 4.1, 4.4, 4.5, 5.1, 5.3, 6.1, 6.3.
+ *
+ * Responsibility:
+ * Responsive media figure container supporting raster images, diagrams, and SVGs.
+ * Provides proportion preservation, container-level width constraints (full, medium, small),
+ * frame wrapping without empty lateral dead-zones, localized diagram scrolling,
+ * and dark mode theme adaptation.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally provided by reset.css per §3.1).
+ * 2. Does NOT set external layout margins (vertical rhythm is managed by parent containers per §2.4).
+ * 3. Does NOT distort image aspect ratios (height: auto preserves proportions per §3.4).
+ *
+ * Public Customization Variables:
+ *
+ * Dimensions & Width Constraints (§3.2, §3.5):
+ * --ck-picture-medium-max-width         Maximum inline width for medium preset.
+ *                                       Default: 42rem (672px).
+ * --ck-picture-small-max-width          Maximum inline width for small preset.
+ *                                       Default: 28rem (448px).
+ *
+ * Colors & Surfaces (§6.1, §6.3):
+ * --ck-picture-background               Frame background color for framed variants.
+ *                                       Default: var(--ck-surface) (#ffffff in light mode).
+ * --ck-picture-image-bg                 Optional background behind transparent SVGs/diagrams.
+ *                                       Default: transparent.
+ * --ck-picture-border-color             Frame boundary border color.
+ *                                       Default: var(--ck-border) (#e2e8f0).
+ * --ck-picture-legend-color             Caption / legend text color.
+ *                                       Default: var(--ck-text-main) (#334155).
+ *
+ * Spacing (§2.1, §2.5):
+ * --ck-picture-padding                  Interior padding around framed images.
+ *                                       Default: var(--ck-space-xs) (0.5625rem / 9px per §2.1).
+ * --ck-picture-legend-gap               Vertical space separating image from its caption.
+ *                                       Default: var(--ck-space-xs) (0.5625rem / 9px per §2.1).
+ * --ck-picture-border-radius            Corner curvature for framed variants.
+ *                                       Default: var(--ck-radius) (0.35rem / ~5.6px).
+ *
+ * Typography (§1.2, §1.5):
+ * --ck-picture-legend-font-size         Caption font size.
+ *                                       Default: var(--ck-font-footnote) (0.75rem / 12px per §1.2.1).
+ * --ck-picture-legend-line-height       Caption line height.
+ *                                       Default: var(--ck-leading-footnote) (1.4 per §1.2.2).
+ * --ck-picture-legend-align             Caption text alignment.
+ *                                       Default: center (permitted per §1.5.1).
+ *
+ * Elevation (§7.3):
+ * --ck-picture-shadow                   Drop shadow for framed variants.
+ *                                       Default: var(--ck-shadow).
+ */
 
-.ck-picture[data-width="full"] .ck-picture__image { width:100%; }
-.ck-picture[data-width="medium"] .ck-picture__image { max-width:min(100%, 42rem); }
-.ck-picture[data-width="small"] .ck-picture__image { max-width:min(100%, 28rem); }
+/* ========================================================
+   1. Figure Container & Preset Width Constraints (§3.2, §4.4)
+   ======================================================== */
+.ck-picture {
+    /* Prevent external margin contamination: parent owns spacing (§2.4) */
+    margin-block: 0;
 
-.ck-picture[data-kind="with-legend"] { padding:.65rem; border:1px solid var(--ck-border); background:#fff; }
-.ck-picture__legend { margin-top:.65rem; color:#64748b; font-size:.85rem; line-height:1.5; text-align:center; }
-.ck-picture__legend > * { margin:0; }
+    /* Center figure within parent column */
+    margin-inline: auto;
 
-.ck-picture[data-kind="without-legend"] { background:transparent; }
+    /*
+     * Full width by default, but bounded by container.
+     * Local horizontal scroll containment protects the page viewport if a
+     * complex diagram cannot be shrunk further (§4.4, §4.5).
+     */
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+}
+
+/*
+ * Presets applied to the figure container itself:
+ * Prevents vast empty lateral margins in framed mode when images are small (§3.2).
+ */
+.ck-picture[data-width="full"] {
+    max-inline-size: 100%;
+}
+
+.ck-picture[data-width="medium"] {
+    max-inline-size: min(100%, var(--ck-picture-medium-max-width, 42rem));
+}
+
+.ck-picture[data-width="small"] {
+    max-inline-size: min(100%, var(--ck-picture-small-max-width, 28rem));
+}
+
+/* ========================================================
+   2. Responsive Image Element & Proportion Lock (§3.4)
+   ======================================================== */
+.ck-picture__image {
+    display: block;
+    inline-size: auto;
+    max-inline-size: 100%;
+    height: auto; /* Strict aspect-ratio preservation preventing vertical distortion (§3.4) */
+    margin-inline: auto; /* Center image within figure */
+    background-color: var(--ck-picture-image-bg, transparent);
+}
+
+.ck-picture[data-width="full"] .ck-picture__image {
+    inline-size: 100%;
+}
+
+/* ========================================================
+   3. Framed Variant With Caption ("with-legend") (§2.1, §6.1)
+   ======================================================== */
+.ck-picture[data-kind="with-legend"] {
+    /* Wraps tightly around the constrained image */
+    inline-size: fit-content;
+
+    padding: var(--ck-picture-padding, var(--ck-space-xs));
+    border: 1px solid var(--ck-picture-border-color, var(--ck-border));
+    border-radius: var(--ck-picture-border-radius, var(--ck-radius));
+    background-color: var(--ck-picture-background, var(--ck-surface));
+    box-shadow: var(--ck-picture-shadow, var(--ck-shadow));
+}
+
+.ck-picture[data-kind="without-legend"] {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+/* ========================================================
+   4. Legend / Caption Typography & Rhythm (§1.2, §1.5)
+   ======================================================== */
+.ck-picture__legend {
+    margin-block-start: var(--ck-picture-legend-gap, var(--ck-space-xs));
+    margin-block-end: 0;
+    padding-inline: var(--ck-space-2xs);
+
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-picture-legend-font-size, var(--ck-font-footnote)); /* 0.75rem per §1.2.1 */
+    line-height: var(--ck-picture-legend-line-height, var(--ck-leading-footnote)); /* 1.4 per §1.2.2 */
+    color: var(--ck-picture-legend-color, var(--ck-text-main));
+    text-align: var(--ck-picture-legend-align, center); /* Centered alignment permitted per §1.5.1 */
+    overflow-wrap: anywhere; /* Prevent long links or tokens from blowing out container (§4.4) */
+}
+
+.ck-picture__legend > * {
+    margin-block: 0;
+}

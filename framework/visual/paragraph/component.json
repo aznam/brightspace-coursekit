@@ -3,7 +3,9 @@
     "schema": "$(frameworkRoot)/visual/paragraph/paragraph.xsd",
     "template": "$(frameworkRoot)/visual/paragraph/template.xslt",
     "renderer": "$(frameworkRoot)/visual/paragraph/renderer.js",
-    "styles": [],
+    "styles": [
+        "$(frameworkRoot)/visual/paragraph/paragraph.css"
+    ],
     "scripts": [],
     "variants": [
         "default"

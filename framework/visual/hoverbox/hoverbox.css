@@ -1,10 +1,239 @@
-.ck-hoverbox { position:relative; display:inline; font-style:normal; }
-.ck-hoverbox__trigger { color:var(--ck-accent); font-weight:700; text-decoration-line:underline; text-decoration-style:dashed; text-decoration-thickness:2px; text-underline-offset:.16em; cursor:help; }
-.ck-hoverbox__panel { visibility:hidden; opacity:0; position:fixed; inset:auto auto auto auto; width:22.5rem; max-width:calc(100vw - 2.5rem); padding:1.25rem; background:var(--ck-text-dark); color:#f8fafc; border:1px solid var(--ck-structure); border-top:4px solid var(--ck-accent); font-size:.9rem; font-weight:400; text-align:left; line-height:1.6; z-index:9999; pointer-events:none; box-shadow:6px 6px 0 rgba(0,0,0,.15); transition:opacity .15s ease, visibility .15s; z-index: 99999;position:fixed;}
-.ck-hoverbox__panel::before { content:''; position:absolute; inset:-1.25rem; }
-.ck-hoverbox.is-active .ck-hoverbox__panel { visibility:visible; opacity:1; pointer-events:auto; }
-.ck-hoverbox__panel-title { display:block; margin:0 0 .6rem; color:#fdba74; font-size:.85rem; text-transform:uppercase; font-weight:800; }
-.ck-hoverbox__panel-body { display:flex; flex-direction:column; gap:.5rem; }
-.ck-hoverbox__panel-body > * { margin:0; }
-.ck-hoverbox__panel-body ul, .ck-hoverbox__panel-body ol { padding-left:var(--ck-list-indent); }
-@media (hover:none) { .ck-hoverbox__trigger { cursor:pointer; } }
+/*
+ * CourseKit — Hoverbox Component (Contextual Popover / Inline Term)
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.4, 3.1, 3.2, 4.1, 4.4, 4.5, 5.1, 5.3, 6.1, 6.3, 7.1, 7.2, 7.3.
+ *
+ * Responsibility:
+ * Interactive inline trigger displaying an attached floating definition panel on hover, focus, or tap.
+ * Ensures fluid sizing without artificial scrollbars, natural height growth, touch compatibility,
+ * z-index layering, typography, and motion transitions.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally provided by reset.css per §3.1).
+ * 2. Does NOT set arbitrary z-indexes (strictly bound to global token --ck-z-popover per §7.3.1).
+ * 3. Exact viewport coordinates (left, top) are calculated dynamically at runtime by hoverbox.js.
+ *
+ * Public Customization Variables:
+ *
+ * Fluid Dimensions & Constraints (§3.2, §4.4):
+ * --ck-hoverbox-panel-max-width   Maximum inline width ceiling for large definitions.
+ *                                 Default: 24rem (512px; adapts fluidly via max-content per §3.2).
+ * --ck-hoverbox-viewport-inset    Minimum clearance between the panel and the viewport edges.
+ *                                 Default: 1.25rem. Shared by CSS sizing constraints and
+ *                                 JavaScript positioning to preserve responsive consistency.
+ * --ck-hoverbox-padding           Interior padding of the panel.
+ *                                 Default: var(--ck-space-md) (1rem / 16px per §2.1).
+ *
+ * Colors & Surfaces (§6.1, §6.3):
+ * --ck-hoverbox-trigger-color     Color of the inline trigger word and dashed line.
+ *                                 Default: var(--ck-accent) (#c2410c).
+ * --ck-hoverbox-panel-bg          Background of the popover panel.
+ *                                 Default: var(--ck-text-dark) (#0f172a).
+ * --ck-hoverbox-panel-color       Text color inside the popover panel.
+ *                                 Default: color-mix(in srgb, var(--ck-surface) 92%, transparent).
+ * --ck-hoverbox-panel-title-color Header title color inside the panel (matching navbar course code).
+ *                                 Default: color-mix(in srgb, var(--ck-accent) 60%, var(--ck-accent-light)).
+ * --ck-hoverbox-border-color      Outer popover panel boundary color.
+ *                                 Default: var(--ck-structure) (#1e293b).
+ * --ck-hoverbox-top-border-color  Signature 4px top accent rule color.
+ *                                 Default: var(--ck-accent) (#c2410c).
+ *
+ * Typography (§1.2, §1.3, §1.5.3):
+ * --ck-hoverbox-title-size        Panel heading font size.
+ *                                 Default: var(--ck-font-box-size) (0.875rem / 14px per §1.2.1).
+ * --ck-hoverbox-title-letter-spacing Tracking override for panel title.
+ *                                 Default: var(--ck-letter-spacing-normal) (normal per §1.5.3).
+ *
+ * Elevation (§7.3):
+ * --ck-hoverbox-shadow            Popover drop shadow.
+ *                                 Default: 6px 6px 0 color-mix(in srgb, #000 20%, transparent).
+ */
+
+/* ========================================================
+   1. Inline Trigger Word (§1.1, §1.5, §7.1)
+   ======================================================== */
+.ck-hoverbox {
+    position: relative;
+    display: inline;
+    font-style: normal;
+}
+
+.ck-hoverbox__trigger {
+    color: var(--ck-hoverbox-trigger-color, var(--ck-accent));
+    font-weight: var(--ck-font-weight-bold);
+    cursor: help;
+
+    /* Native text-decoration avoids underlining trailing whitespace (§1.1) */
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.16em;
+
+    border-radius: var(--ck-space-2xs);
+    transition: color var(--ck-motion-fast) var(--ck-easing-default);
+}
+
+/* Touch devices adaptation: switch cursor to pointer (§7.1.2) */
+@media (hover: none) {
+    .ck-hoverbox__trigger {
+        cursor: pointer;
+    }
+}
+
+/* WCAG 2.4.7 compliant visible keyboard focus indicator (§7.1.1) */
+.ck-hoverbox__trigger:focus-visible {
+    outline: 2px solid var(--ck-accent);
+    outline-offset: 2px;
+}
+
+/* ========================================================
+   2. Floating Popover Panel Surface & Fluid Adaptability (§3.2, §4.4, §7.3)
+   ======================================================== */
+.ck-hoverbox__panel {
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    inset: auto auto auto auto; /* Exact coordinates applied by hoverbox.js */
+    --ck-hoverbox-internal-default-max-width: 24rem;
+    --ck-hoverbox-internal-default-viewport-inset: 1.25rem;
+    --ck-hoverbox-internal-effective-viewport-inset: var(
+        --ck-hoverbox-viewport-inset,
+        var(--ck-hoverbox-internal-default-viewport-inset)
+    );
+
+    /*
+     * Fluid sizing without artificial dimensions (§3.2):
+     * Takes natural content width (max-content) on short texts,
+     * while expanding gracefully up to a comfortable reading ceiling.
+     * On narrow viewports (320px), clamped cleanly by (100vw - 2.5rem).
+     */
+    width: max-content;
+    max-inline-size: min(
+        calc(
+            100vw -
+            2 * var(--ck-hoverbox-internal-effective-viewport-inset)
+        ),
+        var(
+            --ck-hoverbox-panel-max-width,
+            var(--ck-hoverbox-internal-default-max-width)
+        )
+    );
+
+    /*
+     * Natural vertical growth without unwanted scrollbars (§3.2):
+     * Expands naturally with content (height: auto) with no forced overflow scrollbars.
+     */
+    height: auto;
+    overflow: visible;
+
+    padding: var(--ck-hoverbox-padding, var(--ck-space-md));
+
+    background-color: var(--ck-hoverbox-panel-bg, var(--ck-text-dark));
+    color: var(--ck-hoverbox-panel-color, color-mix(in srgb, var(--ck-surface) 92%, transparent));
+    border: 1px solid var(--ck-hoverbox-border-color, var(--ck-structure));
+    border-block-start: 4px solid var(--ck-hoverbox-top-border-color, var(--ck-accent));
+    box-shadow: var(--ck-hoverbox-shadow, 6px 6px 0 color-mix(in srgb, #000 20%, transparent));
+
+    /* Typography (§1.2) */
+    font-size: var(--ck-font-box-size);
+    font-weight: var(--ck-font-weight-regular);
+    line-height: var(--ck-leading-box);
+    text-align: start;
+
+    /* Layering & Interaction State (§7.1, §7.3) */
+    z-index: var(--ck-z-popover); /* Global popover layer token (300) per §7.3.1 */
+    pointer-events: none;
+    overflow-wrap: anywhere;
+
+    transition:
+        opacity var(--ck-motion-fast) var(--ck-easing-default),
+        visibility var(--ck-motion-fast) var(--ck-easing-default);
+}
+
+/* Invisible hit-box buffer preventing accidental closure during cursor travel on desktop */
+.ck-hoverbox__panel::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--ck-space-lg)); /* ~23px buffer zone */
+    pointer-events: auto;
+    z-index: -1;
+}
+
+/* Disable hit-box buffer on touch screens to prevent blocking neighboring taps (§7.1.2) */
+@media (hover: none) {
+    .ck-hoverbox__panel::before {
+        display: none;
+    }
+}
+
+/* Active / Expanded Display State */
+.ck-hoverbox.is-active .ck-hoverbox__panel {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ========================================================
+   3. Panel Internal Typography & Content Rhythm (§1.3, §1.4, §1.5)
+   ======================================================== */
+.ck-hoverbox__panel-title {
+    display: block;
+    margin-block: 0 var(--ck-space-xs);
+
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-hoverbox-title-size, var(--ck-font-box-size));
+    font-weight: var(--ck-font-weight-bold);
+    line-height: var(--ck-leading-heading-component);
+    text-transform: uppercase;
+    letter-spacing: var(
+        --ck-hoverbox-title-letter-spacing,
+        var(--ck-letter-spacing-normal)
+    );
+    color: var(
+        --ck-hoverbox-panel-title-color,
+        color-mix(in srgb, var(--ck-accent) 60%, var(--ck-accent-light))
+    );
+}
+
+.ck-hoverbox__panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ck-paragraph-gap-footnote); /* 0.5rem per §1.4.1 */
+}
+
+.ck-hoverbox__panel-body > * {
+    margin-block: 0;
+}
+
+.ck-hoverbox__panel-body ul,
+.ck-hoverbox__panel-body ol {
+    margin-block: 0;
+    padding-inline-start: var(--ck-list-indent);
+}
+
+/* ========================================================
+   4. Dark Mode Surface Elevation (§6.3)
+   ======================================================== */
+:root[data-ck-theme="dark"] .ck-hoverbox__panel {
+    --ck-hoverbox-panel-bg: var(--ck-surface);
+    --ck-hoverbox-border-color: var(--ck-border);
+    --ck-hoverbox-panel-color: var(--ck-text-main);
+    --ck-hoverbox-panel-title-color: var(--ck-accent);
+}
+
+/* ========================================================
+   5. Print & Reduced Motion Adaptations (§1.1.4, §7.2.3)
+   ======================================================== */
+@media print {
+    .ck-hoverbox__panel {
+        display: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ck-hoverbox__panel,
+    .ck-hoverbox__trigger {
+        transition-duration: 0.01ms !important;
+    }
+}

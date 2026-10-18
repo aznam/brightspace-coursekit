@@ -1,109 +1,280 @@
-.ck-navbar { 
-    position: sticky; 
-    top: 0; 
-    z-index: 1000; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    gap: 1rem; 
-    padding: .75rem clamp(1rem,3vw,1.875rem); 
-    background: var(--ck-structure); 
-    color: #fff; 
-    border-bottom: 3px solid var(--ck-accent); 
-    box-shadow: 0 4px 12px rgba(0,0,0,.1); 
+/*
+ * CourseKit — Navigation Bar Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.5, 2.1, 2.4, 2.5, 3.1, 4.1, 4.3, 4.4, 5.1, 5.3, 7.1, 7.2, 7.3.
+ *
+ * Responsibility:
+ * Sticky top navigation header displaying course code, page/course title,
+ * optional section navigation dropdown, and module title.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally provided by reset.css per §3.1).
+ * 2. Does NOT set arbitrary z-index numbers (strictly bound to global tokens --ck-z-sticky and --ck-z-dropdown per §7.3.1).
+ * 3. Does NOT suppress visible focus indicators (WCAG 2.4.7 compliant focus rings per §7.1.1).
+ *
+ * Public Customization Variables:
+ *
+ * Colors & Surfaces (§6.1, §6.3):
+ * --ck-navbar-background          Background color of the navbar.
+ *                                 Default: var(--ck-structure) (#1e293b).
+ * --ck-navbar-color               Primary text color for titles.
+ *                                 Default: var(--ck-surface) (#ffffff).
+ * --ck-navbar-accent-border       Bottom highlight border.
+ *                                 Default: var(--ck-accent) (#c2410c).
+ * --ck-navbar-course-color        Course code identifier color (luminous warm accent).
+ *                                 Default: color-mix(in srgb, var(--ck-accent) 60%, var(--ck-accent-light)).
+ * --ck-navbar-module-color        Secondary module title text color.
+ *                                 Default: color-mix(in srgb, var(--ck-surface) 65%, transparent).
+ * --ck-navbar-divider-color       Vertical separator color.
+ *                                 Default: color-mix(in srgb, var(--ck-surface) 25%, transparent).
+ *
+ * Spacing & Layout (§2.1, §2.2):
+ * --ck-navbar-padding-block       Vertical padding of the navbar.
+ *                                 Default: var(--ck-space-xs) (0.5625rem / 9px).
+ * --ck-navbar-padding-inline      Horizontal responsive padding.
+ *                                 Default: clamp(var(--ck-space-sm), 3vw, var(--ck-space-lg)).
+ * --ck-navbar-gap                 Gap between informational items.
+ *                                 Default: var(--ck-space-sm) (0.8125rem) on mobile, expands at tablet.
+ *
+ * Dropdown Menu (§7.1, §7.3):
+ * --ck-navbar-dropdown-min-width  Minimum width of navigation dropdown.
+ *                                 Default: 17.5rem (280px).
+ * --ck-navbar-dropdown-bg         Dropdown menu background.
+ *                                 Default: var(--ck-structure).
+ */
+
+/* ========================================================
+   1. Sticky Container & Top Boundary (§7.3)
+   ======================================================== */
+.ck-navbar {
+    position: sticky;
+    top: 0;
+    z-index: var(--ck-z-sticky); /* Global sticky layer token (100) per §7.3.1 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--ck-space-sm);
+    padding-block: var(--ck-navbar-padding-block, var(--ck-space-xs));
+    padding-inline: var(
+        --ck-navbar-padding-inline,
+        clamp(var(--ck-space-sm), 3vw, var(--ck-space-lg))
+    );
+    background-color: var(--ck-navbar-background, var(--ck-structure));
+    color: var(--ck-navbar-color, var(--ck-surface));
+    border-block-end: 3px solid var(--ck-navbar-accent-border, var(--ck-accent));
+    box-shadow: 0 4px 12px color-mix(in srgb, #000 15%, transparent);
 }
 
-.ck-navbar__info { 
-    display: flex; 
-    align-items: center; 
-    gap: 1.25rem; 
-    flex-wrap: wrap; 
-    min-width: 0; 
+/* ========================================================
+   2. Information Group & Title Elements (Mobile-First) (§1.2, §1.5)
+   ======================================================== */
+.ck-navbar__info {
+    display: flex;
+    align-items: center;
+    gap: var(--ck-navbar-gap, var(--ck-space-sm));
+    flex-wrap: wrap;
+    min-inline-size: 0;
 }
 
-.ck-navbar__course { 
-    font-size: .85em; 
-    text-transform: uppercase; 
-    letter-spacing: .095rem; 
-    color: #fdba74; 
-    font-weight: 700; 
-    border-right: 1px solid #475569; 
-    padding-right: 1.25rem; 
-    letter-spacing: 1.5px;
+/* Course Code Badge */
+.ck-navbar__course {
+    font-size: var(--ck-font-footnote);
+    font-weight: var(--ck-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.095rem;
+    color: var(
+        --ck-navbar-course-color,
+        color-mix(in srgb, var(--ck-accent) 60%, var(--ck-accent-light))
+    );
+    border-inline-end: 1px solid var(--ck-navbar-divider-color, color-mix(in srgb, var(--ck-surface) 25%, transparent));
+    padding-inline-end: var(--ck-space-md);
+    white-space: nowrap;
 }
 
-.ck-navbar__page { 
-    font-size: .85rem; 
-    font-weight: 500; 
+/* Page / Course Title */
+.ck-navbar__page {
+    font-size: var(--ck-font-box-size);
+    font-weight: var(--ck-font-weight-medium);
+    line-height: var(--ck-leading-box);
+    color: var(--ck-navbar-color, var(--ck-surface));
 }
 
-.ck-navbar__module { 
-    font-size: .85rem; 
-    color: #94a3b8; 
-    text-transform: uppercase; 
-    letter-spacing: .06rem; 
-    text-align: right; 
+/* Module Title: Hidden on compact viewports to prevent overflow (§4.1, §4.4) */
+.ck-navbar__module {
+    display: none;
+    font-size: var(--ck-font-box-size);
+    color: var(--ck-navbar-module-color, color-mix(in srgb, var(--ck-surface) 65%, transparent));
+    text-transform: uppercase;
+    letter-spacing: 0.06rem;
+    text-align: end;
+    white-space: nowrap;
 }
 
-.ck-navbar__nav { 
-    position: relative; 
-    border-left: 1px solid #475569; 
-    padding-left: 1.25rem; 
+/* ========================================================
+   3. Dropdown Navigation (§7.1, §7.3)
+   ======================================================== */
+.ck-navbar__nav {
+    position: relative;
+    border-inline-start: 1px solid var(--ck-navbar-divider-color, color-mix(in srgb, var(--ck-surface) 25%, transparent));
+    padding-inline-start: var(--ck-space-sm);
 }
 
-.ck-navbar__trigger { 
-    color: #cbd5e1; 
-    font-size: .8rem; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    letter-spacing: .06rem; 
-    cursor: pointer; 
-    user-select: none; 
+.ck-navbar__trigger {
+    display: inline-flex;
+    align-items: center;
+    color: color-mix(in srgb, var(--ck-surface) 85%, transparent);
+    font-size: var(--ck-font-footnote);
+    font-weight: var(--ck-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.06rem;
+    cursor: pointer;
+    user-select: none;
+    border-radius: var(--ck-space-2xs);
+    padding: var(--ck-space-2xs) var(--ck-space-xs);
+    transition: color var(--ck-motion-fast) var(--ck-easing-default);
 }
 
-.ck-navbar__dropdown { 
-    visibility: hidden; 
-    opacity: 0; 
-    position: absolute; 
-    top: 100%; 
-    left: 0; 
-    min-width: 17.5rem; 
-    margin-top: .8rem; 
-    padding: .6rem 0; 
-    background: var(--ck-structure); 
-    border: 1px solid #475569; 
-    border-top: 2px solid var(--ck-accent); 
-    box-shadow: 4px 4px 0 rgba(0,0,0,.2); 
-    transition: opacity .2s, visibility .2s; 
+.ck-navbar__trigger:hover {
+    color: var(--ck-surface);
 }
 
-.ck-navbar__nav:hover .ck-navbar__dropdown, 
-.ck-navbar__nav.is-open .ck-navbar__dropdown { 
-    visibility: visible; 
-    opacity: 1; 
+.ck-navbar__trigger:focus-visible {
+    outline: 3px solid var(--ck-accent);
+    outline-offset: 2px;
 }
 
-.ck-navbar__dropdown a { 
-    display: block; 
-    padding: .65rem 1.25rem; 
-    color: #cbd5e1; 
-    text-decoration: none; 
-    font-size: .9rem; 
+/* Dropdown Menu Container */
+.ck-navbar__dropdown {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: var(--ck-z-dropdown); /* Global dropdown layer token (200) per §7.3.1 */
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+
+    min-inline-size: min(
+        var(--ck-navbar-dropdown-min-width, 17.5rem),
+        calc(100dvw - 2 * var(--ck-space-sm))
+    );
+    max-inline-size: calc(100dvw - 2 * var(--ck-space-sm));
+    margin-block-start: var(--ck-space-xs);
+    padding-block: var(--ck-space-xs);
+    background-color: var(--ck-navbar-dropdown-bg, var(--ck-structure));
+    border: 1px solid color-mix(in srgb, var(--ck-surface) 25%, transparent);
+    border-block-start: 2px solid var(--ck-accent);
+    border-radius: 0 0 var(--ck-radius) var(--ck-radius);
+    box-shadow: 4px 4px 0 color-mix(in srgb, #000 25%, transparent);
+    transition:
+        opacity var(--ck-motion-fast) var(--ck-easing-default),
+        visibility var(--ck-motion-fast) var(--ck-easing-default);
 }
 
-.ck-navbar__dropdown a:hover { 
-    color: #fff; 
-    background: var(--ck-text-dark); 
-    border-left: 4px solid var(--ck-accent); 
-    padding-left: 1rem; 
+/* Open states (hover or explicit JS touch activation) */
+.ck-navbar__nav:hover .ck-navbar__dropdown,
+.ck-navbar__nav.is-open .ck-navbar__dropdown {
+    visibility: visible;
+    opacity: 1;
 }
 
-@media (max-width: 50rem) { 
-    .ck-navbar__module { display: none; } 
-    .ck-navbar { align-items: flex-start; } 
+/* Dropdown Navigation Links */
+.ck-navbar__dropdown a {
+    display: block;
+    padding-block: var(--ck-space-xs);
+    padding-inline: var(--ck-space-md);
+    color: color-mix(in srgb, var(--ck-surface) 80%, transparent);
+    text-decoration: none;
+    font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
+    border-inline-start: 4px solid transparent;
+    transition:
+        color var(--ck-motion-fast) var(--ck-easing-default),
+        background-color var(--ck-motion-fast) var(--ck-easing-default),
+        border-color var(--ck-motion-fast) var(--ck-easing-default),
+        padding-inline-start var(--ck-motion-fast) var(--ck-easing-default);
 }
-@media (max-width: 37.5rem) { 
-    .ck-navbar__course { border-right: 0; padding-right: 0; } 
-    .ck-navbar__info { gap: .7rem 1rem; } 
-    .ck-navbar__nav { border-left: 0; padding-left: 0; } 
+
+.ck-navbar__dropdown a:hover {
+    color: var(--ck-surface);
+    background-color: color-mix(in srgb, #000 20%, var(--ck-structure));
+    border-inline-start-color: var(--ck-accent);
+    padding-inline-start: var(--ck-space-lg);
+}
+
+/* WCAG 2.4.7 compliant visible focus indicator (§7.1.1) */
+.ck-navbar__dropdown a:focus-visible {
+    color: var(--ck-surface);
+    background-color: color-mix(in srgb, #000 20%, var(--ck-structure));
+    border-inline-start-color: var(--ck-accent);
+    padding-inline-start: var(--ck-space-lg);
+    outline: 2px solid var(--ck-accent);
+    outline-offset: -2px;
+}
+
+/* ========================================================
+   4. Responsive Progressive Enhancements (§4.1, §4.3)
+   ======================================================== */
+/* Tablet breakpoint: Restore module title and widen layout gaps */
+@media (--ck-bp-tablet) {
+    .ck-navbar {
+        gap: var(--ck-space-md);
+    }
+
+    .ck-navbar__info {
+        gap: var(--ck-space-md);
+    }
+
+    .ck-navbar__module {
+        display: block;
+    }
+}
+
+/* ========================================================
+   5. Reduced Motion Preferences (§7.2.3)
+   ======================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .ck-navbar__trigger,
+    .ck-navbar__dropdown,
+    .ck-navbar__dropdown a {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ========================================================
+   Dark Theme — Navbar Contrast
+   ======================================================== */
+
+:root[data-ck-theme="dark"] .ck-navbar {
+    --ck-navbar-color: var(--ck-text-dark);
+
+    --ck-navbar-module-color: color-mix(
+        in srgb,
+        var(--ck-text-dark) 80%,
+        transparent
+    );
+
+    --ck-navbar-divider-color: color-mix(
+        in srgb,
+        var(--ck-text-dark) 25%,
+        transparent
+    );
+}
+
+:root[data-ck-theme="dark"] .ck-navbar__trigger {
+    color: var(--ck-navbar-color);
+}
+
+:root[data-ck-theme="dark"] .ck-navbar__trigger:hover {
+    color: var(--ck-navbar-color);
+}
+
+:root[data-ck-theme="dark"] .ck-navbar__dropdown a {
+    color: var(--ck-navbar-color);
+}
+
+:root[data-ck-theme="dark"] .ck-navbar__dropdown a:hover,
+:root[data-ck-theme="dark"] .ck-navbar__dropdown a:focus-visible {
+    color: var(--ck-navbar-color);
 }

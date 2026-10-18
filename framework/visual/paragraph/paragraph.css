@@ -1,0 +1,54 @@
+/*
+ * CourseKit — Paragraph Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.4, 1.5, 2.4, 3.1, 4.1, 4.4, 5.1, 5.2, 5.3.
+ *
+ * Responsibility:
+ * Base block-level prose component. Ensures comfortable reading width
+ * constraints, natural typography inheritance across varied parent containers,
+ * logical text alignment, and safe word-wrapping without horizontal overflow.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally provided by reset.css per §3.1).
+ * 2. Does NOT set external margins (vertical spacing between paragraphs and sibling elements
+ *    is owned exclusively by the parent container via flex/grid gaps or flow margins per §2.4).
+ * 3. Does NOT force hardcoded font sizes or line heights (inherits naturally from the
+ *    immediate parent container per §5.3).
+ *
+ * Public Customization Variables:
+ *
+ * Reading Measure & Constraints (§1.4.3, §3.2):
+ * --ck-paragraph-max-width    Maximum inline reading constraint.
+ *                             Default: var(--ck-reading-width) (70ch).
+ *
+ * Alignment (§1.5.1):
+ * --ck-paragraph-text-align   Text alignment keyword.
+ *                             Default: start (logical text alignment per §1.5.1).
+ */
+
+/* ========================================================
+   1. Paragraph Geometry, Reading Measure & Text Wrap (§1.4, §4.4)
+   ======================================================== */
+.ck-paragraph {
+    /* Prevent external margin contamination: spacing is parent-owned (§2.4) */
+    margin-block: 0;
+
+    /* Ergonomic reading width constraint (§1.4.3) */
+    max-inline-size: var(
+        --ck-paragraph-max-width,
+        var(--ck-reading-width)
+    );
+    min-inline-size: 0;
+
+    /* Prevent unintended horizontal overflow on unbreakable tokens/URLs (§4.4) */
+    overflow-wrap: anywhere;
+
+    /* Logical start alignment (§1.5.1; full justification is prohibited) */
+    text-align: var(--ck-paragraph-text-align, start);
+
+    /* Natural typographic inheritance across standard body and compact containers (§5.3) */
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+}

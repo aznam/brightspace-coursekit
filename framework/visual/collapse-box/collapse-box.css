@@ -1,53 +1,204 @@
-.ck-collapse { 
-    margin:0; 
-    border:1px solid var(--ck-border); 
-    border-top:4px solid var(--ck-accent); 
-    border-radius:var(--ck-radius); 
-    background:#fff; 
-    box-shadow:var(--ck-shadow); 
-    overflow:clip; 
+/*
+ * CourseKit — Collapse Box Component (Accordion / Details)
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.3, 2.4, 2.5, 3.1, 3.2, 4.1, 4.4, 5.1, 5.3, 6.1, 7.1, 7.2.
+ *
+ * Responsibility:
+ * Expandable disclosure container (<details> / <summary>) for collapsible tutorials,
+ * secondary instructions, and expandable asides. Controls container borders,
+ * top accent boundary, animated rotation indicator, accessible keyboard focus,
+ * multi-line title alignment, and interior content rhythm.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally supplied by reset.css per §3.1).
+ * 2. Does NOT set external layout margins (vertical rhythm is managed by parent containers per §2.4).
+ * 3. Does NOT alter the presentation of independent nested components.
+ *
+ * Public Customization Variables:
+ *
+ * Colors & Surfaces (§6.1, §6.3):
+ * --ck-collapse-background              Overall container surface background.
+ *                                       Default: var(--ck-surface) (#ffffff in light mode).
+ * --ck-collapse-color                   Primary text color inside expanded body.
+ *                                       Default: var(--ck-text-main) (#334155).
+ * --ck-collapse-summary-color           Summary heading text color.
+ *                                       Default: var(--ck-text-dark) (#0f172a).
+ * --ck-collapse-summary-bg              Summary closed state subtle background.
+ *                                       Default: color-mix(in srgb, var(--ck-accent) 4%, var(--ck-surface)) (warm tint).
+ * --ck-collapse-summary-hover-bg        Summary hover background color.
+ *                                       Default: var(--ck-accent-light) (#ffedd5).
+ * --ck-collapse-border-color            Outer container border color.
+ *                                       Default: var(--ck-border) (#e2e8f0).
+ * --ck-collapse-accent-color            Signature 4px top accent border color.
+ *                                       Default: var(--ck-accent) (#c2410c).
+ *
+ * Spacing & Adaptive Layout (§2.1, §2.3, §2.4):
+ * --ck-collapse-border-radius           Container corner curvature radius.
+ *                                       Default: var(--ck-radius) (0.35rem / ~5.6px).
+ * --ck-collapse-summary-padding-y       Vertical padding for the clickable summary trigger.
+ *                                       Default: var(--ck-space-sm) (0.8125rem / 13px, preserving target size).
+ * --ck-collapse-padding-inline          Horizontal interior padding for summary and body (adaptively bounded per §2.3.3).
+ *                                       Default: clamp(var(--ck-space-sm), 3vw, var(--ck-space-lg)) (13px on mobile to 23px on desktop).
+ * --ck-collapse-body-padding-y          Vertical interior padding for expanded body.
+ *                                       Default: clamp(var(--ck-space-sm), 3vw, var(--ck-space-lg)) (13px on mobile to 23px on desktop).
+ * --ck-collapse-body-gap                Vertical rhythm between elements within expanded body.
+ *                                       Default: var(--ck-paragraph-gap-box) (0.75rem / 12px per §1.4.1).
+ *
+ * Typography (§1.3, §1.5.3):
+ * --ck-collapse-summary-letter-spacing  Tracking override for summary trigger text.
+ *                                       Default: var(--ck-letter-spacing-normal) (normal per §1.5.3).
+ *
+ * Elevation (§7.3):
+ * --ck-collapse-shadow                  Drop shadow elevation.
+ *                                       Default: var(--ck-shadow).
+ */
+
+/* ========================================================
+   1. Accordion Container & Box Model (§3.1, §3.2)
+   ======================================================== */
+.ck-collapse {
+    /* Prevent external margin contamination: parent owns spacing (§2.4) */
+    margin-block: 0;
+
+    inline-size: 100%;
+    min-inline-size: 0;
+    overflow: hidden; /* Clips summary background within rounded corners */
+
+    background-color: var(--ck-collapse-background, var(--ck-surface));
+    color: var(--ck-collapse-color, var(--ck-text-main));
+    font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
+
+    /* Structural borders & signature 4px top accent rule */
+    border: 1px solid var(--ck-collapse-border-color, var(--ck-border));
+    border-block-start: 4px solid var(--ck-collapse-accent-color, var(--ck-accent));
+    border-radius: var(--ck-collapse-border-radius, var(--ck-radius));
+    box-shadow: var(--ck-collapse-shadow, var(--ck-shadow));
+
+    /* Safe word wrap on small screens preventing horizontal overflow (§4.4) */
+    overflow-wrap: anywhere;
 }
-.ck-collapse > summary { 
-    padding:.9rem 1.25rem; 
-    cursor:pointer; 
-    list-style:none; 
-    color:var(--ck-text-dark); 
-    background:#fffaf5; 
-    font-weight:800; 
-    text-transform:uppercase; 
-    letter-spacing:.03rem; 
+
+/* ========================================================
+   2. Summary Trigger Heading (§1.3, §1.5, §7.1, §7.2)
+   ======================================================== */
+.ck-collapse > summary {
+    /*
+     * Aligned to flex-start: ensures the disclosure arrow stays aligned
+     * with the first text line when titles wrap onto multiple lines on mobile.
+     */
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+
+    padding-block: var(--ck-collapse-summary-padding-y, var(--ck-space-sm));
+    padding-inline: var(
+        --ck-collapse-padding-inline,
+        clamp(var(--ck-space-sm), 3vw, var(--ck-space-lg))
+    );
+
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-font-box-size);
+    font-weight: var(--ck-font-weight-bold);
+    line-height: var(--ck-leading-heading-component);
+    text-transform: uppercase;
+    letter-spacing: var(
+        --ck-collapse-summary-letter-spacing,
+        var(--ck-letter-spacing-normal)
+    );
+    color: var(--ck-collapse-summary-color, var(--ck-text-dark));
+
+    /* Warm tinted closed background, transitioning to accent-light on hover */
+    background-color: var(
+        --ck-collapse-summary-bg,
+        color-mix(in srgb, var(--ck-accent) 4%, var(--ck-surface))
+    );
+    transition:
+        background-color var(--ck-motion-fast) var(--ck-easing-default),
+        color var(--ck-motion-fast) var(--ck-easing-default);
 }
-.ck-collapse > summary::-webkit-details-marker { 
-    display:none; 
+
+/* Remove default browser marker arrow in WebKit */
+.ck-collapse > summary::-webkit-details-marker {
+    display: none;
 }
-.ck-collapse > summary::before { 
-    content:'▶'; 
-    display:inline-block; 
-    margin-right:.55rem; 
-    transition:transform .2s ease; 
+
+/* Accessible custom rotating disclosure arrow (§1.2.1, §7.1, §7.2) */
+.ck-collapse > summary::before {
+    content: "▶";
+    display: inline-block;
+    flex: 0 0 auto;
+    margin-inline-end: var(--ck-space-xs);
+    font-size: var(--ck-font-footnote); /* Exactly 0.75rem (12px): complies with minimum size limit §1.2.1 */
+    line-height: var(--ck-leading-heading-component); /* Aligns arrow vertically with the first line of text */
+    color: var(--ck-accent);
+    transition: transform var(--ck-motion-fast) var(--ck-easing-default);
 }
-.ck-collapse[open] > summary::before { 
-    transform:rotate(90deg); 
+
+/* Rotate arrow 90 degrees when open */
+.ck-collapse[open] > summary::before {
+    transform: rotate(90deg);
 }
-.ck-collapse > summary:hover { 
-    background:var(--ck-accent-light); 
+
+/* Hover feedback */
+.ck-collapse > summary:hover {
+    background-color: var(--ck-collapse-summary-hover-bg, var(--ck-accent-light));
+    color: color-mix(in srgb, var(--ck-accent) 80%, #000);
 }
-.ck-collapse[open] > summary { 
-    border-bottom:1px solid var(--ck-border); 
+
+/* WCAG 2.4.7 compliant visible focus indicator (§7.1.1) */
+.ck-collapse > summary:focus-visible {
+    outline: 3px solid var(--ck-accent);
+    outline-offset: -3px;
 }
-.ck-collapse__body { 
-    padding:1.25rem; 
-    display:flex; 
-    flex-direction:column; 
-    gap:var(--ck-prose-gap); 
+
+/* Bottom separator when opened */
+.ck-collapse[open] > summary {
+    border-block-end: 1px solid var(--ck-collapse-border-color, var(--ck-border));
 }
-.ck-collapse__body > * { 
-    margin-block:0; 
+
+/* ========================================================
+   3. Expanded Body Flow & Spacing Ownership (§1.4.1, §2.4)
+   ======================================================== */
+.ck-collapse__body {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    gap: var(--ck-collapse-body-gap, var(--ck-paragraph-gap-box)); /* 0.75rem per §1.4.1 */
+
+    padding-block: var(
+        --ck-collapse-body-padding-y,
+        clamp(var(--ck-space-sm), 3vw, var(--ck-space-lg))
+    );
+    padding-inline: var(
+        --ck-collapse-padding-inline,
+        clamp(var(--ck-space-sm), 3vw, var(--ck-space-lg))
+    );
 }
-.ck-collapse__body ul, .ck-collapse__body ol { 
-    margin:0; 
-    padding-left:var(--ck-list-indent); 
+
+.ck-collapse__body > * {
+    margin-block: 0;
 }
-.ck-collapse__body li + li { 
-    margin-top:.35rem; 
+
+.ck-collapse__body ul,
+.ck-collapse__body ol {
+    margin-block: 0;
+    padding-inline-start: var(--ck-list-indent);
+}
+
+.ck-collapse__body li + li {
+    margin-block-start: var(--ck-space-2xs);
+}
+
+/* ========================================================
+   4. Reduced Motion Preferences (§7.2.3)
+   ======================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .ck-collapse > summary::before,
+    .ck-collapse > summary {
+        transition-duration: 0.01ms !important;
+    }
 }

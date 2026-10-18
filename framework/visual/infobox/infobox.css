@@ -1,98 +1,202 @@
-.ck-infobox { 
-    --ck-infobox-bg: #ebf2fc; 
-    --ck-infobox-border: #93bbe8; 
-    --ck-infobox-accent: #185fa5; 
-    --ck-infobox-text: #0c447c; 
-    
-    margin: 0; 
-    padding: 1.1rem 1.35rem; 
-    border: 1px solid var(--ck-infobox-border); 
-    border-left: .375rem solid var(--ck-infobox-accent); 
-    border-radius: var(--ck-radius); 
-    background: var(--ck-infobox-bg); 
-    color: var(--ck-infobox-text); 
-    container-type: inline-size; 
+/*
+ * CourseKit — Infobox Component (Semantic Callout / Boxnote)
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.3, 2.4, 2.5, 3.1, 4.1, 4.4, 5.1, 5.3, 6.1, 6.2, 6.4.
+ *
+ * Responsibility:
+ * Highlighted callout component conveying semantic statuses (info, warning,
+ * success, error) as well as neutral and dark contextual notes. Controls its
+ * own internal padding, borders, signature thick accent bar, icon alignment,
+ * and internal typography.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT declare 'box-sizing: border-box' (universally supplied by reset.css per §3.1).
+ * 2. Does NOT set external layout margins (vertical rhythm is managed by parent containers per §2.4).
+ * 3. Does NOT rely on color alone to convey status (accompanied by icons and bold uppercase titles per §6.2, §6.4).
+ *
+ * Public Customization Variables:
+ *
+ * Spacing & Layout (§2.1, §2.3, §2.4, §2.5):
+ * --ck-infobox-padding-block      Vertical interior padding.
+ *                                 Default: var(--ck-space-md) (1rem / 16px).
+ * --ck-infobox-padding-inline     Horizontal interior padding (adaptively bounded per §2.3.3).
+ *                                 Default: clamp(var(--ck-space-md), 3vw, var(--ck-space-lg)) (16px on mobile to 23px on desktop).
+ * --ck-infobox-border-radius      Corner curvature radius.
+ *                                 Default: var(--ck-radius) (0.35rem / ~5.6px).
+ * --ck-infobox-accent-width       Thickness of the left accent boundary.
+ *                                 Default: 0.375rem (6px historical width).
+ * --ck-infobox-body-gap           Vertical rhythm between elements within the body.
+ *                                 Default: var(--ck-paragraph-gap-box) (0.75rem / 12px per §1.4.1).
+ *
+ * Typography (§1.2, §1.3):
+ * --ck-infobox-font-size          Text size inside the infobox.
+ *                                 Default: var(--ck-font-box-size) (0.875rem / 14px per §1.2.1).
+ * --ck-infobox-line-height        Text leading inside the infobox.
+ *                                 Default: var(--ck-leading-box) (1.5 per §1.2.2).
+ * --ck-infobox-title-weight       Title font weight.
+ *                                 Default: var(--ck-font-weight-bold) (700 per §1.5.2).
+ */
+
+/* ========================================================
+   1. Base Component Surface & Adaptive Geometry (§2.3, §3.1)
+   ======================================================== */
+.ck-infobox {
+    /* Default / Info Palette fallback (§6.2) */
+    --ck-infobox-accent: var(--ck-color-info);
+    --ck-infobox-bg: color-mix(in srgb, var(--ck-infobox-accent) 12%, var(--ck-surface));
+    --ck-infobox-border: color-mix(in srgb, var(--ck-infobox-accent) 35%, var(--ck-surface));
+    --ck-infobox-text: color-mix(in srgb, var(--ck-infobox-accent) 80%, #000);
+
+    /* Prevent external margin contamination: parent owns spacing (§2.4) */
+    margin-block: 0;
+
+    /* Adaptive fluid interior padding bounded by scale tokens (§2.1, §2.3, §2.5) */
+    padding-block: var(--ck-infobox-padding-block, var(--ck-space-md));
+    padding-inline: var(
+        --ck-infobox-padding-inline,
+        clamp(var(--ck-space-md), 3vw, var(--ck-space-lg))
+    );
+
+    /* Structural container & thick accent border */
+    border: 1px solid var(--ck-infobox-border);
+    border-inline-start: var(--ck-infobox-accent-width, 0.375rem) solid var(--ck-infobox-accent);
+    border-radius: var(--ck-infobox-border-radius, var(--ck-radius));
+    background-color: var(--ck-infobox-bg);
+    color: var(--ck-infobox-text);
+
+    /* Typography (§1.2) */
+    font-size: var(--ck-infobox-font-size, var(--ck-font-box-size));
+    line-height: var(--ck-infobox-line-height, var(--ck-leading-box));
+
+    /* Prevent horizontal overflow on long unbreakable words/URLs (§4.4) */
+    overflow-wrap: anywhere;
+    inline-size: 100%;
+    min-inline-size: 0;
 }
 
-.ck-infobox[data-variant="warning"] { 
-    --ck-infobox-bg: #faeeda; 
-    --ck-infobox-border: #ef9f27; 
-    --ck-infobox-accent: #854f0b; 
-    --ck-infobox-text: #633806; 
-}
-.ck-infobox[data-variant="success"] { 
-    --ck-infobox-bg: #eaf3de; 
-    --ck-infobox-border: #97c459; 
-    --ck-infobox-accent: #3b6d11; 
-    --ck-infobox-text: #3b6d11; 
-}
-.ck-infobox[data-variant="error"] { 
-    --ck-infobox-bg: #fcebeb; 
-    --ck-infobox-border: #f09595; 
-    --ck-infobox-accent: #a32d2d; 
-    --ck-infobox-text: #a32d2d; 
-}
-.ck-infobox[data-variant="dark"] { 
-    --ck-infobox-bg: var(--ck-text-dark); 
-    --ck-infobox-border: var(--ck-structure); 
-    --ck-infobox-accent: var(--ck-accent); 
-    --ck-infobox-text: #e2e8f0; 
-}
-.ck-infobox[data-variant="neutral"] { 
-    --ck-infobox-bg: #f8fafc; 
-    --ck-infobox-border: var(--ck-border); 
-    --ck-infobox-accent: var(--ck-structure); 
-    --ck-infobox-text: var(--ck-text-main); 
+/* ========================================================
+   2. Semantic Status Variants (§6.2)
+   ======================================================== */
+/* Warning Status Variant */
+.ck-infobox[data-variant="warning"] {
+    --ck-infobox-accent: var(--ck-color-warning);
+    --ck-infobox-bg: color-mix(in srgb, var(--ck-color-warning) 12%, var(--ck-surface));
+    --ck-infobox-border: color-mix(in srgb, var(--ck-color-warning) 40%, var(--ck-surface));
+    --ck-infobox-text: color-mix(in srgb, var(--ck-color-warning) 85%, #000);
 }
 
-.ck-infobox__header { 
-    display: flex; 
-    align-items: center; 
-    gap: .6rem; 
-    margin-bottom: .65rem; 
-    color: var(--ck-infobox-accent); 
+/* Success Status Variant */
+.ck-infobox[data-variant="success"] {
+    --ck-infobox-accent: var(--ck-color-success);
+    --ck-infobox-bg: color-mix(in srgb, var(--ck-color-success) 12%, var(--ck-surface));
+    --ck-infobox-border: color-mix(in srgb, var(--ck-color-success) 35%, var(--ck-surface));
+    --ck-infobox-text: color-mix(in srgb, var(--ck-color-success) 85%, #000);
 }
+
+/* Error / Critical Status Variant */
+.ck-infobox[data-variant="error"] {
+    --ck-infobox-accent: var(--ck-color-error);
+    --ck-infobox-bg: color-mix(in srgb, var(--ck-color-error) 10%, var(--ck-surface));
+    --ck-infobox-border: color-mix(in srgb, var(--ck-color-error) 35%, var(--ck-surface));
+    --ck-infobox-text: color-mix(in srgb, var(--ck-color-error) 85%, #000);
+}
+
+/* Dark Emphasis Variant */
+.ck-infobox[data-variant="dark"] {
+    --ck-infobox-accent: var(--ck-accent);
+    --ck-infobox-bg: var(--ck-text-dark);
+    --ck-infobox-border: var(--ck-structure);
+    --ck-infobox-text: color-mix(in srgb, var(--ck-surface) 90%, transparent);
+}
+
+/* Neutral Variant (Historical Official Description note) */
+.ck-infobox[data-variant="neutral"] {
+    --ck-infobox-accent: var(--ck-structure);
+    --ck-infobox-bg: var(--ck-surface-muted);
+    --ck-infobox-border: var(--ck-border);
+    --ck-infobox-text: var(--ck-text-main);
+}
+
+/* ========================================================
+   3. Header, Icon & Title Styling (§1.3, §6.4)
+   ======================================================== */
+.ck-infobox__header {
+    display: flex;
+    align-items: flex-start; /* Aligned to top: accommodates multi-line titles without jumping */
+    gap: var(--ck-space-xs);
+    margin-block-end: var(--ck-space-xs);
+    color: var(--ck-infobox-accent);
+}
+
 .ck-infobox__icon {
     flex: 0 0 auto;
     display: inline-grid;
     place-items: center;
-    min-width: 1.15rem;
-    line-height: 1;
-    font-size: 0.85rem;
-}
-.ck-infobox__title { 
-    margin: 0; 
-    font-size: .85rem; 
-    font-weight: 800; 
-    text-transform: uppercase; 
-    letter-spacing: .03rem; 
-}
-.ck-infobox__body { 
-    display: flex; 
-    flex-direction: column; 
-    gap: .55rem; 
-}
-.ck-infobox__body > * { 
-    margin: 0; 
-}
-.ck-infobox__body p, 
-.ck-infobox__body li { 
-    color: var(--ck-infobox-text); 
-}
-.ck-infobox__body ul, 
-.ck-infobox__body ol { 
-    margin: 0; 
-    padding-left: var(--ck-list-indent); 
-}
-.ck-infobox__body li + li { 
-    margin-top: .3rem; 
+    min-inline-size: 1.15rem;
+    line-height: var(--ck-leading-heading-component);
+    font-size: var(--ck-font-box-size);
 }
 
-@container (max-width: 22rem) { 
-    .ck-infobox { 
-        padding: 1rem; 
-    } 
-    .ck-infobox__header { 
-        align-items: flex-start; 
-    } 
+.ck-infobox__title {
+    margin-block: 0;
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-font-box-size);
+    font-weight: var(--ck-infobox-title-weight, var(--ck-font-weight-bold));
+    line-height: var(--ck-leading-heading-component); /* 1.4 per §1.3.2 */
+    text-transform: uppercase;
+    letter-spacing: 0.03rem;
+    color: inherit;
+}
+
+/* Dark variant title highlight */
+.ck-infobox[data-variant="dark"] .ck-infobox__title {
+    color: var(--ck-accent-light);
+}
+
+/* Neutral variant title highlight */
+.ck-infobox[data-variant="neutral"] .ck-infobox__title {
+    color: var(--ck-accent);
+}
+
+/* ========================================================
+   4. Interior Body Rhythm & Spacing Ownership (§1.4.1, §2.4)
+   ======================================================== */
+.ck-infobox__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ck-infobox-body-gap, var(--ck-paragraph-gap-box)); /* 0.75rem / 12px per §1.4.1 */
+}
+
+.ck-infobox__body > * {
+    margin-block: 0;
+}
+
+.ck-infobox__body p,
+.ck-infobox__body li {
+    color: var(--ck-infobox-text);
+}
+
+.ck-infobox__body ul,
+.ck-infobox__body ol {
+    margin-block: 0;
+    padding-inline-start: var(--ck-list-indent);
+}
+
+.ck-infobox__body li + li {
+    margin-block-start: var(--ck-space-2xs);
+}
+
+/* ========================================================
+   5. Dark Mode Palette Resolution (§6.3)
+   ======================================================== */
+:root[data-ck-theme="dark"] .ck-infobox {
+    --ck-infobox-bg: var(--ck-surface-muted);
+    --ck-infobox-border: var(--ck-border);
+    --ck-infobox-text: var(--ck-text-main);
+}
+:root[data-ck-theme="dark"] .ck-infobox[data-variant="dark"] {
+    --ck-infobox-bg: var(--ck-bg-base);
+    --ck-infobox-border: var(--ck-structure);
+    --ck-infobox-text: var(--ck-text-main);
 }

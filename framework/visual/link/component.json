@@ -3,7 +3,9 @@
     "schema": "$(frameworkRoot)/visual/link/link.xsd",
     "template": "$(frameworkRoot)/visual/link/template.xslt",
     "renderer": "$(frameworkRoot)/visual/link/renderer.js",
-    "styles": [],
+    "styles": [
+        "$(frameworkRoot)/visual/link/link.css"
+    ],
     "scripts": [],
     "variants": [
         "default"

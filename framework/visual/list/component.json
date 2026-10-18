@@ -3,7 +3,9 @@
     "schema": "$(frameworkRoot)/visual/list/list.xsd",
     "template": "$(frameworkRoot)/visual/list/template.xslt",
     "renderer": "$(frameworkRoot)/visual/list/renderer.js",
-    "styles": [],
+    "styles": [
+        "$(frameworkRoot)/visual/list/list.css"
+    ],
     "scripts": [],
     "variants": [
         "default"

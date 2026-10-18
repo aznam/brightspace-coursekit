@@ -1,14 +1,76 @@
-/* Framework-wide, accessible, manual color mode switcher. */
+/*
+ * CourseKit — Theme control
+ *
+ * Ownership: visual presentation of the theme-switching button
+ * created by StyleLoader.createControl().
+ *
+ * The theme mode, palette and accessible button label are owned by
+ * StyleLoader. This stylesheet only controls the button's presentation.
+ *
+ * Public customization variables:
+ * --ck-theme-control-inset-inline-end
+ * --ck-theme-control-inset-block-end
+ * --ck-theme-control-padding-block
+ * --ck-theme-control-padding-inline
+ * --ck-theme-control-background
+ * --ck-theme-control-background-hover
+ * --ck-theme-control-color
+ * --ck-theme-control-border-color
+ * --ck-theme-control-border-radius
+ * --ck-theme-control-shadow
+ * --ck-theme-control-font-size
+ * --ck-theme-control-focus-color
+ * --ck-theme-control-motion-duration
+ */
+
 .ck-theme-control {
-    position: fixed; inset-inline-end: var(--ck-space-md); inset-block-end: var(--ck-space-md);
-    z-index: var(--ck-z-toast); border: 1px solid var(--ck-border); border-radius: var(--ck-radius);
-    padding: var(--ck-space-xs) var(--ck-space-sm);
-    background: var(--ck-surface); color: var(--ck-text-dark);
-    font: var(--ck-font-weight-semibold) var(--ck-font-box-size)/var(--ck-leading-box) var(--ck-font-body);
-    cursor: pointer; box-shadow: var(--ck-shadow);
-    transition: background-color var(--ck-motion-fast) var(--ck-easing-default), border-color var(--ck-motion-fast) var(--ck-easing-default);
+    position: fixed;
+    inset-inline-end: var(--ck-theme-control-inset-inline-end, var(--ck-space-md));
+    inset-block-end: var(--ck-theme-control-inset-block-end, var(--ck-space-md));
+    z-index: var(--ck-z-toast);
+
+    box-sizing: border-box;
+    max-inline-size: calc(100% - 2 * var(--ck-space-md));
+    padding-block: var(--ck-theme-control-padding-block, var(--ck-space-xs));
+    padding-inline: var(--ck-theme-control-padding-inline, var(--ck-space-sm));
+
+    border: 1px solid var(--ck-theme-control-border-color, var(--ck-border));
+    border-radius: var(--ck-theme-control-border-radius, var(--ck-radius));
+    background-color: var(--ck-theme-control-background, var(--ck-surface));
+    color: var(--ck-theme-control-color, var(--ck-text-dark));
+    box-shadow: var(--ck-theme-control-shadow, var(--ck-shadow));
+
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-theme-control-font-size, var(--ck-font-box-size));
+    font-weight: var(--ck-font-weight-semibold);
+    line-height: var(--ck-leading-box);
+    text-align: center;
+    overflow-wrap: anywhere;
+
+    cursor: pointer;
+    transition:
+        background-color var(--ck-theme-control-motion-duration, var(--ck-motion-fast)) var(--ck-easing-default),
+        border-color var(--ck-theme-control-motion-duration, var(--ck-motion-fast)) var(--ck-easing-default),
+        color var(--ck-theme-control-motion-duration, var(--ck-motion-fast)) var(--ck-easing-default);
 }
-.ck-theme-control:hover { background: var(--ck-surface-muted); }
-.ck-theme-control:focus-visible { outline: 3px solid var(--ck-accent); outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { .ck-theme-control { transition: none; } }
-@media print { .ck-theme-control { display: none; } }
+
+.ck-theme-control:hover {
+    background-color: var(--ck-theme-control-background-hover, var(--ck-surface-muted));
+}
+
+.ck-theme-control:focus-visible {
+    outline: 3px solid var(--ck-theme-control-focus-color, var(--ck-accent));
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ck-theme-control {
+        transition: none;
+    }
+}
+
+@media print {
+    .ck-theme-control {
+        display: none;
+    }
+}

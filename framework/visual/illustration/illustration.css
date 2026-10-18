@@ -1,0 +1,26 @@
+/*
+ * CourseKit — Illustration Component (Semantic Media Wrapper)
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 2.3, 2.4, 3.1, 4.4.
+ *
+ * Responsibility:
+ * Provide a semantic presentation hook for one picture or video, including
+ * optional site or framework styles selected through style-ref.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT implement picture or video rendering; child components own it.
+ * 2. Does NOT set outer margins or a fixed width; parent layout owns placement.
+ * 3. Does NOT force a layout or presentation variant on future tutorials.
+ *
+ * Public Customization Variables:
+ * None. The wrapper inherits its parent's available inline size.
+ */
+
+/* ========================================================
+   1. Base Media Container (§2.3, §4.4)
+   ======================================================== */
+.ck-illustration {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+}

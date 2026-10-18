@@ -1,0 +1,62 @@
+/*
+ * CourseKit — Tutorial Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 2.2, 2.3, 2.4, 3.1, 4.4, 5.1.
+ *
+ * Responsibility:
+ * Present tutorial content and offer an optional reusable two-column
+ * composition through style-ref="tutorial-two-columns".
+ *
+ * Non-responsibilities:
+ * 1. Does NOT render media or list steps (child components own those).
+ * 2. Does NOT determine the width or placement of its parent layout region.
+ * 3. Does NOT impose two columns unless explicitly requested.
+ *
+ * Public Customization Variables:
+ * --ck-tutorial-gap       Vertical / grid gap. Default: var(--ck-prose-gap).
+ * --ck-tutorial-title-gap Space below the title. Default: var(--ck-space-sm).
+ * --ck-tutorial-column-min Minimum width of each optional column. Default: 20rem.
+ *
+ * Framework-provided style-ref:
+ * tutorial-two-columns — layout with illustration beside instructions.
+ */
+
+/* ========================================================
+   1. Tutorial Container (§2.3, §4.4)
+   ======================================================== */
+.ck-tutorial {
+    --ck-tutorial-internal-column-min: 20rem;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+}
+
+.ck-tutorial__title {
+    margin-block: 0 var(--ck-tutorial-title-gap, var(--ck-space-sm));
+}
+
+.ck-tutorial__content {
+    display: block;
+    min-inline-size: 0;
+}
+
+.ck-tutorial__media:not(:has(*)) {
+    display: none;
+}
+
+.ck-tutorial__instructions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ck-tutorial-gap, var(--ck-prose-gap));
+    min-inline-size: 0;
+}
+
+/* ========================================================
+   2. Optional Two-Column Composition (§2.3, §4.4)
+   ======================================================== */
+.ck-tutorial[data-style-ref~="tutorial-two-columns"] .ck-tutorial__content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--ck-tutorial-column-min, var(--ck-tutorial-internal-column-min))), 1fr));
+    gap: var(--ck-tutorial-gap, var(--ck-prose-gap));
+    align-items: start;
+}

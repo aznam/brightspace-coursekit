@@ -1,0 +1,13 @@
+{
+    "id": "tutorial",
+    "schema": "$(frameworkRoot)/visual/tutorial/tutorial.xsd",
+    "template": "$(frameworkRoot)/visual/tutorial/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/tutorial/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/tutorial/tutorial.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

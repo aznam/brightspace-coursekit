@@ -1,0 +1,19 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/picture/picture.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/video/video.xsd"/>
+
+    <!-- An illustration is one media item with a pedagogical role. -->
+    <xs:complexType name="IllustrationType">
+        <xs:complexContent>
+            <xs:extension base="s:Container">
+                <xs:choice>
+                    <xs:element ref="s:picture"/>
+                    <xs:element ref="s:video"/>
+                </xs:choice>
+                <xs:attribute name="style-ref" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="illustration" type="s:IllustrationType" substitutionGroup="s:component"/>
+</xs:schema>

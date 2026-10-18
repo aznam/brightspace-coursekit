@@ -1,0 +1,23 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
+
+    <xs:complexType name="VideoType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="src" type="xs:string" use="required"/>
+                <xs:attribute name="poster" type="xs:string"/>
+                <xs:attribute name="caption" type="xs:string"/>
+                <xs:attribute name="preload" default="metadata">
+                    <xs:simpleType><xs:restriction base="xs:string">
+                        <xs:enumeration value="none"/>
+                        <xs:enumeration value="metadata"/>
+                        <xs:enumeration value="auto"/>
+                    </xs:restriction></xs:simpleType>
+                </xs:attribute>
+                <xs:attributeGroup ref="s:CommonAttr"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:element name="video" type="s:VideoType" substitutionGroup="s:component"/>
+</xs:schema>

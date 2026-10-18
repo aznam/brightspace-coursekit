@@ -1,0 +1,13 @@
+{
+    "id": "video",
+    "schema": "$(frameworkRoot)/visual/video/video.xsd",
+    "template": "$(frameworkRoot)/visual/video/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/video/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/video/video.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

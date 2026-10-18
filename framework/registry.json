@@ -6,13 +6,18 @@
         "$(frameworkRoot)/semantic/information/information.json",
         "$(frameworkRoot)/semantic/note/note.json",
         "$(frameworkRoot)/semantic/summary/summary.json",
+        "$(frameworkRoot)/semantic/details/details.json",
         "$(frameworkRoot)/semantic/list/list.json",
         "$(frameworkRoot)/semantic/inline/inline.json",
         "$(frameworkRoot)/semantic/paragraph/paragraph.json",
         "$(frameworkRoot)/semantic/heading/heading.json",
         "$(frameworkRoot)/semantic/item/item.json",
         "$(frameworkRoot)/semantic/link/link.json",
-        "$(frameworkRoot)/semantic/picture/picture.json"
+        "$(frameworkRoot)/semantic/picture/picture.json",
+        "$(frameworkRoot)/semantic/video/video.json",
+        "$(frameworkRoot)/semantic/illustration/illustration.json",
+        "$(frameworkRoot)/semantic/steps/steps.json",
+        "$(frameworkRoot)/semantic/tutorial/tutorial.json"
     ],
     "pages": [
         "$(frameworkRoot)/pages/course-page/page.json"
@@ -36,9 +41,12 @@
         "$(frameworkRoot)/visual/infobox/component.json",
         "$(frameworkRoot)/visual/summary-box/component.json",
         "$(frameworkRoot)/visual/picture/component.json",
+        "$(frameworkRoot)/visual/video/component.json",
         "$(frameworkRoot)/visual/collapse-box/component.json",
         "$(frameworkRoot)/visual/hoverbox/component.json",
-        "$(frameworkRoot)/visual/inline-toc/component.json"
+        "$(frameworkRoot)/visual/inline-toc/component.json",
+        "$(frameworkRoot)/visual/illustration/component.json",
+        "$(frameworkRoot)/visual/tutorial/component.json"
     ],
     "resources": {
         "styles": [

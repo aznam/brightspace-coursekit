@@ -20,6 +20,15 @@
     <xs:element name="hoverbox" type="c:HoverboxType"/>
 
     <xs:element name="picture" type="c:PictureType"/>
+    <xs:element name="video" type="c:VideoType"/>
+    <xs:element name="illustration">
+        <xs:complexType><xs:complexContent><xs:extension base="c:IllustrationType">
+            <xs:choice>
+                <xs:element ref="p:picture"/>
+                <xs:element ref="p:video"/>
+            </xs:choice>
+        </xs:extension></xs:complexContent></xs:complexType>
+    </xs:element>
 
     <xs:element name="inline-toc">
         <xs:complexType><xs:complexContent><xs:extension base="c:InlineTocType">
@@ -73,11 +82,25 @@
         </xs:extension></xs:complexContent></xs:complexType>
     </xs:element>
 
+    <xs:element name="tutorial">
+        <xs:complexType><xs:complexContent><xs:extension base="c:TutorialType">
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element ref="p:illustration"/>
+                <xs:element ref="p:paragraph"/>
+                <xs:element ref="p:heading"/>
+                <xs:element ref="p:list"/>
+            </xs:choice>
+        </xs:extension></xs:complexContent></xs:complexType>
+    </xs:element>
+
     <xs:group name="StandardBlocks">
         <xs:choice>
             <xs:element ref="p:paragraph"/>
             <xs:element ref="p:heading"/>
             <xs:element ref="p:picture"/>
+            <xs:element ref="p:video"/>
+            <xs:element ref="p:illustration"/>
+            <xs:element ref="p:tutorial"/>
             <xs:element ref="p:list"/>
         </xs:choice>
     </xs:group>

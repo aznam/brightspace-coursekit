@@ -1,0 +1,19 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/illustration/illustration.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/paragraph/paragraph.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/heading/heading.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/steps/steps.xsd"/>
+    <xs:complexType name="TutorialType">
+        <xs:complexContent><xs:extension base="s:Container">
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element ref="s:illustration"/>
+                <xs:element ref="s:paragraph"/>
+                <xs:element ref="s:heading"/>
+                <xs:element ref="s:steps"/>
+            </xs:choice>
+            <xs:attribute name="style-ref" type="xs:string"/>
+        </xs:extension></xs:complexContent>
+    </xs:complexType>
+    <xs:element name="tutorial" type="s:TutorialType" substitutionGroup="s:component"/>
+</xs:schema>

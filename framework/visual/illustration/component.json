@@ -1,0 +1,13 @@
+{
+    "id": "illustration",
+    "schema": "$(frameworkRoot)/visual/illustration/illustration.xsd",
+    "template": "$(frameworkRoot)/visual/illustration/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/illustration/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/illustration/illustration.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

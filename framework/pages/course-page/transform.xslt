@@ -99,6 +99,14 @@
         <p:infobox><xsl:copy-of select="@*"/><xsl:apply-templates select="node()"/></p:infobox>
     </xsl:template>
 
+    <!-- Semantic details use the existing collapsible visual component. -->
+    <xsl:template match="s:details">
+        <p:collapse-box>
+            <xsl:copy-of select="@id|@title|@open|@style-ref"/>
+            <xsl:apply-templates select="node()"/>
+        </p:collapse-box>
+    </xsl:template>
+
     <!-- Mapping des Noeuds -->
     <xsl:template match="s:paragraph">
         <p:paragraph><xsl:copy-of select="@*"/><xsl:apply-templates select="node()"/></p:paragraph>
@@ -126,6 +134,48 @@
             <xsl:copy-of select="@id"/>
             <xsl:apply-templates select="node()"/>
         </p:text-style>
+    </xsl:template>
+
+    <!-- A tutorial is semantic; its visual component controls optional composition. -->
+    <xsl:template match="s:tutorial">
+        <p:tutorial>
+            <xsl:copy-of select="@id|@title|@style-ref"/>
+            <xsl:apply-templates select="node()"/>
+        </p:tutorial>
+    </xsl:template>
+
+    <!-- Steps are a semantic ordered sequence, rendered with the existing list. -->
+    <xsl:template match="s:steps">
+        <p:list type="ordered">
+            <xsl:copy-of select="@id"/>
+            <xsl:apply-templates select="s:item"/>
+        </p:list>
+    </xsl:template>
+
+    <!-- An illustration wraps exactly one existing semantic media component. -->
+    <xsl:template match="s:illustration">
+        <p:illustration>
+            <xsl:copy-of select="@id|@style-ref"/>
+            <xsl:apply-templates select="s:picture|s:video"/>
+        </p:illustration>
+    </xsl:template>
+
+    <!-- Video is a semantic media item, rendered by the native HTML5 player. -->
+    <xsl:template match="s:video">
+        <p:video>
+            <xsl:copy-of select="@id|@src|@poster|@preload"/>
+            <xsl:if test="@title">
+                <xsl:attribute name="alt"><xsl:value-of select="@title"/></xsl:attribute>
+            </xsl:if>
+            <xsl:choose>
+                <xsl:when test="@caption">
+                    <xsl:attribute name="legend"><xsl:value-of select="@caption"/></xsl:attribute>
+                </xsl:when>
+                <xsl:when test="normalize-space(.) != ''">
+                    <xsl:attribute name="legend"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
+                </xsl:when>
+            </xsl:choose>
+        </p:video>
     </xsl:template>
 
     <xsl:template match="s:picture">

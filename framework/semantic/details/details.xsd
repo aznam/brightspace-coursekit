@@ -1,0 +1,30 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/paragraph/paragraph.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/heading/heading.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/list/list.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/picture/picture.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/video/video.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/illustration/illustration.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/tutorial/tutorial.xsd"/>
+
+    <xs:complexType name="DetailsType">
+        <xs:complexContent>
+            <xs:extension base="s:Container">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="s:paragraph"/>
+                    <xs:element ref="s:heading"/>
+                    <xs:element ref="s:list"/>
+                    <xs:element ref="s:picture"/>
+                    <xs:element ref="s:video"/>
+                    <xs:element ref="s:illustration"/>
+                    <xs:element ref="s:tutorial"/>
+                </xs:choice>
+                <xs:attribute name="open" type="xs:boolean" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="details" type="s:DetailsType" substitutionGroup="s:component"/>
+</xs:schema>

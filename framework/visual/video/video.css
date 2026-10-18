@@ -1,0 +1,68 @@
+/*
+ * CourseKit — Video Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.5, 2.1, 2.4, 3.1, 3.4, 4.4, 5.1, 5.3, 6.1.
+ *
+ * Responsibility:
+ * Accessible native HTML5 video presentation with responsive sizing,
+ * preserved aspect ratio and an optional editorial caption.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT define parent region widths or external layout spacing.
+ * 2. Does NOT modify native video controls or autoplay media.
+ * 3. Does NOT set theme colors independently of global tokens.
+ *
+ * Public Customization Variables:
+ *
+ * Dimensions (§3.4):
+ * --ck-video-max-width                 Maximum figure width.
+ *                                      Default: 100% (available containing width).
+ * --ck-video-aspect-ratio              Fallback player aspect ratio.
+ *                                      Default: 16 / 9 (widescreen video geometry).
+ *
+ * Colors & Surfaces (§6.1):
+ * --ck-video-background                Media background while loading.
+ *                                      Default: var(--ck-surface).
+ * --ck-video-caption-color             Caption foreground.
+ *                                      Default: var(--ck-text-main).
+ *
+ * Typography (§1.2):
+ * --ck-video-caption-font-size         Caption size.
+ *                                      Default: var(--ck-font-footnote).
+ * --ck-video-caption-line-height       Caption leading.
+ *                                      Default: var(--ck-leading-footnote).
+ *
+ * Spacing (§2.1):
+ * --ck-video-caption-gap               Caption separation.
+ *                                      Default: var(--ck-space-xs).
+ */
+
+/* ========================================================
+   1. Media Figure (§3.4)
+   ======================================================== */
+.ck-video {
+    margin: 0;
+    max-inline-size: var(--ck-video-max-width, 100%);
+    min-inline-size: 0;
+}
+
+.ck-video__media {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: var(--ck-video-aspect-ratio, 16 / 9);
+    background: var(--ck-video-background, var(--ck-surface));
+}
+
+/* ========================================================
+   2. Caption (§1.2, §2.1)
+   ======================================================== */
+.ck-video__legend {
+    margin-block-start: var(--ck-video-caption-gap, var(--ck-space-xs));
+    color: var(--ck-video-caption-color, var(--ck-text-main));
+    font-size: var(--ck-video-caption-font-size, var(--ck-font-footnote));
+    line-height: var(--ck-video-caption-line-height, var(--ck-leading-footnote));
+    text-align: center;
+}

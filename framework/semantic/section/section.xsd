@@ -6,9 +6,13 @@
     <xs:include schemaLocation="$(frameworkRoot)/semantic/heading/heading.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/list/list.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/note/note.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/details/details.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/summary/summary.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/information/information.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/picture/picture.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/video/video.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/illustration/illustration.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/tutorial/tutorial.xsd"/>
 
     <xs:complexType name="SectionType">
         <xs:complexContent>
@@ -18,9 +22,13 @@
                     <xs:element ref="s:heading"/>
                     <xs:element ref="s:list"/>
                     <xs:element ref="s:note"/>
+                    <xs:element ref="s:details"/>
                     <xs:element ref="s:summary"/>
                     <xs:element ref="s:information"/>
                     <xs:element ref="s:picture"/>
+                    <xs:element ref="s:video"/>
+                    <xs:element ref="s:illustration"/>
+                    <xs:element ref="s:tutorial"/>
                     <xs:element ref="s:section"/>
                 </xs:choice>
             </xs:extension>

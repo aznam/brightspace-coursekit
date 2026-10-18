@@ -33,18 +33,26 @@
                             </xsl:choose>
                         </span>
                         <div class="ck-navbar__dropdown">
-                            <ck-children/>
+                            <ck-slot name="link"/>
                         </div>
                     </nav>
                 </xsl:if>
 
             </div>
 
-            <xsl:if test="normalize-space($module-name) != ''">
-                <div class="ck-navbar__module">
-                    <xsl:value-of select="$module-name"/>
-                </div>
-            </xsl:if>
+            <div class="ck-navbar__trailing">
+                <xsl:if test="count(/*/*[local-name()='theme-switch']) > 0">
+                    <div class="ck-navbar__theme">
+                        <ck-slot name="theme-switch"/>
+                    </div>
+                </xsl:if>
+
+                <xsl:if test="normalize-space($module-name) != ''">
+                    <div class="ck-navbar__module">
+                        <xsl:value-of select="$module-name"/>
+                    </div>
+                </xsl:if>
+            </div>
         </header>
     </xsl:template>
 

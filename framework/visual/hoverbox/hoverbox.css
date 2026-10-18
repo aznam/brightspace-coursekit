@@ -18,7 +18,7 @@
  *
  * Fluid Dimensions & Constraints (§3.2, §4.4):
  * --ck-hoverbox-panel-max-width   Maximum inline width ceiling for large definitions.
- *                                 Default: 24rem (512px; adapts fluidly via max-content per §3.2).
+ *                                 Default: 24rem (384px at a 16px root font size; adapts fluidly via max-content per §3.2).
  * --ck-hoverbox-viewport-inset    Minimum clearance between the panel and the viewport edges.
  *                                 Default: 1.25rem. Shared by CSS sizing constraints and
  *                                 JavaScript positioning to preserve responsive consistency.
@@ -33,7 +33,7 @@
  * --ck-hoverbox-panel-color       Text color inside the popover panel.
  *                                 Default: color-mix(in srgb, var(--ck-surface) 92%, transparent).
  * --ck-hoverbox-panel-title-color Header title color inside the panel (matching navbar course code).
- *                                 Default: color-mix(in srgb, var(--ck-accent) 60%, var(--ck-accent-light)).
+ *                                 Default: #ecba78 (warm golden yellow; independent of theme accent).
  * --ck-hoverbox-border-color      Outer popover panel boundary color.
  *                                 Default: var(--ck-structure) (#1e293b).
  * --ck-hoverbox-top-border-color  Signature 4px top accent rule color.
@@ -178,6 +178,8 @@
    3. Panel Internal Typography & Content Rhythm (§1.3, §1.4, §1.5)
    ======================================================== */
 .ck-hoverbox__panel-title {
+    --ck-hoverbox-internal-default-title-color: #ecba78;
+
     display: block;
     margin-block: 0 var(--ck-space-xs);
 
@@ -192,7 +194,7 @@
     );
     color: var(
         --ck-hoverbox-panel-title-color,
-        color-mix(in srgb, var(--ck-accent) 60%, var(--ck-accent-light))
+        var(--ck-hoverbox-internal-default-title-color)
     );
 }
 
@@ -219,7 +221,6 @@
     --ck-hoverbox-panel-bg: var(--ck-surface);
     --ck-hoverbox-border-color: var(--ck-border);
     --ck-hoverbox-panel-color: var(--ck-text-main);
-    --ck-hoverbox-panel-title-color: var(--ck-accent);
 }
 
 /* ========================================================

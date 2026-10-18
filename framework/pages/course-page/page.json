@@ -33,6 +33,10 @@
             "type": "boolean",
             "default": false
         },
+        "theme-switch": {
+            "type": "boolean",
+            "default": false
+        },
         "variant": {
             "type": "string",
             "default": "default"

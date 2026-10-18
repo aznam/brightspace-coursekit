@@ -18,6 +18,7 @@
     "components": [
         "$(frameworkRoot)/visual/page-layout/component.json",
         "$(frameworkRoot)/visual/navbar/component.json",
+        "$(frameworkRoot)/visual/theme-switch/component.json",
         "$(frameworkRoot)/visual/hero/component.json",
         "$(frameworkRoot)/visual/sidebar-before/component.json",
         "$(frameworkRoot)/visual/sidebar-after/component.json",

@@ -1,3 +1,5 @@
+const STORAGE = 'ck-theme-mode';
+
 import { resolvePalettes, auditPalettes } from './theme-palette.js';
 import { BreakpointResolver } from './breakpoint-resolver.js';
 export class StyleLoader {
@@ -62,6 +64,12 @@ export class StyleLoader {
         this.mode = ['auto', 'light', 'dark'].includes(saved) ? saved : siteMode;
         this.render();
         if (theme.fontFamily) document.documentElement.style.setProperty('--ck-font-body', theme.fontFamily);
+        if (!this.onThemeRequest) {
+            this.onThemeRequest = event => this.setMode(event.detail?.mode);
+            document.addEventListener('ck:theme-request', this.onThemeRequest);
+            this.onThemeControlsChange = () => this.syncControlVisibility();
+            document.addEventListener('ck:theme-controls-change', this.onThemeControlsChange);
+        }
         this.createControl();
     }
     resolvedMode() { return this.mode === 'auto' ? (this.media?.matches ? 'dark' : 'light') : this.mode; }
@@ -79,6 +87,9 @@ export class StyleLoader {
             this.paletteKeys.add(key);
         }
         this.updateControl();
+        document.dispatchEvent(new CustomEvent('ck:theme-change', {
+            detail: { mode: this.mode, resolvedMode: current }
+        }));
     }
     setMode(mode) {
         if (!['auto', 'light', 'dark'].includes(mode)) return;
@@ -98,6 +109,12 @@ export class StyleLoader {
         document.body.appendChild(button);
         this.control = button;
         this.updateControl();
+        this.syncControlVisibility();
+    }
+    syncControlVisibility() {
+        if (this.control) {
+            this.control.hidden = !!document.querySelector('.ck-theme-switch');
+        }
     }
     updateControl() {
         if (!this.control) return;

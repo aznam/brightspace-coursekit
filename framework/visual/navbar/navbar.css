@@ -23,7 +23,7 @@
  * --ck-navbar-accent-border       Bottom highlight border.
  *                                 Default: var(--ck-accent) (#c2410c).
  * --ck-navbar-course-color        Course code identifier color (luminous warm accent).
- *                                 Default: color-mix(in srgb, var(--ck-accent) 60%, var(--ck-accent-light)).
+ *                                 Default: #ecba78 (warm golden yellow, independent of accent theme).
  * --ck-navbar-module-color        Secondary module title text color.
  *                                 Default: color-mix(in srgb, var(--ck-surface) 65%, transparent).
  * --ck-navbar-divider-color       Vertical separator color.
@@ -42,12 +42,29 @@
  *                                 Default: 17.5rem (280px).
  * --ck-navbar-dropdown-bg         Dropdown menu background.
  *                                 Default: var(--ck-structure).
+ * --ck-navbar-dropdown-viewport-inset
+ *                                 Minimum horizontal clearance from viewport edges.
+ *                                 Default: var(--ck-space-sm).
  */
 
 /* ========================================================
    1. Sticky Container & Top Boundary (§7.3)
    ======================================================== */
 .ck-navbar {
+    /* Component-owned values: shared by the rules below and the dropdown script. */
+    --ck-navbar-internal-course-color: #ecba78;
+    --ck-navbar-internal-dropdown-min-width: 17.5rem;
+    --ck-navbar-internal-viewport-inset: var(
+        --ck-navbar-dropdown-viewport-inset,
+        var(--ck-space-sm)
+    );
+    --ck-navbar-internal-dropdown-offset: 0px;
+    --ck-navbar-internal-foreground: var(--ck-navbar-color, var(--ck-surface));
+    --ck-navbar-internal-divider: var(
+        --ck-navbar-divider-color,
+        color-mix(in srgb, var(--ck-navbar-internal-foreground) 25%, transparent)
+    );
+
     position: sticky;
     top: 0;
     z-index: var(--ck-z-sticky); /* Global sticky layer token (100) per §7.3.1 */
@@ -61,7 +78,7 @@
         clamp(var(--ck-space-sm), 3vw, var(--ck-space-lg))
     );
     background-color: var(--ck-navbar-background, var(--ck-structure));
-    color: var(--ck-navbar-color, var(--ck-surface));
+    color: var(--ck-navbar-internal-foreground);
     border-block-end: 3px solid var(--ck-navbar-accent-border, var(--ck-accent));
     box-shadow: 0 4px 12px color-mix(in srgb, #000 15%, transparent);
 }
@@ -74,37 +91,36 @@
     align-items: center;
     gap: var(--ck-navbar-gap, var(--ck-space-sm));
     flex-wrap: wrap;
+    flex: 1 1 auto;
     min-inline-size: 0;
 }
 
 /* Course Code Badge */
 .ck-navbar__course {
-    font-size: var(--ck-font-footnote);
+    font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
     font-weight: var(--ck-font-weight-bold);
     text-transform: uppercase;
     letter-spacing: 0.095rem;
-    color: var(
-        --ck-navbar-course-color,
-        color-mix(in srgb, var(--ck-accent) 60%, var(--ck-accent-light))
-    );
-    border-inline-end: 1px solid var(--ck-navbar-divider-color, color-mix(in srgb, var(--ck-surface) 25%, transparent));
-    padding-inline-end: var(--ck-space-md);
+    color: var(--ck-navbar-course-color, var(--ck-navbar-internal-course-color));
     white-space: nowrap;
 }
 
 /* Page / Course Title */
 .ck-navbar__page {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
     font-size: var(--ck-font-box-size);
     font-weight: var(--ck-font-weight-medium);
     line-height: var(--ck-leading-box);
-    color: var(--ck-navbar-color, var(--ck-surface));
+    color: var(--ck-navbar-internal-foreground);
 }
 
 /* Module Title: Hidden on compact viewports to prevent overflow (§4.1, §4.4) */
 .ck-navbar__module {
     display: none;
     font-size: var(--ck-font-box-size);
-    color: var(--ck-navbar-module-color, color-mix(in srgb, var(--ck-surface) 65%, transparent));
+    color: var(--ck-navbar-module-color, color-mix(in srgb, var(--ck-navbar-internal-foreground) 65%, transparent));
     text-transform: uppercase;
     letter-spacing: 0.06rem;
     text-align: end;
@@ -116,15 +132,17 @@
    ======================================================== */
 .ck-navbar__nav {
     position: relative;
-    border-inline-start: 1px solid var(--ck-navbar-divider-color, color-mix(in srgb, var(--ck-surface) 25%, transparent));
+    flex: 0 0 auto;
+    border-inline-start: 1px solid var(--ck-navbar-internal-divider);
     padding-inline-start: var(--ck-space-sm);
 }
 
 .ck-navbar__trigger {
     display: inline-flex;
     align-items: center;
-    color: color-mix(in srgb, var(--ck-surface) 85%, transparent);
-    font-size: var(--ck-font-footnote);
+    color: color-mix(in srgb, var(--ck-navbar-internal-foreground) 85%, transparent);
+    font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
     font-weight: var(--ck-font-weight-bold);
     text-transform: uppercase;
     letter-spacing: 0.06rem;
@@ -136,7 +154,7 @@
 }
 
 .ck-navbar__trigger:hover {
-    color: var(--ck-surface);
+    color: var(--ck-navbar-internal-foreground);
 }
 
 .ck-navbar__trigger:focus-visible {
@@ -144,26 +162,30 @@
     outline-offset: 2px;
 }
 
-/* Dropdown Menu Container */
+/* Dropdown Menu Container
+ * Anchor to the NAVIGATE group. JavaScript adjusts only the horizontal
+ * offset required to keep the panel within the current viewport.
+ * A hidden panel cannot intercept pointer events.
+ */
 .ck-navbar__dropdown {
     visibility: hidden;
     opacity: 0;
+    pointer-events: none;
     position: absolute;
-    top: 100%;
-    left: 0;
+    inset-block-start: 100%;
+    inset-inline-start: var(--ck-navbar-internal-dropdown-offset);
+    inset-inline-end: auto;
     z-index: var(--ck-z-dropdown); /* Global dropdown layer token (200) per §7.3.1 */
-    inset-inline-start: auto;
-    inset-inline-end: 0;
 
     min-inline-size: min(
-        var(--ck-navbar-dropdown-min-width, 17.5rem),
-        calc(100dvw - 2 * var(--ck-space-sm))
+        var(--ck-navbar-dropdown-min-width, var(--ck-navbar-internal-dropdown-min-width)),
+        calc(100vw - 2 * var(--ck-navbar-internal-viewport-inset))
     );
-    max-inline-size: calc(100dvw - 2 * var(--ck-space-sm));
+    max-inline-size: calc(100vw - 2 * var(--ck-navbar-internal-viewport-inset));
     margin-block-start: var(--ck-space-xs);
     padding-block: var(--ck-space-xs);
     background-color: var(--ck-navbar-dropdown-bg, var(--ck-structure));
-    border: 1px solid color-mix(in srgb, var(--ck-surface) 25%, transparent);
+    border: 1px solid var(--ck-navbar-internal-divider);
     border-block-start: 2px solid var(--ck-accent);
     border-radius: 0 0 var(--ck-radius) var(--ck-radius);
     box-shadow: 4px 4px 0 color-mix(in srgb, #000 25%, transparent);
@@ -172,11 +194,11 @@
         visibility var(--ck-motion-fast) var(--ck-easing-default);
 }
 
-/* Open states (hover or explicit JS touch activation) */
-.ck-navbar__nav:hover .ck-navbar__dropdown,
+/* Open states: JavaScript owns state for consistent pointer/keyboard behavior. */
 .ck-navbar__nav.is-open .ck-navbar__dropdown {
     visibility: visible;
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* Dropdown Navigation Links */
@@ -184,7 +206,7 @@
     display: block;
     padding-block: var(--ck-space-xs);
     padding-inline: var(--ck-space-md);
-    color: color-mix(in srgb, var(--ck-surface) 80%, transparent);
+    color: color-mix(in srgb, var(--ck-navbar-internal-foreground) 80%, transparent);
     text-decoration: none;
     font-size: var(--ck-font-box-size);
     line-height: var(--ck-leading-box);
@@ -197,16 +219,16 @@
 }
 
 .ck-navbar__dropdown a:hover {
-    color: var(--ck-surface);
-    background-color: color-mix(in srgb, #000 20%, var(--ck-structure));
+    color: var(--ck-navbar-internal-foreground);
+    background-color: color-mix(in srgb, #000 20%, var(--ck-navbar-dropdown-bg, var(--ck-structure)));
     border-inline-start-color: var(--ck-accent);
     padding-inline-start: var(--ck-space-lg);
 }
 
 /* WCAG 2.4.7 compliant visible focus indicator (§7.1.1) */
 .ck-navbar__dropdown a:focus-visible {
-    color: var(--ck-surface);
-    background-color: color-mix(in srgb, #000 20%, var(--ck-structure));
+    color: var(--ck-navbar-internal-foreground);
+    background-color: color-mix(in srgb, #000 20%, var(--ck-navbar-dropdown-bg, var(--ck-structure)));
     border-inline-start-color: var(--ck-accent);
     padding-inline-start: var(--ck-space-lg);
     outline: 2px solid var(--ck-accent);
@@ -226,6 +248,11 @@
         gap: var(--ck-space-md);
     }
 
+    .ck-navbar__course {
+        border-inline-end: 1px solid var(--ck-navbar-internal-divider);
+        padding-inline-end: var(--ck-space-md);
+    }
+
     .ck-navbar__module {
         display: block;
     }
@@ -241,40 +268,49 @@
         transition-duration: 0.01ms !important;
     }
 }
+/* ========================================================
+   6. Theme Switch Placement & Module Separator (§2.4, §4.4)
+   ======================================================== */
+/* The trailing group belongs to the navbar, not to the dropdown.
+ * Its children are independent: the module title must not depend
+ * on the presence of the theme-switch component.
+ */
+.ck-navbar__trailing {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-inline-size: 0;
+    gap: var(--ck-navbar-gap, var(--ck-space-sm));
+}
+
+/* Slot wrapper for the visual theme-switch component. */
+.ck-navbar__theme {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    min-inline-size: 0;
+}
+
+/* Separator is visible only when the module title is also displayed. */
+@media (--ck-bp-tablet) {
+    .ck-navbar__theme:has(+ .ck-navbar__module) {
+        border-inline-end: 1px solid var(--ck-navbar-internal-divider);
+        padding-inline-end: var(--ck-space-md);
+    }
+}
 
 /* ========================================================
-   Dark Theme — Navbar Contrast
+   7. Dark Theme — Navbar Contrast (§6.3)
    ======================================================== */
-
+/* The structural background stays dark in both themes.
+ * Use the semantic text token rather than --ck-surface, which
+ * becomes a dark surface in night mode.
+ * Public color overrides retain precedence.
+ */
 :root[data-ck-theme="dark"] .ck-navbar {
-    --ck-navbar-color: var(--ck-text-dark);
-
-    --ck-navbar-module-color: color-mix(
-        in srgb,
-        var(--ck-text-dark) 80%,
-        transparent
+    --ck-navbar-internal-foreground: var(--ck-navbar-color, var(--ck-text-dark));
+    --ck-navbar-internal-divider: var(
+        --ck-navbar-divider-color,
+        color-mix(in srgb, var(--ck-navbar-internal-foreground) 25%, transparent)
     );
-
-    --ck-navbar-divider-color: color-mix(
-        in srgb,
-        var(--ck-text-dark) 25%,
-        transparent
-    );
-}
-
-:root[data-ck-theme="dark"] .ck-navbar__trigger {
-    color: var(--ck-navbar-color);
-}
-
-:root[data-ck-theme="dark"] .ck-navbar__trigger:hover {
-    color: var(--ck-navbar-color);
-}
-
-:root[data-ck-theme="dark"] .ck-navbar__dropdown a {
-    color: var(--ck-navbar-color);
-}
-
-:root[data-ck-theme="dark"] .ck-navbar__dropdown a:hover,
-:root[data-ck-theme="dark"] .ck-navbar__dropdown a:focus-visible {
-    color: var(--ck-navbar-color);
 }

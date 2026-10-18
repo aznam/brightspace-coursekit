@@ -1,0 +1,15 @@
+{
+    "id": "theme-switch",
+    "schema": "$(frameworkRoot)/visual/theme-switch/theme-switch.xsd",
+    "template": "$(frameworkRoot)/visual/theme-switch/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/theme-switch/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/theme-switch/theme-switch.css"
+    ],
+    "scripts": [
+        "$(frameworkRoot)/visual/theme-switch/theme-switch.js"
+    ],
+    "variants": [
+        "default"
+    ]
+}

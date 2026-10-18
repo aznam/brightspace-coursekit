@@ -131,6 +131,10 @@
     <xs:element name="navbar">
         <xs:complexType><xs:complexContent><xs:extension base="c:NavbarType">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="theme-switch"
+                                type="c:ThemeSwitchType"
+                                minOccurs="0"
+                                maxOccurs="1"/>
                 <xs:element ref="p:link"/>
             </xs:choice>
         </xs:extension></xs:complexContent></xs:complexType>

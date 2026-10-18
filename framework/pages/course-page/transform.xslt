@@ -22,7 +22,9 @@
                     course-code="${course-code}"
                     page-title="${course-title}"
                     module-title="${module-name}">
-
+                    <xsl:if test="@theme-switch='true'">
+                        <p:theme-switch/>
+                    </xsl:if>
                     <xsp:slot name="navbar-items">
                         <xsl:apply-templates select="*" mode="navbar"/>
                     </xsp:slot>

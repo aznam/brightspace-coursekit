@@ -1,0 +1,15 @@
+{
+    "id": "summary-box",
+    "schema": "$(frameworkRoot)/visual/summary-box/summary-box.xsd",
+    "template": "$(frameworkRoot)/visual/summary-box/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/summary-box/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/summary-box/summary-box.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "normal",
+        "important",
+        "key"
+    ]
+}

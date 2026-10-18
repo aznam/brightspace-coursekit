@@ -47,9 +47,15 @@ export class Renderer {
         const rendered = processor.transformToDocument(input);
         this.element = document.importNode(rendered.documentElement, true);
 
-        for (const slot of [
-            ...this.element.querySelectorAll('ck-children,ck-slot')
-        ]) {
+        const slots = [...this.element.querySelectorAll('ck-children,ck-slot')];
+        const reservedSlots = new Set(
+            slots
+                .filter(slot => slot.localName === 'ck-slot')
+                .map(slot => slot.getAttribute('name'))
+                .filter(Boolean)
+        );
+
+        for (const slot of slots) {
             const nodes = document.createDocumentFragment();
 
             for (const child of [...this.xml.childNodes]) {
@@ -60,9 +66,7 @@ export class Renderer {
 
                 if (
                     slot.localName === 'ck-children' &&
-                    this.xml.localName === 'layout' &&
-                    ['central-content', 'sidebar-before', 'sidebar-after']
-                        .includes(child.localName)
+                    reservedSlots.has(child.localName)
                 ) continue;
 
                 nodes.append(await this.renderChild(child));

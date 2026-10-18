@@ -1,0 +1,31 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:s="urn:coursekit:semantic" targetNamespace="urn:coursekit:semantic" elementFormDefault="qualified">
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/paragraph/paragraph.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/heading/heading.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/list/list.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/picture/picture.xsd"/>
+
+    <xs:simpleType name="SummaryVariantType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="normal"/>
+            <xs:enumeration value="important"/>
+            <xs:enumeration value="key"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="SummaryType">
+        <xs:complexContent>
+            <xs:extension base="s:Container">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="s:paragraph"/>
+                    <xs:element ref="s:heading"/>
+                    <xs:element ref="s:list"/>
+                    <xs:element ref="s:picture"/>
+                </xs:choice>
+                <xs:attribute name="variant" type="s:SummaryVariantType" default="normal"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="summary" type="s:SummaryType" substitutionGroup="s:component"/>
+</xs:schema>

@@ -6,6 +6,7 @@
     <xs:include schemaLocation="$(frameworkRoot)/semantic/heading/heading.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/list/list.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/note/note.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/summary/summary.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/information/information.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/picture/picture.xsd"/>
 
@@ -17,6 +18,7 @@
                     <xs:element ref="s:heading"/>
                     <xs:element ref="s:list"/>
                     <xs:element ref="s:note"/>
+                    <xs:element ref="s:summary"/>
                     <xs:element ref="s:information"/>
                     <xs:element ref="s:picture"/>
                     <xs:element ref="s:section"/>

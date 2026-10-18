@@ -35,6 +35,10 @@
                     <xsl:copy-of select="@title|@subtitle|@image"/>
                 </p:hero>
                 
+                <xsl:if test="*[1][self::s:summary]">
+                    <xsl:apply-templates select="*[1][self::s:summary]"/>
+                </xsl:if>
+
                 <p:sidebar-before>
                     <xsl:apply-templates select="s:information[not(preceding-sibling::*[local-name()='section'])]"/>
                 </p:sidebar-before>
@@ -47,7 +51,7 @@
                         </xsp:slot>
                         </p:inline-toc>
                     </xsl:if>
-                    <xsl:apply-templates select="*[not(self::s:information)]"/>
+                    <xsl:apply-templates select="*[not(self::s:information) and not(self::s:summary[not(preceding-sibling::*)])]"/>
                 </p:central-content>
                 
                 <p:sidebar-after>
@@ -79,6 +83,16 @@
 
     <xsl:template match="s:information">
         <p:side><xsl:copy-of select="@*"/><xsl:apply-templates select="node()"/></p:side>
+    </xsl:template>
+
+    <xsl:template match="s:summary">
+        <p:summary-box>
+            <xsl:copy-of select="@*"/>
+            <xsl:if test="not(@variant)">
+                <xsl:attribute name="variant">normal</xsl:attribute>
+            </xsl:if>
+            <xsl:apply-templates select="node()"/>
+        </p:summary-box>
     </xsl:template>
 
     <xsl:template match="s:note">

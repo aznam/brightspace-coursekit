@@ -7,7 +7,8 @@
  * Responsibility:
  * Controls the primary page canvas, background image rendering with an
  * accessible contrast veil, and the multi-region responsive grid that houses
- * the main content and sidebars.
+ * summary, main content and sidebars. Regions own placement, maximum
+ * available widths and hero overlap; child components own their own sizing.
  *
  * Public Customization Variables:
  *
@@ -16,9 +17,9 @@
  *                                     Default: 77.5rem (1240px: preserves historical 1200px content + 40px padding in border-box).
  * --ck-page-layout-single-max-width   Maximum width for single-column (no-sidebar) mode.
  *                                     Default: 58.75rem (940px: preserves historical 900px content + 40px padding in border-box).
- * --ck-page-layout-sidebar-width      Width of the sidebar column.
+ * --ck-page-layout-sidebar-width      Maximum available width of the sidebar column.
  *                                     Default: 21.25rem (340px historical width).
- * --ck-page-layout-hero-overlap       Vertical upward overlap of the layout grid onto the hero banner.
+ * --ck-page-layout-hero-overlap       Upward overlap of the first content region and sidebar regions onto the hero banner.
  *                                     Default: 5.625rem (90px historical overlap).
  *
  * Spacing, Gaps & Gutters (§2.1, §2.2, §2.3, §2.4):
@@ -30,6 +31,8 @@
  *                                     Default: var(--ck-subsection-gap) (1.4375rem / 23px per §2.2.1).
  * --ck-page-layout-column-gap         Horizontal gutter between main content and sidebar columns.
  *                                     Default: var(--ck-section-gap) (2.4375rem / 39px per §2.2.1).
+ * --ck-page-layout-main-gap           Gap between summary and central-content regions.
+ *                                     Default: var(--ck-subsection-gap).
  * --ck-page-layout-sidebar-gap        Vertical gap between multiple cards stacked within a sidebar.
  *                                     Default: var(--ck-subsection-gap) (1.4375rem / 23px per §2.4).
  * --ck-page-layout-bottom-gap         Bottom margin below the grid.
@@ -138,6 +141,22 @@
 .ck-layout__main {
     grid-area: main;
     min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ck-page-layout-main-gap, var(--ck-subsection-gap));
+}
+
+/* The page regions constrain available space, not the intrinsic width of children. */
+.ck-layout__summary,
+.ck-layout__content {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+}
+
+/* A missing introductory summary must not introduce a blank region or gap. */
+.ck-layout__summary:not(:has(> *)) {
+    display: none;
 }
 
 .ck-sidebar-before {

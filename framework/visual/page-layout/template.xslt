@@ -11,7 +11,8 @@
                 <ck-slot name="sidebar-before"/>
                 
                 <main class="ck-layout__main">
-                    <ck-slot name="central-content"/>
+                    <div class="ck-layout__summary"><ck-slot name="summary-box"/></div>
+                    <div class="ck-layout__content"><ck-slot name="central-content"/></div>
                 </main>
                 
                 <ck-slot name="sidebar-after"/>

@@ -82,6 +82,12 @@
         </xs:choice>
     </xs:group>
 
+    <xs:element name="summary-box">
+        <xs:complexType><xs:complexContent><xs:extension base="c:SummaryBoxType">
+            <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:extension></xs:complexContent></xs:complexType>
+    </xs:element>
+
     <xs:element name="infobox">
         <xs:complexType><xs:complexContent><xs:extension base="c:InfoboxType">
             <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
@@ -105,6 +111,7 @@
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:group ref="p:StandardBlocks"/>
                 <xs:element ref="p:infobox"/>
+                <xs:element ref="p:summary-box"/>
                 <xs:element ref="p:collapse-box"/>
                 <xsp:slot name="content">
                 <xs:element ref="p:section"/>
@@ -119,6 +126,7 @@
                 <xs:element ref="p:inline-toc"/>
                 <xs:element ref="p:section"/>
                 <xs:element ref="p:infobox"/>
+                <xs:element ref="p:summary-box"/>
                 <xs:element ref="p:collapse-box"/>
                 <xs:element ref="p:side"/>
                 <xsp:slot name="content">
@@ -159,6 +167,7 @@
             <xs:sequence>
                 <xs:element ref="p:navbar" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="p:hero" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="p:summary-box" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="p:sidebar-before" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="p:central-content" minOccurs="1" maxOccurs="1"/>
                 <xs:element ref="p:sidebar-after" minOccurs="0" maxOccurs="1"/>

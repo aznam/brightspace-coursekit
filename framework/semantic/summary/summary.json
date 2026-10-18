@@ -1,0 +1,4 @@
+{
+    "id": "summary",
+    "schema": "$(frameworkRoot)/semantic/summary/summary.xsd"
+}

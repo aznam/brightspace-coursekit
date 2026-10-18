@@ -1,0 +1,110 @@
+/*
+ * CourseKit — Summary Box Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 1.2, 1.3, 1.4, 2.1, 2.4, 3.1, 4.4, 5.1, 5.2, 6.1, 6.3.
+ *
+ * Responsibility:
+ * Presents an editorial summary in the page introduction or within
+ * ordinary content flow. The parent page layout owns regional placement.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT determine whether a summary is introductory; page XSLT does.
+ * 2. Does NOT create page gutters or control neighboring component spacing.
+ * 3. Does NOT define light/dark theme palettes; global tokens own them.
+ *
+ * Public Customization Variables:
+ *
+ * Appearance:
+ * --ck-summary-box-accent       Title accent color.
+ *                               Default: var(--ck-structure) for normal;
+ *                               var(--ck-color-warning) for important;
+ *                               var(--ck-accent) for key.
+ * --ck-summary-box-background   Surface color.
+ *                               Default: var(--ck-surface).
+ * --ck-summary-box-border       Outer border color.
+ *                               Default: var(--ck-border).
+ * --ck-summary-box-border-width Outer border width.
+ *                               Default: 1px.
+ * --ck-summary-box-shadow       Container shadow.
+ *                               Default: var(--ck-shadow).
+ * --ck-summary-box-accent-border-color  Leading accent border (global accent token).
+ *                               Default: var(--ck-accent).
+ * --ck-summary-box-accent-border-width  Leading accent border width.
+ *                               Default: var(--ck-space-2xs).
+ *
+ * Spacing and Typography:
+ * --ck-summary-box-padding      Interior padding.
+ *                               Default: var(--ck-space-lg).
+ * --ck-summary-box-gap          Vertical distance between body blocks.
+ *                               Default: var(--ck-paragraph-gap-box).
+ * --ck-summary-box-title-size   Heading size.
+ *                               Default: var(--ck-font-box-size).
+ * --ck-summary-box-font-size    Body text size.
+ *                               Default: var(--ck-font-box-size) (0.875rem).
+ * --ck-summary-box-line-height  Body text line-height.
+ *                               Default: var(--ck-leading-box).
+ */
+
+/* ========================================================
+   1. Container and Theme-Aware Appearance (§3.1, §6.1)
+   ======================================================== */
+.ck-summary-box {
+    --ck-summary-box-internal-accent: var(--ck-structure);
+
+    inline-size: 100%;
+    min-inline-size: 0;
+    margin: 0;
+    padding: var(--ck-summary-box-padding, var(--ck-space-lg));
+    border: var(--ck-summary-box-border-width, 1px)
+        solid var(--ck-summary-box-border, var(--ck-border));
+    border-inline-start: var(--ck-summary-box-accent-border-width, var(--ck-space-2xs))
+        solid var(--ck-summary-box-accent-border-color, var(--ck-accent));
+    border-radius: 0;
+    box-shadow: var(--ck-summary-box-shadow, var(--ck-shadow));
+    background: var(--ck-summary-box-background, var(--ck-surface));
+    color: var(--ck-text-main);
+    font-size: var(--ck-summary-box-font-size, var(--ck-font-box-size));
+    line-height: var(--ck-summary-box-line-height, var(--ck-leading-box));
+    overflow-wrap: anywhere;
+}
+
+/* ========================================================
+   2. Semantic Variants (§6.1, §6.3)
+   ======================================================== */
+.ck-summary-box[data-variant="important"] {
+    --ck-summary-box-internal-accent: var(--ck-color-warning);
+}
+.ck-summary-box[data-variant="key"] {
+    --ck-summary-box-internal-accent: var(--ck-accent);
+}
+
+/* ========================================================
+   3. Title and Content Rhythm (§1.3, §2.4)
+   ======================================================== */
+.ck-summary-box__title {
+    margin-block: 0 var(--ck-space-sm);
+    font-size: var(--ck-summary-box-title-size, var(--ck-font-box-size));
+    font-weight: var(--ck-font-weight-bold);
+    line-height: var(--ck-leading-heading-component);
+    color: var(--ck-summary-box-accent, var(--ck-summary-box-internal-accent));
+}
+.ck-summary-box__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ck-summary-box-gap, var(--ck-paragraph-gap-box));
+    min-inline-size: 0;
+}
+
+/* ========================================================
+   4. Full-Region Text Flow (§1.4, §3.2, §5.2)
+   ======================================================== */
+/*
+ * The summary is a full-region editorial panel, unlike ordinary prose blocks.
+ * Override only the reading-measure caps of immediate content blocks; their
+ * typography, indentation, and spacing remain component-owned.
+ */
+.ck-summary-box .ck-paragraph,
+.ck-summary-box .ck-list {
+    max-inline-size: none;
+}

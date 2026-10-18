@@ -26,7 +26,7 @@
  * --ck-side-border-color          Outer container border color.
  *                                 Default: var(--ck-border) (#e2e8f0).
  * --ck-side-top-border-color      Signature top structural accent border.
- *                                 Default: var(--ck-structure) (#1e293b).
+ *                                 Default: var(--ck-outline-strong) (derived strong boundary).
  *
  * Spacing & Layout (§2.1, §2.4, §2.5, §4.1, §4.3):
  * --ck-side-padding-block         Vertical interior padding.
@@ -62,7 +62,7 @@
 
     /* Structural borders & signature 5px top rule */
     border: 1px solid var(--ck-side-border-color, var(--ck-border));
-    border-block-start: 5px solid var(--ck-side-top-border-color, var(--ck-structure));
+    border-block-start: 5px solid var(--ck-side-top-border-color, var(--ck-outline-strong));
     box-shadow: var(--ck-side-shadow, var(--ck-shadow));
 }
 

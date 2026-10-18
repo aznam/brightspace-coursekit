@@ -35,7 +35,7 @@
  * --ck-hoverbox-panel-title-color Header title color inside the panel (matching navbar course code).
  *                                 Default: #ecba78 (warm golden yellow; independent of theme accent).
  * --ck-hoverbox-border-color      Outer popover panel boundary color.
- *                                 Default: var(--ck-structure) (#1e293b).
+ *                                 Default: var(--ck-outline-strong) (derived strong boundary).
  * --ck-hoverbox-top-border-color  Signature 4px top accent rule color.
  *                                 Default: var(--ck-accent) (#c2410c).
  *
@@ -131,7 +131,7 @@
 
     background-color: var(--ck-hoverbox-panel-bg, var(--ck-text-dark));
     color: var(--ck-hoverbox-panel-color, color-mix(in srgb, var(--ck-surface) 92%, transparent));
-    border: 1px solid var(--ck-hoverbox-border-color, var(--ck-structure));
+    border: 1px solid var(--ck-hoverbox-border-color, var(--ck-outline-strong));
     border-block-start: 4px solid var(--ck-hoverbox-top-border-color, var(--ck-accent));
     box-shadow: var(--ck-hoverbox-shadow, 6px 6px 0 color-mix(in srgb, #000 20%, transparent));
 

@@ -40,7 +40,7 @@
  * --ck-central-content-top-border-width   Signature top accent rule thickness.
  *                                         Default: 8px.
  * --ck-central-content-top-border-color   Signature top accent rule color.
- *                                         Default: var(--ck-structure) (#1e293b).
+ *                                         Default: var(--ck-outline-strong) (derived strong boundary).
  *
  * Elevation & Shadow (§7.3):
  * --ck-central-content-shadow             Card drop shadow.
@@ -76,7 +76,7 @@
     border: var(--ck-central-content-border-width, 1px)
         solid var(--ck-central-content-border-color, var(--ck-border));
     border-block-start: var(--ck-central-content-top-border-width, 8px)
-        solid var(--ck-central-content-top-border-color, var(--ck-structure));
+        solid var(--ck-central-content-top-border-color, var(--ck-outline-strong));
 
     /* Signature 8px shadow elevation */
     box-shadow: var(

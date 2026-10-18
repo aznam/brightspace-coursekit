@@ -130,6 +130,12 @@ export function resolvePalettes(theme={}) {
     for(const key of ['text-main','text-dark','color-info','color-warning','color-error','color-success']) {
         if(!Object.hasOwn(overrides,key)) dark[key]=readable(dark[key],dark.surface);
     }
+    // Derived strong boundaries are intentionally separate from `structure`:
+    // the latter is also used as a dark background (notably by the navbar).
+    // This is a calculated design token, not another configurable palette key.
+    // Site-defined palette colors remain untouched.
+    light['outline-strong'] = readable(light.structure, light.surface, 3);
+    dark['outline-strong'] = readable(dark.structure, dark.surface, 3);
     return {light,dark};
 }
 export function auditPalettes(palettes) {
@@ -137,6 +143,7 @@ export function auditPalettes(palettes) {
     const pairs=[['text-main','surface',4.5],['text-dark','surface',4.5],
         ['text-main','bg-base',4.5],['text-dark','bg-base',4.5],
         ['accent','surface',3],['border','surface',3],
+        ['outline-strong','surface',3],
         ...['color-info','color-warning','color-error','color-success'].map(s=>[s,'surface',3])];
     for(const [mode,palette] of Object.entries(palettes)) for(const [fg,bg,min] of pairs) {
         const ratio=contrast(palette[fg],palette[bg]);

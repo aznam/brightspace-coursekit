@@ -142,10 +142,14 @@ export class PagesManager {
             page.transformDoc = null;
             page.transformPromise = null;
             page.behaviors = [];
+            page.preLoadHooks = [];
             for (const script of page.scripts || []) {
                 const url = r.relative(script, page.manifestUrl);
                 await this.ctx.scriptLoader.loadUrl(url);
                 const module = await import(url);
+                if (typeof module.preLoad === 'function') {
+                    page.preLoadHooks.push(module.preLoad);
+                }
                 if (typeof module.main === 'function') {
                     page.behaviors.push(module.main);
                 }
@@ -277,6 +281,24 @@ export class PagesManager {
         if (!page)
             throw Error('Unknown page type ' + this.getType(content));
         this.checkParams(content, page);
+
+        const params = Object.fromEntries(
+            [...content.documentElement.attributes]
+                .filter(attribute => !attribute.name.startsWith('xmlns') &&
+                    attribute.name !== 'page-type')
+                .map(attribute => [attribute.name, attribute.value])
+        );
+
+        for (const preLoad of page.preLoadHooks || []) {
+            await preLoad({
+                settings: this.ctx.settings,
+                resources: this.ctx.resources,
+                params,
+                content,
+                page
+            });
+        }
+
         // Only the selected page's XSLT and its explicit dependencies are composed.
         if (!page.transformPromise) {
             const sourceURL = this.ctx.resources.relative(page.transform, page.manifestUrl);

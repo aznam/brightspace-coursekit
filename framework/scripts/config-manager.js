@@ -55,6 +55,11 @@ export class ConfigManager {
         this.register(namespace, data);
     }
 
+    /** Remove a previously registered runtime variable or namespace. */
+    unregister(path) {
+        return this.registered.delete(path);
+    }
+
     _getConfig(path) {
         let value = { ...this.data, course: this.data?.course || {} };
         for (const part of path.split('.')) value = value?.[part];

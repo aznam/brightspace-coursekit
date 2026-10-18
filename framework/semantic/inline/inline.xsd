@@ -1,0 +1,28 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:s="urn:coursekit:semantic"
+           targetNamespace="urn:coursekit:semantic"
+           elementFormDefault="qualified">
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/core/core.xsd"/>
+
+    <!-- Inline semantic emphasis may be nested without turning into block components. -->
+    <xs:group name="InlineEmphasis">
+        <xs:choice>
+            <xs:element ref="s:important"/>
+            <xs:element ref="s:emphase"/>
+            <xs:element ref="s:underline"/>
+        </xs:choice>
+    </xs:group>
+
+    <xs:complexType name="InlineEmphasisType" mixed="true">
+        <xs:complexContent mixed="true">
+            <xs:extension base="s:Text">
+                <xs:sequence>
+                    <xs:group ref="s:InlineEmphasis" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="important" type="s:InlineEmphasisType"/>
+    <xs:element name="emphase" type="s:InlineEmphasisType"/>
+    <xs:element name="underline" type="s:InlineEmphasisType"/>
+</xs:schema>

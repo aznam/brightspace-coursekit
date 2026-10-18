@@ -1,0 +1,45 @@
+/*
+ * CourseKit — Text Style Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0.6, 1.2, 1.5, 2.4, 5.1, 5.2, 5.3, 6.1, 6.3.
+ *
+ * Responsibility:
+ * Presents inline semantic importance, emphasis, and underlining through
+ * their own typographic treatments. Preserves the surrounding text size,
+ * line height, and inherited foreground color in light and dark themes.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT define the surrounding paragraph's typography or spacing;
+ *    these belong to the containing text component (§2.4, §5.2).
+ * 2. Does NOT transform semantic XML or select the HTML element; those
+ *    responsibilities belong to the page transformation and visual template.
+ * 3. Does NOT define theme-specific text colors; inline text inherits the
+ *    foreground color of its context (§6.1, §6.3).
+ *
+ * Public Customization Variables:
+ *
+ * Typography & Emphasis (§1.5):
+ * --ck-text-style-important-weight        Font weight of important text.
+ *                                         Default: var(--ck-font-weight-bold).
+ * --ck-text-style-emphase-style           Font style of emphasized text.
+ *                                         Default: italic (semantic emphasis).
+ *
+ * Text Decoration (§1.5):
+ * --ck-text-style-underline-decoration    Decoration line of underlined text.
+ *                                         Default: underline.
+ */
+
+/* ========================================================
+   1. Inline Semantic Typography (§1.5, §5.2)
+   ======================================================== */
+.ck-text-style--important {
+    font-weight: var(--ck-text-style-important-weight, var(--ck-font-weight-bold));
+}
+.ck-text-style--emphase {
+    font-style: var(--ck-text-style-emphase-style, italic);
+}
+.ck-text-style--underline {
+    text-decoration-line: var(--ck-text-style-underline-decoration, underline);
+    text-decoration-skip-ink: auto;
+}

@@ -4,11 +4,14 @@
     <xs:include schemaLocation="$(frameworkRoot)/semantic/link/link.xsd"/>
     <xs:include schemaLocation="$(frameworkRoot)/semantic/list/list.xsd"/>
 
+    <xs:include schemaLocation="$(frameworkRoot)/semantic/inline/inline.xsd"/>
+
     <xs:complexType name="ItemType">
         <xs:complexContent>
             <xs:extension base="s:Text">
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element ref="s:link"/>
+                    <xs:group ref="s:InlineEmphasis"/>
                     <xs:element ref="s:list"/>
                 </xs:choice>
             </xs:extension>

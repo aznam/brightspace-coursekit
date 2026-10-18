@@ -1,0 +1,13 @@
+{
+    "id": "text-style",
+    "schema": "$(frameworkRoot)/visual/text-style/text-style.xsd",
+    "template": "$(frameworkRoot)/visual/text-style/template.xslt",
+    "renderer": "$(frameworkRoot)/visual/text-style/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/visual/text-style/text-style.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

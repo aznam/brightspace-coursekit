@@ -106,6 +106,14 @@
         <p:link><xsl:copy-of select="@*"/><xsl:apply-templates select="node()"/></p:link>
     </xsl:template>
 
+    <!-- Inline semantic typography is mapped once, without custom JavaScript. -->
+    <xsl:template match="s:important|s:emphase|s:underline">
+        <p:text-style kind="{local-name()}">
+            <xsl:copy-of select="@id"/>
+            <xsl:apply-templates select="node()"/>
+        </p:text-style>
+    </xsl:template>
+
     <xsl:template match="s:picture">
         <p:picture>
             <xsl:copy-of select="@*[local-name() != 'title']"/>

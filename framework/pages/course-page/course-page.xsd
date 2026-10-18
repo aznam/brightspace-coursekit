@@ -29,10 +29,22 @@
         </xs:extension></xs:complexContent></xs:complexType>
     </xs:element>
 
+    <xs:element name="text-style">
+        <xs:complexType mixed="true">
+            <xs:complexContent mixed="true">
+                <xs:extension base="c:TextStyleType">
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element ref="p:text-style"/>
+                    </xs:choice>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="paragraph">
         <xs:complexType mixed="true"><xs:complexContent><xs:extension base="c:ParagraphType">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/>
+                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/><xs:element ref="p:text-style"/>
             </xs:choice>
         </xs:extension></xs:complexContent></xs:complexType>
     </xs:element>
@@ -40,7 +52,7 @@
     <xs:element name="heading">
         <xs:complexType mixed="true"><xs:complexContent><xs:extension base="c:HeadingType">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/>
+                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/><xs:element ref="p:text-style"/>
             </xs:choice>
         </xs:extension></xs:complexContent></xs:complexType>
     </xs:element>
@@ -48,7 +60,7 @@
     <xs:element name="item">
         <xs:complexType mixed="true"><xs:complexContent><xs:extension base="c:ItemType">
             <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/>
+                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/><xs:element ref="p:text-style"/>
             </xs:choice>
         </xs:extension></xs:complexContent></xs:complexType>
     </xs:element>

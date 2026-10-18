@@ -97,8 +97,7 @@
 
 /* Course Code Badge */
 .ck-navbar__course {
-    font-size: var(--ck-font-box-size);
-    line-height: var(--ck-leading-box);
+    font-size: var(--ck-font-footnote);
     font-weight: var(--ck-font-weight-bold);
     text-transform: uppercase;
     letter-spacing: 0.095rem;
@@ -141,8 +140,7 @@
     display: inline-flex;
     align-items: center;
     color: color-mix(in srgb, var(--ck-navbar-internal-foreground) 85%, transparent);
-    font-size: var(--ck-font-box-size);
-    line-height: var(--ck-leading-box);
+    font-size: var(--ck-font-footnote);
     font-weight: var(--ck-font-weight-bold);
     text-transform: uppercase;
     letter-spacing: 0.06rem;
@@ -192,6 +190,18 @@
     transition:
         opacity var(--ck-motion-fast) var(--ck-easing-default),
         visibility var(--ck-motion-fast) var(--ck-easing-default);
+}
+
+/* Transparent pointer bridge across the visual gap below NAVIGATE.
+ * Keeps the dropdown reachable without removing its spacing or adding
+ * a JavaScript dismissal delay.
+ */
+.ck-navbar__dropdown::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 100%;
+    block-size: var(--ck-space-xs);
 }
 
 /* Open states: JavaScript owns state for consistent pointer/keyboard behavior. */

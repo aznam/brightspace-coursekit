@@ -10,7 +10,9 @@
         "year": 2026
     },
     "modules": [
-        "$(courseRoot)/modules/learning/module.json"
+        "$(courseRoot)/modules/learning/module.json",
+        "$(frameworkRoot)/modules/people/module.json",
+        "$(frameworkRoot)/modules/fontawesome/module.json"
     ],
     "variables": {},
     "theme": {
@@ -21,9 +23,17 @@
             "text-main": "#334155",
             "text-dark": "#0f172a",
             "border": "#e2e8f0",
-            "bg-base": "#fafaf9"
+            "bg-base": "#fafaf9",
+            "surface": "#ffffff",
+            "surface-muted": "#f8fafc"
         },
-        "backgroundImage": null
+        "backgroundImage": null,
+        "mode": "auto",
+        "dark": {},
+        "palettes": {
+            "light": {},
+            "dark": {}
+        }
     },
     "customPaths": {
         "assets": "assets/",
@@ -45,7 +55,7 @@
                 "id": "body",
                 "family": "Inter",
                 "source": "online",
-                "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap",
+                "url": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap",
                 "cssVariable": "--ck-font-body",
                 "fallback": "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
             },
@@ -59,6 +69,15 @@
             }
         ]
     },
-    "icons": {},
+    "icons": {
+        "info": {
+            "type": "font",
+            "classes": ["fa-solid", "fa-circle-info"]
+        },
+        "warning": {
+            "type": "font",
+            "classes": ["fa-solid", "fa-triangle-exclamation"]
+        }
+    },
     "learningOutcomes": []
 }

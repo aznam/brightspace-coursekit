@@ -1,0 +1,17 @@
+/*
+ * CourseKit — Brightspace Overrides
+ *
+ * Site-level adjustments for elements injected by Brightspace.
+ * These overrides are intentionally platform-specific.
+ */
+
+/* Hide Panorama alternative-format control */
+span.panorama-alternative-formats-button-container {
+    display: none !important;
+}
+
+/* Neutralize Panorama wrapper styling */
+span.pano-wrapper-div {
+    display: contents !important;
+    line-height: inherit !important;
+}

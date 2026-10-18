@@ -6,7 +6,8 @@
            module-name="Module Test"
            subtitle="From design intent to playable systems"
            image="hero-sample.svg"
-           toc="true">
+           toc="true"
+           theme-switch="true">
 
     <!-- Sidebar before (placé avant les sections) -->
     <s:information id="course-at-a-glance" title="Course at a Glance">

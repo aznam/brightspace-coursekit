@@ -39,7 +39,7 @@
 
                 <p:navbar
                     course-code="${{course-code}}"
-                    page-title="${{assignment-id}}"
+                    page-title="${{assignment-label}}"
                     module-title="${{module-name}}">
                     <xsl:if test="@theme-switch = 'true'">
                         <p:theme-switch/>

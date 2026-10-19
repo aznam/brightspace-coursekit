@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
-from urllib.error import URLError, HTTPError
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -55,29 +55,36 @@ def status():
     return 0
 
 
-def start(root=ROOT, framework=None, course=None, course_name=None):
+def start(root=ROOT, framework=None, courses=None, course_names=None):
     root = Path(root).expanduser().resolve()
     if not root.is_dir():
         print(f'Cannot serve nonexistent directory: {root}', file=sys.stderr)
         return 2
+
     framework = Path(framework).expanduser().resolve() if framework else None
-    course = Path(course).expanduser().resolve() if course else None
-    for label, location in [('--framework', framework), ('--course', course)]:
+    courses = [Path(path).expanduser().resolve() for path in (courses or [])]
+    course_names = list(course_names or [])
+    if course_names and len(course_names) != len(courses):
+        print('Provide either no --course-name or one --course-name per --course', file=sys.stderr)
+        return 2
+    for label, location in [('--framework', framework), *[(f'--course #{i + 1}', c) for i, c in enumerate(courses)]]:
         if location is not None and not location.is_dir():
             print(f'{label} directory does not exist: {location}', file=sys.stderr)
             return 2
-    if course_name and not course:
-        print('--course-name requires --course', file=sys.stderr)
-        return 2
-    course_name = course_name or (course.name if course else None)
-    if course_name and (course_name in ('.', '..') or '/' in course_name or '\\' in course_name or not course_name.strip()):
-        print('--course-name must be a single URL path segment', file=sys.stderr)
-        return 2
+
+    names = course_names or [course.name for course in courses]
     requested_mounts = {}
     if framework:
         requested_mounts['/framework/'] = str(framework)
-    if course:
-        requested_mounts[f'/courses/{course_name}/'] = str(course)
+    for name, course in zip(names, courses):
+        if name in ('.', '..') or '/' in name or '\\' in name or not name.strip():
+            print(f'Invalid --course-name: {name!r}', file=sys.stderr)
+            return 2
+        key = f'/courses/{name}/'
+        if key in requested_mounts:
+            print(f'Duplicate course name: {name}', file=sys.stderr)
+            return 2
+        requested_mounts[key] = str(course)
     previous = read_state()
     if previous and health(previous):
         if previous.get('root') != str(root) or previous.get('mounts', {}) != requested_mounts:
@@ -96,7 +103,8 @@ def start(root=ROOT, framework=None, course=None, course_name=None):
 
     command = [sys.executable, str(SERVER), '--host', '127.0.0.1', '--port', '8000', '--root', str(root)]
     if framework: command += ['--framework', str(framework)]
-    if course: command += ['--course', str(course), '--course-name', course_name]
+    for name, course in zip(names, courses):
+        command += ['--course', str(course), '--course-name', name]
     options = {'cwd': str(ROOT), 'stdin': subprocess.DEVNULL}
     if os.name == 'nt':
         options['creationflags'] = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
@@ -154,7 +162,9 @@ if __name__ == '__main__':
     parser.add_argument('action', choices=['start', 'stop', 'status'])
     parser.add_argument('--root', type=Path, default=ROOT, help='Fallback directory served (start only)')
     parser.add_argument('--framework', type=Path, help='Mount framework at /framework/')
-    parser.add_argument('--course', type=Path, help='Mount course at /courses/<course-name>/')
-    parser.add_argument('--course-name', help='Course URL segment (defaults to course directory name)')
+    parser.add_argument('--course', type=Path, action='append', default=[],
+                        help='Course root directory; repeat to mount multiple courses')
+    parser.add_argument('--course-name', action='append', default=[],
+                        help='Virtual course name; provide one per --course if used')
     args = parser.parse_args()
     sys.exit(start(args.root, args.framework, args.course, args.course_name) if args.action == 'start' else stop() if args.action == 'stop' else status())

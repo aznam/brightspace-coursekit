@@ -9,7 +9,6 @@ from pathlib import Path
 import secrets
 import threading
 from urllib.parse import urlsplit, unquote
-import posixpath
 import mimetypes
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -25,8 +24,10 @@ def main():
     parser.add_argument('--port', type=int, default=8000)
     parser.add_argument('--root', type=Path, default=ROOT, help='Fallback document root')
     parser.add_argument('--framework', type=Path, help='Physical framework directory mounted at /framework/')
-    parser.add_argument('--course', type=Path, help='Physical course directory mounted at /courses/<course-name>/')
-    parser.add_argument('--course-name', help='URL segment for the course (default: course directory name)')
+    parser.add_argument('--course', type=Path, action='append', default=[],
+                        help='Course root directory; repeat for multiple courses')
+    parser.add_argument('--course-name', action='append', default=[],
+                        help='Virtual course name; repeat once per --course (otherwise directory names are used)')
     args = parser.parse_args()
     serve_root = args.root.expanduser().resolve(strict=True)
     if not serve_root.is_dir():
@@ -40,17 +41,23 @@ def main():
         return resolved
 
     framework_dir = existing_directory(args.framework, '--framework')
-    course_dir = existing_directory(args.course, '--course')
-    course_name = args.course_name or (course_dir.name if course_dir else None)
-    if args.course_name and not course_dir:
-        parser.error('--course-name requires --course')
-    if course_name and (course_name in ('.', '..') or '/' in course_name or '\\' in course_name or not course_name.strip()):
-        parser.error('--course-name must be a single nonempty URL path segment')
+    if args.course_name and len(args.course_name) != len(args.course):
+        parser.error('Provide either no --course-name or one --course-name for each --course')
+
     mounts = {}
     if framework_dir:
         mounts['/framework/'] = framework_dir
-    if course_dir:
-        mounts[f'/courses/{course_name}/'] = course_dir
+
+    for index, course_path in enumerate(args.course):
+        course_dir = existing_directory(course_path, f'--course #{index + 1}')
+        course_name = args.course_name[index] if args.course_name else course_dir.name
+        if (course_name in ('.', '..') or '/' in course_name or
+                '\\' in course_name or not course_name.strip()):
+            parser.error(f'Invalid course name at index {index + 1}: {course_name!r}')
+        prefix = f'/courses/{course_name}/'
+        if prefix in mounts:
+            parser.error(f'Duplicate course name: {course_name!r}')
+        mounts[prefix] = course_dir
     secret = secrets.token_urlsafe(32)
 
     class Handler(SimpleHTTPRequestHandler):

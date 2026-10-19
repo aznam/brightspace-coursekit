@@ -1,215 +1,263 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:p="urn:coursekit:page" xmlns:c="urn:coursekit:visual" xmlns:xsp="urn:coursekit:preprocessor" targetNamespace="urn:coursekit:page" elementFormDefault="qualified">
-
-    <xs:include schemaLocation="$(frameworkRoot)/pages/base/base.xsd"/>
-
-    <xs:import namespace="urn:coursekit:visual" schemaLocation="virtual_components.xsd" />
-
-    <xs:element name="link">
-        <xs:complexType mixed="true">
-            <xs:complexContent>
-                <xs:extension base="c:LinkType">
-                    <xs:choice minOccurs="0" maxOccurs="unbounded">
-                        <xs:element ref="p:paragraph"/>
-                        <xs:element ref="p:picture"/>
-                    </xs:choice>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="hoverbox" type="c:HoverboxType"/>
-
-    <xs:element name="picture" type="c:PictureType"/>
-    <xs:element name="video" type="c:VideoType"/>
-    <xs:element name="illustration">
-        <xs:complexType><xs:complexContent><xs:extension base="c:IllustrationType">
-            <xs:choice>
-                <xs:element ref="p:picture"/>
-                <xs:element ref="p:video"/>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="inline-toc">
-        <xs:complexType><xs:complexContent><xs:extension base="c:InlineTocType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="p:link"/>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="text-style">
-        <xs:complexType mixed="true">
-            <xs:complexContent mixed="true">
-                <xs:extension base="c:TextStyleType">
-                    <xs:choice minOccurs="0" maxOccurs="unbounded">
-                        <xs:element ref="p:text-style"/>
-                    </xs:choice>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="paragraph">
-        <xs:complexType mixed="true"><xs:complexContent><xs:extension base="c:ParagraphType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/><xs:element ref="p:text-style"/>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="heading">
-        <xs:complexType mixed="true"><xs:complexContent><xs:extension base="c:HeadingType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/><xs:element ref="p:text-style"/>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="item">
-        <xs:complexType mixed="true"><xs:complexContent><xs:extension base="c:ItemType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="p:link"/><xs:element ref="p:hoverbox"/><xs:element ref="p:text-style"/>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="list">
-        <xs:complexType><xs:complexContent><xs:extension base="c:ListType">
-            <xs:sequence>
-                <xs:element ref="p:item" minOccurs="1" maxOccurs="unbounded"/>
-            </xs:sequence>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="tutorial">
-        <xs:complexType><xs:complexContent><xs:extension base="c:TutorialType">
-            <xs:choice minOccurs="1" maxOccurs="unbounded">
-                <xs:element ref="p:illustration"/>
-                <xs:element ref="p:paragraph"/>
-                <xs:element ref="p:heading"/>
-                <xs:element ref="p:list"/>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:group name="StandardBlocks">
-        <xs:choice>
+  <xs:include schemaLocation="$(frameworkRoot)/pages/base/base.xsd"/>
+  <xs:import namespace="urn:coursekit:visual" schemaLocation="virtual_components.xsd"/>
+  <xs:element name="link">
+    <xs:complexType mixed="true">
+      <xs:complexContent>
+        <xs:extension base="c:LinkType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element ref="p:paragraph"/>
-            <xs:element ref="p:heading"/>
+            <xs:element ref="p:picture"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="hoverbox" type="c:HoverboxType"/>
+  <xs:element name="picture" type="c:PictureType"/>
+  <xs:element name="video" type="c:VideoType"/>
+  <xs:element name="illustration">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:IllustrationType">
+          <xs:choice>
             <xs:element ref="p:picture"/>
             <xs:element ref="p:video"/>
-            <xs:element ref="p:illustration"/>
-            <xs:element ref="p:tutorial"/>
-            <xs:element ref="p:list"/>
-        </xs:choice>
-    </xs:group>
-
-    <xs:element name="summary-box">
-        <xs:complexType><xs:complexContent><xs:extension base="c:SummaryBoxType">
-            <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="infobox">
-        <xs:complexType><xs:complexContent><xs:extension base="c:InfoboxType">
-            <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-    
-    <xs:element name="collapse-box">
-        <xs:complexType><xs:complexContent><xs:extension base="c:CollapseBoxType">
-            <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-    
-    <xs:element name="side">
-        <xs:complexType><xs:complexContent><xs:extension base="c:SideType">
-            <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="section">
-        <xs:complexType><xs:complexContent><xs:extension base="c:SectionType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:group ref="p:StandardBlocks"/>
-                <xs:element ref="p:infobox"/>
-                <xs:element ref="p:summary-box"/>
-                <xs:element ref="p:collapse-box"/>
-                <xsp:slot name="content">
-                <xs:element ref="p:section"/>
-                </xsp:slot>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="central-content">
-        <xs:complexType><xs:complexContent><xs:extension base="c:CentralContentType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="p:inline-toc"/>
-                <xs:element ref="p:section"/>
-                <xs:element ref="p:infobox"/>
-                <xs:element ref="p:summary-box"/>
-                <xs:element ref="p:collapse-box"/>
-                <xs:element ref="p:side"/>
-                <xsp:slot name="content">
-                <xs:group ref="p:StandardBlocks"/>
-                </xsp:slot>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="sidebar-before">
-        <xs:complexType><xs:complexContent><xs:extension base="c:SidebarBeforeType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded"><xs:element ref="p:side"/></xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="sidebar-after">
-        <xs:complexType><xs:complexContent><xs:extension base="c:SidebarAfterType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded"><xs:element ref="p:side"/></xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:element name="navbar">
-        <xs:complexType><xs:complexContent><xs:extension base="c:NavbarType">
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element name="theme-switch"
-                                type="c:ThemeSwitchType"
-                                minOccurs="0"
-                                maxOccurs="1"/>
-                <xs:element ref="p:link"/>
-            </xs:choice>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-    
-    <xs:element name="hero" type="c:HeroType"/>
-
-    <xs:element name="layout">
-        <xs:complexType><xs:complexContent><xs:extension base="c:LayoutType">
-            <xs:sequence>
-                <xs:element ref="p:navbar" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="p:hero" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="p:summary-box" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="p:sidebar-before" minOccurs="0" maxOccurs="1"/>
-                <xs:element ref="p:central-content" minOccurs="1" maxOccurs="1"/>
-                <xs:element ref="p:sidebar-after" minOccurs="0" maxOccurs="1"/>
-            </xs:sequence>
-        </xs:extension></xs:complexContent></xs:complexType>
-    </xs:element>
-
-    <xs:complexType name="CoursePageType">
-        <xs:complexContent>
-            <xs:extension base="p:PageType">
-                <xs:sequence>
-                    <xs:element ref="p:layout"/>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
     </xs:complexType>
-
-    <xs:element name="course-page"
-                type="p:CoursePageType"
-                substitutionGroup="p:page"/>
-
+  </xs:element>
+  <xs:element name="inline-toc">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:InlineTocType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="p:link"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="text-style">
+    <xs:complexType mixed="true">
+      <xs:complexContent mixed="true">
+        <xs:extension base="c:TextStyleType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="p:text-style"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="paragraph">
+    <xs:complexType mixed="true">
+      <xs:complexContent>
+        <xs:extension base="c:ParagraphType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="p:link"/>
+            <xs:element ref="p:hoverbox"/>
+            <xs:element ref="p:text-style"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="heading">
+    <xs:complexType mixed="true">
+      <xs:complexContent>
+        <xs:extension base="c:HeadingType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="p:link"/>
+            <xs:element ref="p:hoverbox"/>
+            <xs:element ref="p:text-style"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="item">
+    <xs:complexType mixed="true">
+      <xs:complexContent>
+        <xs:extension base="c:ItemType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="p:link"/>
+            <xs:element ref="p:hoverbox"/>
+            <xs:element ref="p:text-style"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="list">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:ListType">
+          <xs:sequence>
+            <xs:element ref="p:item" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="tutorial">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:TutorialType">
+          <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element ref="p:illustration"/>
+            <xs:element ref="p:paragraph"/>
+            <xs:element ref="p:heading"/>
+            <xs:element ref="p:list"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:group name="StandardBlocks">
+    <xs:choice>
+      <xs:element ref="p:paragraph"/>
+      <xs:element ref="p:heading"/>
+      <xs:element ref="p:picture"/>
+      <xs:element ref="p:video"/>
+      <xs:element ref="p:illustration"/>
+      <xs:element ref="p:tutorial"/>
+      <xs:element ref="p:list"/>
+    </xs:choice>
+  </xs:group>
+  <xs:element name="summary-box">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:SummaryBoxType">
+          <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="infobox">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:InfoboxType">
+          <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="collapse-box">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:CollapseBoxType">
+          <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="side">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:SideType">
+          <xs:group ref="p:StandardBlocks" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="section">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:SectionType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:group ref="p:StandardBlocks"/>
+            <xs:element ref="p:infobox"/>
+            <xs:element ref="p:summary-box"/>
+            <xs:element ref="p:collapse-box"/>
+            <xsp:slot name="content">
+              <xs:element ref="p:section"/>
+            </xsp:slot>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="central-content">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:CentralContentType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="p:inline-toc"/>
+            <xs:element ref="p:section"/>
+            <xs:element ref="p:infobox"/>
+            <xs:element ref="p:summary-box"/>
+            <xs:element ref="p:collapse-box"/>
+            <xs:element ref="p:side"/>
+            <xsp:slot name="content">
+              <xs:group ref="p:StandardBlocks"/>
+            </xsp:slot>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sidebar-before">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:SidebarBeforeType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="p:side"/>
+            <xsp:slot name="content"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sidebar-after">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:SidebarAfterType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="p:side"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="navbar">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:NavbarType">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="theme-switch" type="c:ThemeSwitchType" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="p:link"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="hero" type="c:HeroType"/>
+  <xs:element name="layout">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:LayoutType">
+          <xs:sequence>
+            <xs:element ref="p:navbar" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="p:hero" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="p:summary-box" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="p:sidebar-before" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="p:central-content" minOccurs="1" maxOccurs="1"/>
+            <xs:element ref="p:sidebar-after" minOccurs="0" maxOccurs="1"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="CoursePageType">
+    <xs:complexContent>
+      <xs:extension base="p:PageType">
+        <xs:sequence>
+          <xs:element ref="p:layout"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="course-page" type="p:CoursePageType" substitutionGroup="p:page"/>
 </xs:schema>

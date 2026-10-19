@@ -19,9 +19,9 @@
                 <xsl:copy-of select="@title|@subtitle|@image|@background|@style-ref|@variant|@page-numbered"/>
                 
                 <p:navbar
-                    course-code="${course-code}"
-                    page-title="${course-title}"
-                    module-title="${module-name}">
+                    course-code="${{course-code}}"
+                    page-title="${{course-title}}"
+                    module-title="${{module-name}}">
                     <xsl:if test="@theme-switch='true'">
                         <p:theme-switch/>
                     </xsl:if>

@@ -1,6 +1,7 @@
 import { IconResolver } from './icon-resolver.js';
 import { loadManifest, mergeDefinition } from './manifest.js';
-import { parseXML, NS, qname } from './xml.js';
+import { NS, qname } from './xml.js';
+import { XSLTPreprocessor } from './xslt-preprocessor.js';
 export class ComponentsManager {
     constructor(ctx) {
         this.ctx = ctx;
@@ -27,7 +28,8 @@ export class ComponentsManager {
         }
 
         for (const m of this.components.values()) {
-            m.templateDoc = parseXML(await r.text(r.relative(m.template, m.manifestUrl)), m.template);
+            const templateURL = r.relative(m.template, m.manifestUrl);
+            m.templateDoc = await new XSLTPreprocessor(r).process(templateURL);
             const mod = await import(r.relative(m.renderer, m.manifestUrl));
             if (typeof mod.default !== 'function')
                 throw Error('Renderer must be a default class: ' + m.renderer);

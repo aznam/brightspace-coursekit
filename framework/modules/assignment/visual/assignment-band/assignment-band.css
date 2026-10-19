@@ -93,6 +93,21 @@
  *                                         Vertical badge padding.
  *                                         Default: var(--ck-space-2xs).
  *
+ * Metadata label colors (§5.3):
+ * --ck-assignment-band-label-learning-outcomes-color
+ *                                        learning-outcomes label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ * --ck-assignment-band-label-estimated-time-color
+ *                                        estimated-time label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ * --ck-assignment-band-label-difficulty-color
+ *                                        difficulty label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ * --ck-assignment-band-label-weight-color
+ *                                        weight label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ * --ck-assignment-band-label-points-color
+ *                                        points label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ * --ck-assignment-band-label-rubrics-color
+ *                                        rubrics label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ * Site CSS may additionally target the stable [data-label] attribute per label.
+ *
  * Motion (§7):
  * --ck-assignment-band-motion-duration   Disclosure transition duration.
  *                                        Default: var(--ck-motion-normal).
@@ -359,7 +374,7 @@
 .ck-assignment-band .aband-panel-inner {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: center;
     gap: var(--ck-assignment-band-panel-gap, var(--ck-space-lg));
     min-inline-size: 0;
@@ -370,7 +385,7 @@
 .ck-assignment-band .aband-panel-block,
 .ck-assignment-band .aband-meta-item {
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: max-content 1fr;
     justify-items: center;
     align-content: start;
     row-gap: var(--ck-assignment-band-item-gap, var(--ck-space-2xs));
@@ -380,6 +395,33 @@
 .ck-assignment-band .aband-panel-block-label,
 .ck-assignment-band .aband-meta-label {
     text-align: center;
+    white-space: nowrap;
+}
+
+
+/* Individually customizable metadata label colors. */
+.ck-assignment-band .aband-panel-block-label[data-label="learning-outcomes"] {
+    color: var(--ck-assignment-band-label-learning-outcomes-color, var(--ck-assignment-band-muted-color, #94a3b8));
+}
+
+.ck-assignment-band .aband-meta-label[data-label="estimated-time"] {
+    color: var(--ck-assignment-band-label-estimated-time-color, var(--ck-assignment-band-muted-color, #94a3b8));
+}
+
+.ck-assignment-band .aband-meta-label[data-label="difficulty"] {
+    color: var(--ck-assignment-band-label-difficulty-color, var(--ck-assignment-band-muted-color, #94a3b8));
+}
+
+.ck-assignment-band .aband-meta-label[data-label="weight"] {
+    color: var(--ck-assignment-band-label-weight-color, var(--ck-assignment-band-muted-color, #94a3b8));
+}
+
+.ck-assignment-band .aband-meta-label[data-label="points"] {
+    color: var(--ck-assignment-band-label-points-color, var(--ck-assignment-band-muted-color, #94a3b8));
+}
+
+.ck-assignment-band .aband-meta-label[data-label="rubrics"] {
+    color: var(--ck-assignment-band-label-rubrics-color, var(--ck-assignment-band-muted-color, #94a3b8));
 }
 
 .ck-assignment-band .aband-lo-list {
@@ -391,12 +433,12 @@
     min-inline-size: 0;
 }
 
-/* Style only the public Hoverbox trigger in the declared LO composition. */
-.ck-assignment-band .ck-hoverbox[data-style-ref="aband-lo-tag"] {
+/* Shared LO badge presentation; each code has its own site-addressable style-ref. */
+.ck-assignment-band .ck-hoverbox[data-style-ref^="aband-lo-tag--"] {
     display: inline-flex;
 }
 
-.ck-assignment-band .ck-hoverbox[data-style-ref="aband-lo-tag"] .ck-hoverbox__trigger {
+.ck-assignment-band .ck-hoverbox[data-style-ref^="aband-lo-tag--"] .ck-hoverbox__trigger {
     padding-block: 0;
     padding-inline: var(--ck-space-2xs);
     border-block-end: 0;
@@ -410,13 +452,9 @@
     cursor: help;
 }
 
+/* Flatten the metadata grouping so every label participates in the same flex row. */
 .ck-assignment-band .aband-panel-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: center;
-    gap: var(--ck-assignment-band-panel-gap, var(--ck-space-lg));
-    min-inline-size: 0;
+    display: contents;
 }
 
 /* 6. Responsive adaptation: named references from breakpoints.json. */

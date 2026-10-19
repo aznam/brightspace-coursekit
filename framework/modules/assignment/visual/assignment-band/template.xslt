@@ -154,7 +154,7 @@
                         <xsl:if test="$band/@weight != ''">
                             <div class="aband-meta-item">
                                 <span class="aband-meta-label">Weight</span>
-                                <span class="aband-meta-value"><xsl:value-of select="$band/@weight"/>% of grade</span>
+                                <span class="aband-meta-value"><xsl:value-of select="$band/@weight"/>%</span>
                             </div>
                         </xsl:if>
                         <xsl:if test="$band/@points != ''">

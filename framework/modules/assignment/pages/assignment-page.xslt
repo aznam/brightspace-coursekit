@@ -38,7 +38,7 @@
 
                 <p:navbar
                     course-code="${{course-code}}"
-                    page-title="${{assignment-id}}"
+                    page-title="${{assignment-label}}"
                     module-title="${{module-name}}">
                     <xsl:if test="@theme-switch = 'true'">
                         <p:theme-switch/>
@@ -64,7 +64,7 @@
                     points="${{assignment-points}}"
                     rubrics-provided="${{assignment-rubrics-provided}}">
                     <xsl:for-each select="s:assignment-outcome">
-                        <p:hoverbox title="{@code}" panel-title="{@code}" style-ref="aband-lo-tag">
+                        <p:hoverbox title="{@code}" panel-title="{@code}" style-ref="aband-lo-tag--{@code}">
                             <xsl:value-of select="@description"/>
                         </p:hoverbox>
                     </xsl:for-each>

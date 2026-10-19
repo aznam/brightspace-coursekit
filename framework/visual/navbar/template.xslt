@@ -10,15 +10,15 @@
         <header class="ck-navbar">
             <div class="ck-navbar__info">
 
-                <xsl:if test="normalize-space($course-code) != ''">
+                <xsl:if test="normalize-space(/*/@course-code) != ''">
                     <div class="ck-navbar__course">
-                        <xsl:value-of select="$course-code"/>
+                        <xsl:value-of select="/*/@course-code"/>
                     </div>
                 </xsl:if>
 
-                <xsl:if test="normalize-space($course-title) != ''">
+                <xsl:if test="normalize-space(/*/@page-title) != ''">
                     <div class="ck-navbar__page">
-                        <xsl:value-of select="$course-title"/>
+                        <xsl:value-of select="/*/@page-title"/>
                     </div>
                 </xsl:if>
 
@@ -47,9 +47,9 @@
                     </div>
                 </xsl:if>
 
-                <xsl:if test="normalize-space($module-name) != ''">
+                <xsl:if test="normalize-space(/*/@module-title) != ''">
                     <div class="ck-navbar__module">
-                        <xsl:value-of select="$module-name"/>
+                        <xsl:value-of select="/*/@module-title"/>
                     </div>
                 </xsl:if>
             </div>

@@ -387,7 +387,7 @@
 .ck-assignment-band .aband-panel-block,
 .ck-assignment-band .aband-meta-item {
     display: grid;
-    grid-template-rows: max-content 1fr;
+    grid-template-rows: max-content minmax(0, 1fr);
     justify-items: center;
     align-content: start;
     row-gap: var(--ck-assignment-band-item-gap, var(--ck-space-2xs));
@@ -398,6 +398,13 @@
 .ck-assignment-band .aband-meta-label {
     text-align: center;
     white-space: nowrap;
+}
+
+/* Center the second row of every metadata cell on one common axis,
+   whether its content is plain text, a bonus badge, or multiple LO tags. */
+.ck-assignment-band .aband-panel-block > .aband-lo-list,
+.ck-assignment-band .aband-meta-item > .aband-meta-value {
+    align-self: center;
 }
 
 

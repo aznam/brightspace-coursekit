@@ -225,17 +225,15 @@ export class PagesManager {
 
             if (hasRef) {
                 const ref = variable.getAttribute('ref');
-                value = this.ctx.settings.get(ref, null);
-
-                if (value === null || typeof value === 'object') {
-                    throw new Error(`Unknown or invalid JSON variable: ${ref}`);
-                }
+                value = this.ctx.settings.get(ref, '');
             } else {
                 value = variable.getAttribute('value');
             }
 
-            variables.set(name, String(value));
-            variable.setAttribute('value', String(value));
+            value = String(value ?? '');
+
+            variables.set(name, value);
+            variable.setAttribute('value', value);
             variable.removeAttribute('ref');
         }
 

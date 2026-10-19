@@ -21,6 +21,7 @@
                 <xs:attribute name="learning-outcomes" type="xs:string" use="optional"/>
                 <xs:attribute name="estimated-time" type="xs:string" use="optional"/>
                 <xs:attribute name="difficulty" type="xs:string" use="optional"/>
+                <xs:attribute name="bonus" type="xs:string" use="optional"/>
                 <xs:attribute name="weight" type="xs:string" use="optional"/>
                 <xs:attribute name="points" type="xs:string" use="optional"/>
                 <xs:attribute name="rubrics-provided" type="xs:string" use="optional"/>

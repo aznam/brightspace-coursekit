@@ -14,9 +14,10 @@
     <xsl:template name="metadata-item">
         <xsl:param name="label"/>
         <xsl:param name="value"/>
+        <xsl:param name="field"/>
         <xsl:if test="string($value) != ''">
             <div class="aband-meta-item">
-                <span class="aband-meta-label" data-label="{$label}">
+                <span class="aband-meta-label" data-label="{$field}">
                     <xsl:if test="$label = 'Est. Time'">
                         <span class="aband-icon" data-icon="estimated-time" aria-hidden="true" hidden="hidden"/>
                     </xsl:if>
@@ -123,7 +124,7 @@
                 <div class="aband-panel-inner">
                     <xsl:if test="$band/*">
                         <div class="aband-panel-block">
-                            <span class="aband-panel-block-label">Learning Outcomes</span>
+                            <span class="aband-panel-block-label" data-label="learning-outcomes">Learning Outcomes</span>
                             <div class="aband-lo-list">
                                 <ck-children/>
                             </div>
@@ -133,11 +134,12 @@
                     <div class="aband-panel-block aband-panel-meta">
                         <xsl:call-template name="metadata-item">
                             <xsl:with-param name="label" select="'Est. Time'"/>
+                            <xsl:with-param name="field" select="'estimated-time'"/>
                             <xsl:with-param name="value" select="$band/@estimated-time"/>
                         </xsl:call-template>
                         <xsl:if test="$band/@difficulty != ''">
                             <div class="aband-meta-item">
-                                <span class="aband-meta-label">Difficulty</span>
+                                <span class="aband-meta-label" data-label="difficulty">Difficulty</span>
                                 <span class="aband-meta-value aband-difficulty" data-difficulty="{$difficulty}">
                                     <span class="aband-icon" data-icon="difficulty-{$difficulty}" aria-hidden="true" hidden="hidden"/>
                                     <xsl:choose>
@@ -151,21 +153,38 @@
                                 </span>
                             </div>
                         </xsl:if>
-                        <xsl:if test="$band/@weight != ''">
-                            <div class="aband-meta-item">
-                                <span class="aband-meta-label">Weight</span>
-                                <span class="aband-meta-value"><xsl:value-of select="$band/@weight"/>%</span>
-                            </div>
-                        </xsl:if>
+                        <xsl:choose>
+                            <xsl:when test="$band/@bonus = 'true'">
+                                <div class="aband-meta-item">
+                                    <span class="aband-meta-label" data-label="bonus">Bonus</span>
+                                    <xsl:if test="$band/@weight != ''">
+                                        <span class="aband-meta-value aband-badge aband-badge-bonus">
+                                            <xsl:text>+</xsl:text>
+                                            <xsl:value-of select="$band/@weight"/>
+                                            <xsl:text>%</xsl:text>
+                                        </span>
+                                    </xsl:if>
+                                </div>
+                            </xsl:when>
+                            <xsl:when test="$band/@weight != ''">
+                                <div class="aband-meta-item">
+                                    <span class="aband-meta-label" data-label="weight">Weight</span>
+                                    <span class="aband-meta-value">
+                                        <xsl:value-of select="$band/@weight"/>
+                                        <xsl:text>%</xsl:text>
+                                    </span>
+                                </div>
+                            </xsl:when>
+                        </xsl:choose>
                         <xsl:if test="$band/@points != ''">
                             <div class="aband-meta-item">
-                                <span class="aband-meta-label">Points</span>
+                                <span class="aband-meta-label" data-label="points">Points</span>
                                 <span class="aband-meta-value"><xsl:value-of select="$band/@points"/> pts</span>
                             </div>
                         </xsl:if>
                         <xsl:if test="$band/@rubrics-provided != ''">
                             <div class="aband-meta-item">
-                                <span class="aband-meta-label">Rubrics</span>
+                                <span class="aband-meta-label" data-label="rubrics">Rubrics</span>
                                 <span class="aband-meta-value aband-rubrics" data-rubrics-provided="{$band/@rubrics-provided}">
                                     <span class="aband-icon" data-icon="rubrics-{$band/@rubrics-provided}" aria-hidden="true" hidden="hidden"/>
                                     <xsl:choose>

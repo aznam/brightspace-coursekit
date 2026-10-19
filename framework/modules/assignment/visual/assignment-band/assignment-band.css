@@ -95,17 +95,17 @@
  *
  * Metadata label colors (§5.3):
  * --ck-assignment-band-label-learning-outcomes-color
- *                                        learning-outcomes label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ *                                        learning-outcomes label; default: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)).
  * --ck-assignment-band-label-estimated-time-color
- *                                        estimated-time label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ *                                        estimated-time label; default: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)).
  * --ck-assignment-band-label-difficulty-color
- *                                        difficulty label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ *                                        difficulty label; default: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)).
  * --ck-assignment-band-label-weight-color
- *                                        weight label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ *                                        weight label; default: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)).
  * --ck-assignment-band-label-points-color
- *                                        points label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ *                                        points label; default: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)).
  * --ck-assignment-band-label-rubrics-color
- *                                        rubrics label; default: var(--ck-assignment-band-muted-color, #94a3b8).
+ *                                        rubrics label; default: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)).
  * Site CSS may additionally target the stable [data-label] attribute per label.
  *
  * Motion (§7):
@@ -116,6 +116,8 @@
 
 /* 1. Band surface and strip */
 .ck-assignment-band {
+    --ck-assignment-band-internal-muted-color: #94a3b8;
+
     position: sticky;
     z-index: var(--ck-z-sticky);
     inset-block-start: var(--ck-assignment-band-sticky-top, 0);
@@ -172,7 +174,7 @@
 .ck-assignment-band .aband-item-label,
 .ck-assignment-band .aband-panel-block-label,
 .ck-assignment-band .aband-meta-label {
-    color: var(--ck-assignment-band-muted-color, #94a3b8);
+    color: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color));
     font-size: var(--ck-font-footnote);
     line-height: var(--ck-leading-footnote);
     font-weight: var(--ck-font-weight-bold);
@@ -190,7 +192,7 @@
 }
 
 .ck-assignment-band .aband-struck {
-    color: var(--ck-assignment-band-muted-color, #94a3b8);
+    color: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color));
     font-weight: var(--ck-font-weight-regular);
     text-decoration: line-through;
 }
@@ -204,7 +206,7 @@
 }
 
 .ck-assignment-band .aband-ext-reason {
-    color: var(--ck-assignment-band-muted-color, #94a3b8);
+    color: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color));
     font-size: var(--ck-font-box-size);
     line-height: var(--ck-leading-box);
     font-weight: var(--ck-font-weight-regular);
@@ -255,7 +257,7 @@
 
 .ck-assignment-band .aband-progress-label {
     inline-size: 100%;
-    color: var(--ck-assignment-band-muted-color, #94a3b8);
+    color: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color));
     font-size: var(--ck-font-footnote);
     line-height: var(--ck-leading-footnote);
     text-align: center;
@@ -401,27 +403,27 @@
 
 /* Individually customizable metadata label colors. */
 .ck-assignment-band .aband-panel-block-label[data-label="learning-outcomes"] {
-    color: var(--ck-assignment-band-label-learning-outcomes-color, var(--ck-assignment-band-muted-color, #94a3b8));
+    color: var(--ck-assignment-band-label-learning-outcomes-color, var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)));
 }
 
 .ck-assignment-band .aband-meta-label[data-label="estimated-time"] {
-    color: var(--ck-assignment-band-label-estimated-time-color, var(--ck-assignment-band-muted-color, #94a3b8));
+    color: var(--ck-assignment-band-label-estimated-time-color, var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)));
 }
 
 .ck-assignment-band .aband-meta-label[data-label="difficulty"] {
-    color: var(--ck-assignment-band-label-difficulty-color, var(--ck-assignment-band-muted-color, #94a3b8));
+    color: var(--ck-assignment-band-label-difficulty-color, var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)));
 }
 
 .ck-assignment-band .aband-meta-label[data-label="weight"] {
-    color: var(--ck-assignment-band-label-weight-color, var(--ck-assignment-band-muted-color, #94a3b8));
+    color: var(--ck-assignment-band-label-weight-color, var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)));
 }
 
 .ck-assignment-band .aband-meta-label[data-label="points"] {
-    color: var(--ck-assignment-band-label-points-color, var(--ck-assignment-band-muted-color, #94a3b8));
+    color: var(--ck-assignment-band-label-points-color, var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)));
 }
 
 .ck-assignment-band .aband-meta-label[data-label="rubrics"] {
-    color: var(--ck-assignment-band-label-rubrics-color, var(--ck-assignment-band-muted-color, #94a3b8));
+    color: var(--ck-assignment-band-label-rubrics-color, var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)));
 }
 
 .ck-assignment-band .aband-lo-list {

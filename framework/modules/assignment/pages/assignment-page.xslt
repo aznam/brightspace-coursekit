@@ -28,6 +28,7 @@
                 <p:var name="assignment-learning-outcomes" ref="assignment.learningOutcomes"/>
                 <p:var name="assignment-estimated-time" ref="assignment.estimatedTime"/>
                 <p:var name="assignment-difficulty" ref="assignment.difficulty"/>
+                <p:var name="assignment-bonus" ref="assignment.bonus"/>
                 <p:var name="assignment-weight" ref="assignment.weight"/>
                 <p:var name="assignment-points" ref="assignment.points"/>
                 <p:var name="assignment-rubrics-provided" ref="assignment.rubrics.provided"/>
@@ -38,7 +39,7 @@
 
                 <p:navbar
                     course-code="${{course-code}}"
-                    page-title="${{assignment-label}}"
+                    page-title="${{assignment-id}}"
                     module-title="${{module-name}}">
                     <xsl:if test="@theme-switch = 'true'">
                         <p:theme-switch/>
@@ -60,6 +61,7 @@
                     learning-outcomes="${{assignment-learning-outcomes}}"
                     estimated-time="${{assignment-estimated-time}}"
                     difficulty="${{assignment-difficulty}}"
+                    bonus="${{assignment-bonus}}"
                     weight="${{assignment-weight}}"
                     points="${{assignment-points}}"
                     rubrics-provided="${{assignment-rubrics-provided}}">

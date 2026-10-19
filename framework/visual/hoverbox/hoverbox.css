@@ -151,22 +151,6 @@
         visibility var(--ck-motion-fast) var(--ck-easing-default);
 }
 
-/* Invisible hit-box buffer preventing accidental closure during cursor travel on desktop */
-.ck-hoverbox__panel::before {
-    content: "";
-    position: absolute;
-    inset: calc(-1 * var(--ck-space-lg)); /* ~23px buffer zone */
-    pointer-events: auto;
-    z-index: -1;
-}
-
-/* Disable hit-box buffer on touch screens to prevent blocking neighboring taps (§7.1.2) */
-@media (hover: none) {
-    .ck-hoverbox__panel::before {
-        display: none;
-    }
-}
-
 /* Active / Expanded Display State */
 .ck-hoverbox.is-active .ck-hoverbox__panel {
     visibility: visible;

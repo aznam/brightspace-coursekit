@@ -172,7 +172,6 @@
 
 /* 2. Status text and date annotations */
 .ck-assignment-band .aband-item-label,
-.ck-assignment-band .aband-panel-block-label,
 .ck-assignment-band .aband-meta-label {
     color: var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color));
     font-size: var(--ck-font-footnote);
@@ -212,6 +211,7 @@
     font-weight: var(--ck-font-weight-regular);
     overflow-wrap: anywhere;
 }
+
 
 /* 3. Countdown and progress */
 .ck-assignment-band .aband-item-progress {
@@ -384,32 +384,39 @@
     padding-inline: var(--ck-assignment-band-panel-padding-inline, var(--ck-space-lg));
 }
 
-.ck-assignment-band .aband-panel-block,
+/* All metadata cells use the same two-row structure: label, then value. */
 .ck-assignment-band .aband-meta-item {
     display: grid;
     grid-template-rows: max-content minmax(0, 1fr);
-    justify-items: center;
     align-content: start;
+    justify-items: stretch;
     row-gap: var(--ck-assignment-band-item-gap, var(--ck-space-2xs));
     min-inline-size: 0;
 }
 
-.ck-assignment-band .aband-panel-block-label,
-.ck-assignment-band .aband-meta-label {
+/* Shared layout for optional icons and text in all labels and values. */
+.ck-assignment-band .aband-meta-label,
+.ck-assignment-band .aband-meta-value,
+.ck-assignment-band .aband-icon-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ck-space-2xs);
+    min-inline-size: 0;
     text-align: center;
+}
+
+.ck-assignment-band .aband-meta-label {
     white-space: nowrap;
 }
 
-/* Center the second row of every metadata cell on one common axis,
-   whether its content is plain text, a bonus badge, or multiple LO tags. */
-.ck-assignment-band .aband-panel-block > .aband-lo-list,
-.ck-assignment-band .aband-meta-item > .aband-meta-value {
+.ck-assignment-band .aband-meta-value {
     align-self: center;
+    flex-wrap: wrap;
 }
 
-
 /* Individually customizable metadata label colors. */
-.ck-assignment-band .aband-panel-block-label[data-label="learning-outcomes"] {
+.ck-assignment-band .aband-meta-label[data-label="learning-outcomes"] {
     color: var(--ck-assignment-band-label-learning-outcomes-color, var(--ck-assignment-band-muted-color, var(--ck-assignment-band-internal-muted-color)));
 }
 
@@ -434,12 +441,8 @@
 }
 
 .ck-assignment-band .aband-lo-list {
-    display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
     gap: var(--ck-space-2xs);
-    min-inline-size: 0;
 }
 
 /* Shared LO badge presentation; each code has its own site-addressable style-ref. */
@@ -461,10 +464,6 @@
     cursor: help;
 }
 
-/* Flatten the metadata grouping so every label participates in the same flex row. */
-.ck-assignment-band .aband-panel-meta {
-    display: contents;
-}
 
 /* 6. Responsive adaptation: named references from breakpoints.json. */
 @media not (--ck-bp-tablet-lg) {

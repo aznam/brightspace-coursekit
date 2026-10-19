@@ -1,0 +1,455 @@
+/*
+ * CourseKit — Assignment Band Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0–11 and Appendix A (applicable CSS, layout, theming,
+ * responsive design, accessibility, and component ownership requirements).
+ *
+ * Responsibility:
+ * Present the assignment status strip, countdown, badges, expandable details,
+ * and the locally styled Learning Outcome triggers.
+ *
+ * Non-responsibilities:
+ * Data loading, date calculations, interaction handling, page layout,
+ * and the internal presentation of the Hoverbox component.
+ *
+ * Public Customization Variables:
+ *
+ * Colors and Surfaces (§6):
+ * --ck-assignment-band-background        Band background; default: #263244.
+ * --ck-assignment-band-foreground        Main text; default: #e2e8f0.
+ * --ck-assignment-band-muted-color       Secondary text; default: #94a3b8.
+ * --ck-assignment-band-accent-color      Border, focus and LO tags;
+ *                                        default: var(--ck-accent).
+ * --ck-assignment-band-separator-color   Dividers; default: #3a4a6b.
+ * --ck-assignment-band-progress-track-color
+ *                                        Progress track; default: #334155.
+ * --ck-assignment-band-submission-background
+ *                                        Submission badge; default: #334155.
+ * --ck-assignment-band-ai-info-background
+ *                                        Default AI background; #1e3a5f.
+ * --ck-assignment-band-ai-info-foreground
+ *                                        Default AI text; #93c5fd.
+ * --ck-assignment-band-ai-success-background
+ *                                        Unrestricted background; #14532d.
+ * --ck-assignment-band-ai-success-foreground
+ *                                        Unrestricted text; #86efac.
+ * --ck-assignment-band-ai-warning-background
+ *                                        Restricted background; #451a03.
+ * --ck-assignment-band-ai-warning-foreground
+ *                                        Restricted text; #fdba74.
+ * --ck-assignment-band-ai-error-background
+ *                                        Forbidden background; #450a0a.
+ * --ck-assignment-band-ai-error-foreground
+ *                                        Forbidden text; #fca5a5.
+ * --ck-assignment-band-extension-color   Extended date; default: #fdba74.
+ * --ck-assignment-band-hint-color        Disclosure hint; default: #475569.
+ * --ck-assignment-band-progress-ok      Available time; #22c55e.
+ * --ck-assignment-band-progress-warn    Warning range; #f59e0b.
+ * --ck-assignment-band-progress-danger  Critical range; #ef4444.
+ * --ck-assignment-band-accent-border-width
+ *                                        Accent border and focus outline thickness;
+ *                                        default: 0.125rem (historical 2px visual detail).
+ * --ck-assignment-band-hairline-width   Divider and panel border thickness;
+ *                                        default: 0.0625rem (historical 1px detail).
+ *
+ * Strip Spacing (§2):
+ * --ck-assignment-band-padding-block     Vertical padding of the strip.
+ *                                        Default: var(--ck-space-sm).
+ * --ck-assignment-band-padding-inline    Horizontal padding of the strip.
+ *                                        Default: var(--ck-space-lg).
+ * --ck-assignment-band-item-gap          Gap within status and metadata cells.
+ *                                        Default: var(--ck-space-2xs).
+ * --ck-assignment-band-strip-gap         Gap between wrapped strip rows.
+ *                                        Default: var(--ck-space-sm).
+ * --ck-assignment-band-separator-gap     Spacing on either side of separators.
+ *                                        Default: var(--ck-space-md).
+ *
+ * Panel Spacing and Sizing (§2, §3):
+ * --ck-assignment-band-panel-gap          Gap between panel groups.
+ *                                         Default: var(--ck-space-lg).
+ * --ck-assignment-band-panel-padding-block
+ *                                         Vertical padding of the panel.
+ *                                         Default: var(--ck-space-sm).
+ * --ck-assignment-band-panel-padding-inline
+ *                                         Horizontal padding of the panel.
+ *                                         Default: var(--ck-space-lg).
+ * --ck-assignment-band-panel-max-block-size
+ *                                         Maximum expanded panel height.
+ *                                         Default: available dynamic viewport
+ *                                         space below the sticky band.
+ *
+ * Countdown and Progress (§3):
+ * --ck-assignment-band-progress-height    Progress track thickness.
+ *                                         Default: var(--ck-space-2xs) (0.375rem; narrow track geometry).
+ *
+ * Badges (§2, §3):
+ * --ck-assignment-band-badge-radius       Badge corner radius.
+ *                                         Default: var(--ck-radius).
+ * --ck-assignment-band-badge-padding-inline
+ *                                         Horizontal badge padding.
+ *                                         Default: var(--ck-space-xs).
+ * --ck-assignment-band-badge-padding-block
+ *                                         Vertical badge padding.
+ *                                         Default: var(--ck-space-2xs).
+ *
+ * Motion (§7):
+ * --ck-assignment-band-motion-duration   Disclosure transition duration.
+ *                                        Default: var(--ck-motion-normal).
+
+ */
+
+/* 1. Band surface and strip */
+.ck-assignment-band {
+    position: sticky;
+    z-index: var(--ck-z-sticky);
+    inset-block-start: var(--ck-assignment-band-sticky-top, 0);
+    inline-size: 100%;
+    min-inline-size: 0;
+    background: var(--ck-assignment-band-background, #263244);
+    color: var(--ck-assignment-band-foreground, #e2e8f0);
+    border-block-end: var(--ck-assignment-band-accent-border-width, 0.125rem) solid var(--ck-assignment-band-accent-color, var(--ck-accent));
+    box-shadow: var(--ck-shadow);
+    user-select: none;
+}
+
+.ck-assignment-band .aband-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ck-assignment-band-strip-gap, var(--ck-space-sm)) 0;
+    inline-size: 100%;
+    min-inline-size: 0;
+    min-block-size: var(--ck-space-xl);
+    padding-block: var(--ck-assignment-band-padding-block, var(--ck-space-sm));
+    padding-inline: var(--ck-assignment-band-padding-inline, var(--ck-space-lg));
+    cursor: pointer;
+}
+
+.ck-assignment-band .aband-strip:focus-visible {
+    outline: var(--ck-assignment-band-accent-border-width, 0.125rem) solid var(--ck-assignment-band-accent-color, var(--ck-accent));
+    outline-offset: calc(-1 * var(--ck-assignment-band-accent-border-width, 0.125rem));
+}
+
+.ck-assignment-band .aband-strip-items {
+    display: contents;
+}
+
+.ck-assignment-band .aband-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ck-assignment-band-item-gap, var(--ck-space-2xs));
+    min-inline-size: 0;
+    text-align: center;
+}
+
+.ck-assignment-band .aband-sep {
+    align-self: center;
+    flex: 0 0 var(--ck-assignment-band-hairline-width, 0.0625rem);
+    block-size: var(--ck-space-lg);
+    margin-inline: var(--ck-assignment-band-separator-gap, var(--ck-space-md));
+    background: var(--ck-assignment-band-separator-color, #3a4a6b);
+}
+
+/* 2. Status text and date annotations */
+.ck-assignment-band .aband-item-label,
+.ck-assignment-band .aband-panel-block-label,
+.ck-assignment-band .aband-meta-label {
+    color: var(--ck-assignment-band-muted-color, #94a3b8);
+    font-size: var(--ck-font-footnote);
+    line-height: var(--ck-leading-footnote);
+    font-weight: var(--ck-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--ck-letter-spacing-normal);
+}
+
+.ck-assignment-band .aband-item-value,
+.ck-assignment-band .aband-meta-value {
+    color: var(--ck-assignment-band-foreground, #e2e8f0);
+    font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
+    font-weight: var(--ck-font-weight-semibold);
+    overflow-wrap: anywhere;
+}
+
+.ck-assignment-band .aband-struck {
+    color: var(--ck-assignment-band-muted-color, #94a3b8);
+    font-weight: var(--ck-font-weight-regular);
+    text-decoration: line-through;
+}
+
+.ck-assignment-band .aband-ext-date {
+    color: var(--ck-assignment-band-extension-color, #fdba74);
+    font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
+    font-weight: var(--ck-font-weight-bold);
+    overflow-wrap: anywhere;
+}
+
+.ck-assignment-band .aband-ext-reason {
+    color: var(--ck-assignment-band-muted-color, #94a3b8);
+    font-size: var(--ck-font-box-size);
+    line-height: var(--ck-leading-box);
+    font-weight: var(--ck-font-weight-regular);
+    overflow-wrap: anywhere;
+}
+
+/* 3. Countdown and progress */
+.ck-assignment-band .aband-item-progress {
+    flex: 0 1 auto;
+    inline-size: max-content;
+    max-inline-size: 100%;
+}
+
+.ck-assignment-band .aband-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ck-assignment-band-item-gap, var(--ck-space-2xs));
+    inline-size: 100%;
+}
+
+.ck-assignment-band .aband-progress-track {
+    inline-size: 100%;
+    block-size: var(--ck-assignment-band-progress-height, var(--ck-space-2xs));
+    overflow: hidden;
+    background: var(--ck-assignment-band-progress-track-color, #334155);
+    border-radius: var(--ck-radius);
+}
+
+.ck-assignment-band .aband-progress-fill {
+    block-size: 100%;
+    border-radius: inherit;
+    transition: inline-size var(--ck-motion-normal) var(--ck-easing-default),
+                width var(--ck-motion-normal) var(--ck-easing-default);
+}
+
+.ck-assignment-band .aband-fill-ok {
+    background: var(--ck-assignment-band-progress-ok, #22c55e);
+}
+
+.ck-assignment-band .aband-fill-warn {
+    background: var(--ck-assignment-band-progress-warn, #f59e0b);
+}
+
+.ck-assignment-band .aband-fill-danger {
+    background: var(--ck-assignment-band-progress-danger, #ef4444);
+}
+
+.ck-assignment-band .aband-progress-label {
+    inline-size: 100%;
+    color: var(--ck-assignment-band-muted-color, #94a3b8);
+    font-size: var(--ck-font-footnote);
+    line-height: var(--ck-leading-footnote);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow-wrap: anywhere;
+}
+
+/* 4. Metadata badges and semantic statuses */
+.ck-assignment-band .aband-badge {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--ck-space-2xs);
+    max-inline-size: 100%;
+    padding-block: var(--ck-assignment-band-badge-padding-block, var(--ck-space-2xs));
+    padding-inline: var(--ck-assignment-band-badge-padding-inline, var(--ck-space-xs));
+    border-radius: var(--ck-assignment-band-badge-radius, var(--ck-radius));
+    font-size: var(--ck-font-footnote);
+    line-height: var(--ck-leading-footnote);
+    font-weight: var(--ck-font-weight-bold);
+    letter-spacing: var(--ck-letter-spacing-normal);
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.ck-assignment-band .aband-badge-sub {
+    background: var(--ck-assignment-band-submission-background, #334155);
+    color: var(--ck-assignment-band-foreground, #e2e8f0);
+}
+
+.ck-assignment-band .aband-badge-ai {
+    background: var(--ck-assignment-band-ai-info-background, #1e3a5f);
+    color: var(--ck-assignment-band-ai-info-foreground, #93c5fd);
+}
+
+.ck-assignment-band .aband-badge-ai[data-ai-policy="unrestricted"] {
+    background: var(--ck-assignment-band-ai-success-background, #14532d);
+    color: var(--ck-assignment-band-ai-success-foreground, #86efac);
+}
+
+.ck-assignment-band .aband-badge-ai[data-ai-policy="restricted"] {
+    background: var(--ck-assignment-band-ai-warning-background, #451a03);
+    color: var(--ck-assignment-band-ai-warning-foreground, #fdba74);
+}
+
+.ck-assignment-band .aband-badge-ai[data-ai-policy="forbidden"] {
+    background: var(--ck-assignment-band-ai-error-background, #450a0a);
+    color: var(--ck-assignment-band-ai-error-foreground, #fca5a5);
+}
+
+.ck-assignment-band .aband-badge-bonus {
+    background: var(--ck-assignment-band-accent-color, var(--ck-accent));
+    color: var(--ck-assignment-band-foreground, #e2e8f0);
+}
+
+.ck-assignment-band .aband-icon:not([hidden]) {
+    display: inline-block;
+}
+
+/* 5. Disclosure hint and expandable detail panel */
+.ck-assignment-band .aband-expand-hint {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: var(--ck-space-2xs);
+    margin-inline-start: var(--ck-space-md);
+    color: var(--ck-assignment-band-hint-color, #475569);
+    font-size: var(--ck-font-footnote);
+    line-height: var(--ck-leading-footnote);
+    transition: color var(--ck-motion-fast) var(--ck-easing-default);
+}
+
+/* CSS disclosure indicator: independent of optional icon configuration. */
+.ck-assignment-band .aband-expand-hint:not(:has(.aband-icon:not([hidden])))::after {
+    content: "";
+    display: inline-block;
+    inline-size: 0.4em;
+    block-size: 0.4em;
+    border-inline-end: var(--ck-assignment-band-accent-border-width, 0.125rem) solid currentColor;
+    border-block-end: var(--ck-assignment-band-accent-border-width, 0.125rem) solid currentColor;
+    transform: translateY(-25%) rotate(45deg);
+}
+
+.ck-assignment-band.aband-open .aband-expand-hint:not(:has(.aband-icon:not([hidden])))::after {
+    transform: translateY(20%) rotate(225deg);
+}
+
+.ck-assignment-band:hover .aband-expand-hint,
+.ck-assignment-band.aband-open .aband-expand-hint,
+.ck-assignment-band:focus-within .aband-expand-hint {
+    color: var(--ck-assignment-band-accent-color, var(--ck-accent));
+}
+
+.ck-assignment-band .aband-panel {
+    max-block-size: 0;
+    overflow: hidden;
+    border-block-start: var(--ck-assignment-band-hairline-width, 0.0625rem) solid transparent;
+    /* Keep the separator visible until the closing animation is complete. */
+    transition: max-block-size var(--ck-assignment-band-motion-duration, var(--ck-motion-normal)) var(--ck-easing-default),
+                border-block-start-color 0s linear var(--ck-assignment-band-motion-duration, var(--ck-motion-normal));
+}
+
+.ck-assignment-band.aband-open .aband-panel {
+    max-block-size: var(
+        --ck-assignment-band-panel-max-block-size,
+        calc(100dvh - var(--ck-assignment-band-sticky-top, 0) - var(--ck-space-xl))
+    );
+    overflow-y: auto;
+    border-block-start-color: var(--ck-assignment-band-separator-color, #3a4a6b);
+    transition: max-block-size var(--ck-assignment-band-motion-duration, var(--ck-motion-normal)) var(--ck-easing-default),
+                border-block-start-color var(--ck-motion-fast) var(--ck-easing-default);
+}
+
+.ck-assignment-band .aband-panel-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--ck-assignment-band-panel-gap, var(--ck-space-lg));
+    min-inline-size: 0;
+    padding-block: var(--ck-assignment-band-panel-padding-block, var(--ck-space-sm));
+    padding-inline: var(--ck-assignment-band-panel-padding-inline, var(--ck-space-lg));
+}
+
+.ck-assignment-band .aband-panel-block,
+.ck-assignment-band .aband-meta-item {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    justify-items: center;
+    align-content: start;
+    row-gap: var(--ck-assignment-band-item-gap, var(--ck-space-2xs));
+    min-inline-size: 0;
+}
+
+.ck-assignment-band .aband-panel-block-label,
+.ck-assignment-band .aband-meta-label {
+    text-align: center;
+}
+
+.ck-assignment-band .aband-lo-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--ck-space-2xs);
+    min-inline-size: 0;
+}
+
+/* Style only the public Hoverbox trigger in the declared LO composition. */
+.ck-assignment-band .ck-hoverbox[data-style-ref="aband-lo-tag"] {
+    display: inline-flex;
+}
+
+.ck-assignment-band .ck-hoverbox[data-style-ref="aband-lo-tag"] .ck-hoverbox__trigger {
+    padding-block: 0;
+    padding-inline: var(--ck-space-2xs);
+    border-block-end: 0;
+    border-radius: var(--ck-radius);
+    background: var(--ck-assignment-band-accent-color, var(--ck-accent));
+    color: var(--ck-assignment-band-foreground, #e2e8f0);
+    font-size: var(--ck-font-footnote);
+    line-height: var(--ck-leading-footnote);
+    font-weight: var(--ck-font-weight-bold);
+    text-decoration: none;
+    cursor: help;
+}
+
+.ck-assignment-band .aband-panel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--ck-assignment-band-panel-gap, var(--ck-space-lg));
+    min-inline-size: 0;
+}
+
+/* 6. Responsive adaptation: named references from breakpoints.json. */
+@media not (--ck-bp-tablet-lg) {
+    .ck-assignment-band .aband-strip {
+        padding-inline: var(--ck-space-sm);
+    }
+
+    .ck-assignment-band .aband-panel-inner {
+        padding-inline: var(--ck-space-sm);
+    }
+
+    .ck-assignment-band .aband-sep {
+        margin-inline: var(--ck-space-xs);
+    }
+}
+
+@media not (--ck-bp-mobile) {
+    .ck-assignment-band .aband-strip,
+    .ck-assignment-band .aband-panel-inner {
+        padding-inline: var(--ck-space-md);
+    }
+
+    .ck-assignment-band .aband-expand-hint {
+        display: none;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ck-assignment-band .aband-panel,
+    .ck-assignment-band .aband-progress-fill,
+    .ck-assignment-band .aband-expand-hint {
+        transition: none;
+    }
+}

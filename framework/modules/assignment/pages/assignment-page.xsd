@@ -1,0 +1,46 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:p="urn:coursekit:page" xmlns:c="urn:coursekit:visual" xmlns:xsp="urn:coursekit:preprocessor" targetNamespace="urn:coursekit:page" elementFormDefault="qualified">
+  <xs:include schemaLocation="$(frameworkRoot)/pages/course-page/course-page.xsd"/>
+  <xs:element name="assignment-hero" type="c:AssignmentHeroType"/>
+    <xs:element name="assignment-band">
+        <xs:complexType mixed="true">
+            <xs:complexContent mixed="true">
+                <xs:extension base="c:AssignmentBandType">
+                    <xs:sequence>
+                        <xs:element ref="p:hoverbox" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+  <xs:element name="assignment-submit" type="c:AssignmentSubmitType"/>
+  <xs:element name="assignment-layout">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:AssignmentLayoutType">
+          <xs:sequence>
+            <xs:element ref="p:navbar" minOccurs="0"/>
+            <xs:element ref="p:assignment-band"/>
+            <xs:element ref="p:assignment-hero" minOccurs="0"/>
+            <xs:element ref="p:summary-box" minOccurs="0"/>
+            <xs:element ref="p:sidebar-before" minOccurs="0"/>
+            <xs:element ref="p:central-content"/>
+            <xs:element ref="p:sidebar-after" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="AssignmentPageType">
+    <xs:complexContent>
+      <xs:extension base="p:PageType">
+        <xs:sequence>
+          <xs:element ref="p:assignment-layout"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="assignment-page" type="p:AssignmentPageType" substitutionGroup="p:page"/>
+  <xsp:extend target="p:sidebar-before" slot="content">
+    <xs:element ref="p:assignment-submit"/>
+  </xsp:extend>
+</xs:schema>

@@ -1,0 +1,13 @@
+{
+  "id": "assignment-layout",
+  "schema": "$(frameworkRoot)/modules/assignment/visual/assignment-layout/assignment-layout.xsd",
+  "template": "$(frameworkRoot)/modules/assignment/visual/assignment-layout/template.xslt",
+  "renderer": "$(frameworkRoot)/modules/assignment/visual/assignment-layout/renderer.js",
+  "styles": [
+    "$(frameworkRoot)/modules/assignment/visual/assignment-layout/assignment-layout.css"
+  ],
+  "scripts": [],
+  "variants": [
+    "default"
+  ]
+}

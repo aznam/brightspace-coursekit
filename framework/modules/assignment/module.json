@@ -1,0 +1,17 @@
+{
+    "id": "assignment",
+    "name": "Assignment page",
+    "version": "1.0.0",
+    "namespace": "urn:coursekit:semantic",
+    "semantic": [],
+    "pages": [
+        "$(frameworkRoot)/modules/assignment/pages/assignment-page.json"
+    ],
+    "components": [
+        "$(frameworkRoot)/modules/assignment/visual/assignment-layout/component.json",
+        "$(frameworkRoot)/modules/assignment/visual/assignment-band/component.json",
+        "$(frameworkRoot)/modules/assignment/visual/assignment-submit/component.json",
+        "$(frameworkRoot)/modules/assignment/visual/assignment-hero/component.json"
+    ],
+    "dependsOn": []
+}

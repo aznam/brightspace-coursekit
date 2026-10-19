@@ -1,0 +1,15 @@
+{
+    "id": "assignment-band",
+    "schema": "$(frameworkRoot)/modules/assignment/visual/assignment-band/assignment-band.xsd",
+    "template": "$(frameworkRoot)/modules/assignment/visual/assignment-band/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/assignment/visual/assignment-band/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/modules/assignment/visual/assignment-band/assignment-band.css"
+    ],
+    "scripts": [
+        "$(frameworkRoot)/modules/assignment/visual/assignment-band/assignment-band.js"
+    ],
+    "variants": [
+        "default"
+    ]
+}

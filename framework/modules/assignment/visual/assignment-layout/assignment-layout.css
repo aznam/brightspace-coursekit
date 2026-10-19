@@ -1,0 +1,86 @@
+/*
+ * CourseKit — Assignment Layout
+ *
+ * Normative reference: CONVENTIONS.md, §§0–11 and Appendix A.
+ *
+ * Responsibility:
+ * Positions the optional assignment summary above the content grid,
+ * maintains its alignment with the inherited page layout, and removes
+ * the parent layout's hero overlap.
+ *
+ * Non-responsibilities:
+ * Does not style the assignment band, hero, summary box, or sidebars.
+ *
+ * Public Customization Variables:
+ *
+ * Spacing:
+ * --ck-assignment-layout-region-gap         Space before the first content region.
+ *                                           Default: var(--ck-section-gap).
+ * --ck-assignment-layout-summary-grid-gap   Space between the summary and grid.
+ *                                           Default: var(--ck-subsection-gap).
+ *
+ * Dimensions:
+ * --ck-assignment-layout-main-max-width     Maximum width of the main grid region.
+ *                                           Default: 100% of its grid track.
+ */
+
+/* ========================================================
+   1. Optional Introductory Summary
+   ======================================================== */
+.ck-assignment-layout .ck-assignment-layout__intro {
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: var(
+        --ck-page-layout-max-width,
+        var(--ck-page-layout-internal-max-width)
+    );
+    min-inline-size: 0;
+    margin-inline: auto;
+    margin-block-start: var(
+        --ck-assignment-layout-region-gap,
+        var(--ck-section-gap)
+    );
+    padding-inline: var(
+        --ck-page-layout-stacked-padding,
+        clamp(var(--ck-space-sm), 2vw, var(--ck-space-lg))
+    );
+}
+
+.ck-assignment-layout .ck-assignment-layout__intro:not(:has(.ck-layout__summary > *)) {
+    display: none;
+}
+
+/* ========================================================
+   2. Content Grid and Main Region
+   ======================================================== */
+.ck-assignment-layout .ck-layout__grid {
+    margin-block-start: var(
+        --ck-assignment-layout-summary-grid-gap,
+        var(--ck-subsection-gap)
+    );
+}
+
+.ck-assignment-layout:not(:has(.ck-assignment-layout__intro .ck-layout__summary > *)) .ck-layout__grid {
+    margin-block-start: var(
+        --ck-assignment-layout-region-gap,
+        var(--ck-section-gap)
+    );
+}
+
+.ck-assignment-layout .ck-layout__main {
+    max-inline-size: var(--ck-assignment-layout-main-max-width, 100%);
+    min-inline-size: 0;
+}
+
+/* ========================================================
+   3. Wide and Landscape Layout
+   ======================================================== */
+@media (--ck-bp-tablet-lg) and (orientation: landscape),
+       (--ck-bp-desktop) {
+    .ck-assignment-layout .ck-assignment-layout__intro {
+        padding-inline: var(
+            --ck-page-layout-padding-inline,
+            clamp(var(--ck-space-sm), 2vw, var(--ck-space-lg))
+        );
+    }
+}

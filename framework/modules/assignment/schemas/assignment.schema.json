@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CourseKit Assignment Metadata",
+  "type": "object",
+  "required": [
+    "deadline",
+    "submission"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "open": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "deadline": {
+      "type": "object",
+      "required": [
+        "at",
+        "type"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "soft",
+            "hard"
+          ]
+        },
+        "extension": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "at": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "at"
+          ]
+        }
+      }
+    },
+    "submission": {
+      "type": "object",
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "individual",
+            "group"
+          ]
+        },
+        "groupSize": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "learningOutcomes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "rubrics": {
+      "type": "object",
+      "required": [
+        "provided"
+      ],
+      "properties": {
+        "ref": {
+          "type": "string"
+        },
+        "provided": {
+          "type": "boolean"
+        }
+      }
+    },
+    "aiPolicy": {
+      "type": "string"
+    },
+    "estimatedTime": {
+      "type": "string"
+    },
+    "difficulty": {
+      "type": "string"
+    },
+    "weight": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "points": {
+      "type": [
+        "number",
+        "null"
+      ]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+    "id": "assignment-hero",
+    "schema": "$(frameworkRoot)/modules/assignment/visual/assignment-hero/assignment-hero.xsd",
+    "template": "$(frameworkRoot)/modules/assignment/visual/assignment-hero/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/assignment/visual/assignment-hero/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/modules/assignment/visual/assignment-hero/assignment-hero.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

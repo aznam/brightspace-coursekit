@@ -1,0 +1,54 @@
+/*
+ * CourseKit — Assignment Hero Component
+ *
+ * Normative reference: CONVENTIONS.md
+ * Sections 0, 1.1, 1.2, 1.5, 2.1, 2.4, 3.1, 3.5, 4.1–4.6,
+ * 5.1–5.4, 6.1, 6.4, 8.1, 10, 11; Appendix A.
+ *
+ * Responsibility:
+ * Present the assignment label before the title of the inherited Hero.
+ * The base Hero owns the canvas, positioning, and responsive layout.
+ *
+ * Non-responsibilities:
+ * Does not style the inherited Hero's private elements, control external
+ * layout spacing, or implement independent responsive breakpoints.
+ *
+ * Public Customization Variables:
+ *
+ * Typography (§1.2, §1.5):
+ * --ck-assignment-hero-label-font-size       Assignment label text size.
+ *                                            Default: var(--ck-font-footnote).
+ * --ck-assignment-hero-label-font-weight     Assignment label weight.
+ *                                            Default: var(--ck-font-weight-bold).
+ * --ck-assignment-hero-label-letter-spacing Uppercase label tracking.
+ *                                            Default: var(--ck-letter-spacing-normal).
+ *
+ * Spacing (§2.1, §2.4):
+ * --ck-assignment-hero-label-gap             Space between the label and title.
+ *                                            Default: var(--ck-space-sm).
+ *
+ * Color (§6.1.2):
+ * --ck-assignment-hero-label-color           Component-specific orange label color.
+ *                                            Default: component-owned orange (#fdba74).
+ * --ck-assignment-hero-label-opacity         Label opacity.
+ *                                            Default: component-owned subtle opacity (0.9).
+ */
+
+/* ========================================================
+   1. Assignment Label (§1.2, §1.5, §2.1, §6.1)
+   ======================================================== */
+.assignment-hero-eyebrow {
+    /* Component-specific visual defaults; not public customization interfaces. */
+    --ck-assignment-hero-internal-label-color: #fdba74;
+    --ck-assignment-hero-internal-label-opacity: 0.9;
+
+    margin-block-end: var(--ck-assignment-hero-label-gap, var(--ck-space-sm));
+    color: var(--ck-assignment-hero-label-color, var(--ck-assignment-hero-internal-label-color));
+    font-size: var(--ck-assignment-hero-label-font-size, var(--ck-font-footnote));
+    font-weight: var(--ck-assignment-hero-label-font-weight, var(--ck-font-weight-bold));
+    line-height: var(--ck-leading-footnote);
+    letter-spacing: var(--ck-assignment-hero-label-letter-spacing, var(--ck-letter-spacing-normal));
+    text-transform: uppercase;
+    opacity: var(--ck-assignment-hero-label-opacity, var(--ck-assignment-hero-internal-label-opacity));
+    overflow-wrap: anywhere;
+}

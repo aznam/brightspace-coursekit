@@ -1,0 +1,156 @@
+/*
+ * CourseKit — Assignment Submit Component
+ *
+ * Normative reference: CONVENTIONS.md, sections 0–11 and Appendix A.
+ *
+ * Responsibility:
+ * Styles the assignment submission card, heading, action link, and its
+ * interactive and unavailable states.
+ *
+ * Non-responsibilities:
+ * 1. Does NOT determine submission availability or deadlines.
+ * 2. Does NOT manage the surrounding sidebar or page layout.
+ * 3. Does NOT load fonts, icons, or theme resources.
+ *
+ * Public Customization Variables:
+ *
+ * Card:
+ * --ck-assignment-submit-padding              Card interior spacing.
+ *                                             Default: var(--ck-space-lg).
+ * --ck-assignment-submit-surface              Card surface color.
+ *                                             Default: var(--ck-surface).
+ * --ck-assignment-submit-border               Card border color.
+ *                                             Default: var(--ck-border).
+ * --ck-assignment-submit-border-width         Card and heading rule thickness.
+ *                                             Default: 1px (local technical hairline).
+ * --ck-assignment-submit-accent               Card accent and action background.
+ *                                             Default: var(--ck-accent).
+ * --ck-assignment-submit-accent-width         Card top accent thickness.
+ *                                             Default: var(--ck-space-xs).
+ * --ck-assignment-submit-shadow               Card shadow.
+ *                                             Default: var(--ck-shadow).
+ *
+ * Action:
+ * --ck-assignment-submit-action-gap           Distance from heading/content to action.
+ *                                             Default: var(--ck-space-lg).
+ * --ck-assignment-submit-button-padding-block Button block-axis padding.
+ *                                             Default: var(--ck-space-sm).
+ * --ck-assignment-submit-button-padding-inline Button inline-axis padding.
+ *                                             Default: var(--ck-space-lg).
+ * --ck-assignment-submit-button-color         Button foreground.
+ *                                             Default: var(--ck-surface).
+ * --ck-assignment-submit-button-hover-color   Hover background and border.
+ *                                             Default: #9a3412 (component-specific).
+ * --ck-assignment-submit-button-shadow        Resting action shadow.
+ *                                             Default: 4px 4px 0 rgba(194, 65, 12, 0.22).
+ * --ck-assignment-submit-button-hover-shadow  Hover action shadow.
+ *                                             Default: 2px 2px 0 rgba(194, 65, 12, 0.15).
+ * --ck-assignment-submit-button-disabled-background Unavailable action background.
+ *                                             Default: #475569 (component-specific).
+ * --ck-assignment-submit-button-disabled-color Unavailable action foreground.
+ *                                             Default: #e2e8f0 (accessible muted foreground).
+ */
+
+/* ========================================================
+   1. Component surface and local defaults
+   ======================================================== */
+.ck-assignment-submit {
+    --ck-assignment-submit-internal-border-width: 1px;
+    --ck-assignment-submit-internal-hover-color: #9a3412;
+    --ck-assignment-submit-internal-disabled-background: #475569;
+    --ck-assignment-submit-internal-disabled-color: #e2e8f0;
+    --ck-assignment-submit-internal-button-shadow: 4px 4px 0 rgba(194, 65, 12, 0.22);
+    --ck-assignment-submit-internal-button-hover-shadow: 2px 2px 0 rgba(194, 65, 12, 0.15);
+
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding: var(--ck-assignment-submit-padding, var(--ck-space-lg));
+    background: var(--ck-assignment-submit-surface, var(--ck-surface));
+    border: var(--ck-assignment-submit-border-width, var(--ck-assignment-submit-internal-border-width))
+        solid var(--ck-assignment-submit-border, var(--ck-border));
+    border-block-start: var(--ck-assignment-submit-accent-width, var(--ck-space-xs))
+        solid var(--ck-assignment-submit-accent, var(--ck-accent));
+    box-shadow: var(--ck-assignment-submit-shadow, var(--ck-shadow));
+}
+
+/* ========================================================
+   2. Card heading
+   ======================================================== */
+.ck-assignment-submit__title {
+    margin: 0 0 var(--ck-subsection-gap);
+    padding-block-end: var(--ck-space-sm);
+    color: var(--ck-text-dark);
+    border-block-end: var(--ck-assignment-submit-border-width, var(--ck-assignment-submit-internal-border-width))
+        solid var(--ck-assignment-submit-border, var(--ck-border));
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-heading-6-size);
+    font-weight: var(--ck-font-weight-bold);
+    line-height: var(--ck-leading-heading-component);
+    text-transform: uppercase;
+}
+
+/* ========================================================
+   3. Submission action
+   ======================================================== */
+.ck-assignment-submit__button {
+    display: block;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    margin-block-start: var(--ck-assignment-submit-action-gap, var(--ck-space-lg));
+    padding-block: var(--ck-assignment-submit-button-padding-block, var(--ck-space-sm));
+    padding-inline: var(--ck-assignment-submit-button-padding-inline, var(--ck-space-lg));
+    background: var(--ck-assignment-submit-accent, var(--ck-accent));
+    color: var(--ck-assignment-submit-button-color, var(--ck-surface));
+    border: var(--ck-assignment-submit-border-width, var(--ck-assignment-submit-internal-border-width))
+        solid var(--ck-assignment-submit-accent, var(--ck-accent));
+    box-shadow: var(--ck-assignment-submit-button-shadow, var(--ck-assignment-submit-internal-button-shadow));
+    font-family: var(--ck-font-body);
+    font-size: var(--ck-font-box-size);
+    font-weight: var(--ck-font-weight-bold);
+    line-height: var(--ck-leading-box);
+    letter-spacing: var(--ck-letter-spacing-normal);
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    transition:
+        background-color var(--ck-motion-fast) var(--ck-easing-default),
+        border-color var(--ck-motion-fast) var(--ck-easing-default),
+        box-shadow var(--ck-motion-fast) var(--ck-easing-default);
+}
+
+.ck-assignment-submit__button:not([aria-disabled="true"]):hover {
+    background: var(--ck-assignment-submit-button-hover-color, var(--ck-assignment-submit-internal-hover-color));
+    border-color: var(--ck-assignment-submit-button-hover-color, var(--ck-assignment-submit-internal-hover-color));
+    box-shadow: var(--ck-assignment-submit-button-hover-shadow, var(--ck-assignment-submit-internal-button-hover-shadow));
+}
+
+.ck-assignment-submit__button:focus-visible {
+    outline: var(--ck-assignment-submit-border-width, var(--ck-assignment-submit-internal-border-width))
+        solid var(--ck-assignment-submit-accent, var(--ck-accent));
+    outline-offset: var(--ck-space-2xs);
+}
+
+/* ========================================================
+   4. Unavailable submission state
+   ======================================================== */
+.ck-assignment-submit__button[aria-disabled="true"] {
+    background: var(--ck-assignment-submit-button-disabled-background, var(--ck-assignment-submit-internal-disabled-background));
+    border-color: var(--ck-assignment-submit-button-disabled-background, var(--ck-assignment-submit-internal-disabled-background));
+    color: var(--ck-assignment-submit-button-disabled-color, var(--ck-assignment-submit-internal-disabled-color));
+    box-shadow: none;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* ========================================================
+   5. Reduced-motion accommodation
+   ======================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .ck-assignment-submit__button {
+        transition: none;
+    }
+}

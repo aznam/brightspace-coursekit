@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:c="urn:coursekit:visual"
+    targetNamespace="urn:coursekit:visual"
+    elementFormDefault="qualified">
+
+    <xs:include schemaLocation="$(frameworkRoot)/visual/base-component/base-component.xsd"/>
+
+    <xs:complexType name="AssignmentBandType">
+        <xs:complexContent>
+            <xs:extension base="c:VisualNode">
+                <xs:attribute name="open" type="xs:string" use="optional"/>
+                <xs:attribute name="deadline-at" type="xs:string" use="required"/>
+                <xs:attribute name="deadline-type" type="xs:string" use="required"/>
+                <xs:attribute name="deadline-extension-at" type="xs:string" use="optional"/>
+                <xs:attribute name="deadline-extension-reason" type="xs:string" use="optional"/>
+                <xs:attribute name="submission-type" type="xs:string" use="optional"/>
+                <xs:attribute name="submission-group-size" type="xs:string" use="optional"/>
+                <xs:attribute name="ai-policy" type="xs:string" use="optional"/>
+                <xs:attribute name="learning-outcomes" type="xs:string" use="optional"/>
+                <xs:attribute name="estimated-time" type="xs:string" use="optional"/>
+                <xs:attribute name="difficulty" type="xs:string" use="optional"/>
+                <xs:attribute name="weight" type="xs:string" use="optional"/>
+                <xs:attribute name="points" type="xs:string" use="optional"/>
+                <xs:attribute name="rubrics-provided" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

@@ -1,0 +1,15 @@
+{
+    "id": "assignment-submit",
+    "schema": "$(frameworkRoot)/modules/assignment/visual/assignment-submit/assignment-submit.xsd",
+    "template": "$(frameworkRoot)/modules/assignment/visual/assignment-submit/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/assignment/visual/assignment-submit/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/modules/assignment/visual/assignment-submit/assignment-submit.css"
+    ],
+    "scripts": [
+        "$(frameworkRoot)/modules/assignment/visual/assignment-submit/assignment-submit.js"
+    ],
+    "variants": [
+        "default"
+    ]
+}

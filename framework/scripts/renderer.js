@@ -40,7 +40,18 @@ export class Renderer {
         const processor = new XSLTProcessor();
         processor.importStylesheet(this.manifest.templateDoc);
 
-        for (const [name, value] of this.variables || []) {
+        /*for (const [name, value] of this.variables || []) {
+            processor.setParameter(null, name, value);
+        }*/
+
+        const parameters = new Map(
+            [...this.xml.attributes].map(attribute => [
+                attribute.name,
+                attribute.value
+            ])
+        );
+
+        for (const [name, value] of parameters) {
             processor.setParameter(null, name, value);
         }
 

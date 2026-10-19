@@ -21,7 +21,7 @@ function readBootstrapSettings() {
     if (!loader) {
         throw new Error('[CourseKit] Bootstrap loader script not found.');
     }
-    const { courseRoot, courseConfig, content, table } = loader.dataset;
+    const { courseRoot, courseConfig, content } = loader.dataset;
     if (!courseRoot || !courseConfig) {
         throw new Error('[CourseKit] Missing courseRoot or courseConfig.');
     }
@@ -29,8 +29,7 @@ function readBootstrapSettings() {
         frameworkRoot: new URL('.', bootstrapURL),
         courseRoot: new URL(courseRoot),
         courseConfig,
-        content,
-        table
+        content
     };
 }
 export async function start() {
@@ -79,10 +78,12 @@ export async function start() {
         (courseResources.scripts || []).map(path => resources.resolve(path, 'scripts'))
     ));
     await modules.loadResources({ styleLoader, scriptLoader, fontLoader });
-    const contentPath = await new ContentResolver(resources).resolve({
-        content: config.content,
-        table: config.table
-    });
+    // An explicit page source takes precedence over the course's topic mapping.
+    // Resolve through ResourceLoader in both cases; do not consult Brightspace
+    // when the HTML entry point supplied data-content.
+    const contentPath = config.content
+        ? await resources.resolve(config.content, 'content')
+        : await new ContentResolver(resources).resolveTable(settings.get('contentTable', ''));
     await content.show(contentPath, { pages, components });
     return { settings, content, pages, components, modules };
 }

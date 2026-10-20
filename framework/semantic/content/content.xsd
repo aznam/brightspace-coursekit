@@ -8,6 +8,9 @@
                 <xs:element ref="s:component" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="page-type" type="xs:string" use="required"/>
+            <xs:attribute name="page-short-title" type="xs:string" use="optional"/>
+            <xs:attribute name="desc" type="xs:string" use="optional"/>
+            <xs:attribute name="hook-title" type="xs:string" use="optional"/>
             <xs:anyAttribute processContents="lax"/>
         </xs:complexType>
     </xs:element>

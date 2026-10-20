@@ -1,0 +1,86 @@
+/* CourseKit Toolkit workspace styles: independent from course page CSS. */
+:root {
+    color-scheme: light;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: #f3f6fa;
+    color: #17243b;
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+button, select { font: inherit; }
+
+.toolkit-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.toolkit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.15rem clamp(1rem, 3vw, 2.5rem);
+    background: #fff;
+    border-bottom: 1px solid #dce4ef;
+}
+.toolkit-brand { display: flex; align-items: center; gap: .85rem; }
+.toolkit-mark {
+    width: 2.8rem; height: 2.8rem; display: grid; place-items: center;
+    border-radius: .65rem; background: #1e334e; color: white;
+    font-size: .9rem; font-weight: 800; letter-spacing: .04em;
+}
+.toolkit-brand h1 { font-size: 1.2rem; margin: 0; letter-spacing: -.025em; }
+.toolkit-brand h1 span { font-weight: 500; color: #55718e; }
+.toolkit-brand p { font-size: .78rem; color: #5f7085; margin: .25rem 0 0; }
+.toolkit-course-control { display: flex; flex-direction: column; gap: .35rem; min-width: min(22rem, 40vw); }
+.toolkit-course-control label { color: #52637a; font-size: .73rem; font-weight: 700; }
+.toolkit-course-control select {
+    width: 100%; min-height: 2.65rem; padding: .5rem .75rem;
+    color: #182a42; background: #fff; border: 1px solid #cad5e4;
+    border-radius: .5rem;
+}
+.toolkit-course-control select:disabled { background: #f4f6f9; color: #7a8798; }
+.toolkit-layout { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 18.5rem; flex: 1; min-height: 0; }
+.toolkit-main { min-width: 0; display: flex; flex-direction: column; padding: 1.5rem clamp(1rem, 2.5vw, 2.25rem); gap: 1rem; }
+.toolkit-workspace-heading h2 { font-size: 1.25rem; margin: 0; }
+.toolkit-workspace-heading p { color: #64748b; font-size: .86rem; margin: .3rem 0 0; }
+.toolkit-workspace {
+    position: relative; flex: 1; min-height: 26rem;
+    background: #fff; border: 1px solid #dce4ef;
+    border-radius: .7rem; overflow: hidden;
+}
+.toolkit-empty {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    padding: 2rem; color: #64748b;
+}
+.toolkit-empty-icon { color: #90a3b7; font-size: 2.9rem; }
+.toolkit-empty h3 { color: #263c55; margin: .35rem 0 .25rem; font-size: 1.15rem; }
+.toolkit-empty p { margin: 0; max-width: 25rem; font-size: .9rem; line-height: 1.6; }
+#toolkit-frame { display: block; width: 100%; height: 100%; min-height: 32rem; border: 0; }
+#toolkit-frame[hidden] { display: none; }
+.toolkit-status { color: #64748b; font-size: .76rem; margin: 0; }
+.toolkit-sidebar { background: #fff; border-left: 1px solid #dce4ef; padding: 1.5rem 1rem; }
+.toolkit-sidebar-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 .65rem 1rem; }
+.toolkit-sidebar-heading h2 { margin: 0; font-size: 1rem; }
+.toolkit-tools-count { padding: .2rem .55rem; border-radius: 999px; font-size: .75rem; background: #eaf0f7; color: #526b85; }
+.toolkit-group-title { color: #718198; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; margin: 1.2rem .6rem .5rem; }
+.toolkit-tool {
+    display: block; width: 100%; text-align: left; cursor: pointer;
+    padding: .8rem .85rem; margin: .2rem 0; border: 1px solid transparent;
+    border-radius: .5rem; background: transparent; color: #273a50;
+}
+.toolkit-tool:hover { background: #f0f5fb; }
+.toolkit-tool:focus-visible, select:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.toolkit-tool[aria-current="true"] { background: #eaf2ff; border-color: #bfd4f5; color: #15457e; }
+.toolkit-tool-name { display: block; font-size: .88rem; font-weight: 750; }
+.toolkit-tool-description { display: block; margin-top: .25rem; font-size: .75rem; line-height: 1.4; color: #617289; }
+.toolkit-no-tools { color: #74859a; margin: 1rem .6rem; font-size: .83rem; line-height: 1.5; }
+@media (max-width: 820px) {
+    .toolkit-layout { grid-template-columns: minmax(0, 1fr); }
+    .toolkit-sidebar { border-left: 0; border-top: 1px solid #dce4ef; }
+    .toolkit-main { min-height: 35rem; }
+}
+@media (max-width: 560px) {
+    .toolkit-header { align-items: stretch; flex-direction: column; }
+    .toolkit-course-control { min-width: 0; }
+}

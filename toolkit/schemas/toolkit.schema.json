@@ -1,0 +1,25 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "version",
+        "catalog"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "version": {
+            "type": "integer",
+            "const": 1
+        },
+        "catalog": {
+            "type": "string",
+            "minLength": 1
+        },
+        "customPaths": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        }
+    }
+}

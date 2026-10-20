@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Announcement Generator — CourseKit</title>
+    <link rel="stylesheet" href="announcement-generator.css">
+</head>
+<body>
+<main class="announcement-workspace">
+    <header class="workspace-heading">
+        <div>
+            <h1>Announcement Generator</h1>
+            <p>Compose a course announcement. The Brightspace description updates as you type.</p>
+        </div>
+        <div id="course-label" class="course-label">Loading course…</div>
+    </header>
+
+    <div class="workspace-grid">
+        <section class="panel" aria-label="Announcement editor">
+            <h2>Compose</h2>
+            <div class="fields-row">
+                <label>Date <input id="announcement-date" type="date"></label>
+                <label>Topic <input id="announcement-topic" type="text" placeholder="e.g. Assignment 2 deadline extended"></label>
+            </div>
+            <label class="checkbox-row"><input id="announcement-important" type="checkbox"> Highlight announcement as important</label>
+            <section class="tiptap-composer" aria-label="Tiptap rich text editor">
+                <header class="tiptap-composer-header">
+                    <span class="editor-product"><span class="editor-product-symbol">T</span> Tiptap <span class="editor-product-subtitle">Rich text editor</span></span>
+                    <span class="editor-shortcuts">Enter: paragraph · Shift+Enter: line break</span>
+                </header>
+                <div class="tiptap-menu" role="toolbar" aria-label="Rich text formatting">
+                    <div class="menu-group" aria-label="History">
+                        <button type="button" class="menu-tool" data-command="undo" aria-label="Undo" title="Undo (Ctrl+Z)">↶</button>
+                        <button type="button" class="menu-tool" data-command="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">↷</button>
+                    </div>
+                    <div class="menu-group" aria-label="Text formatting">
+                        <button type="button" class="menu-tool" data-command="bold" aria-label="Bold" aria-pressed="false" title="Bold (Ctrl+B)"><strong>B</strong></button>
+                        <button type="button" class="menu-tool" data-command="italic" aria-label="Italic" aria-pressed="false" title="Italic (Ctrl+I)"><em>I</em></button>
+                        <button type="button" class="menu-tool" data-command="underline" aria-label="Underline" aria-pressed="false" title="Underline (Ctrl+U)"><u>U</u></button>
+                        <button type="button" class="menu-tool menu-code" data-command="code" aria-label="Inline code" aria-pressed="false" title="Inline code">&lt;/&gt;</button>
+                    </div>
+                    <div class="menu-group color-tools" aria-label="Text color">
+                        <label class="color-control" for="text-color" title="Choose text color">
+                            <span class="color-control-letter">A</span><span class="color-indicator" id="color-indicator"></span>
+                            <input id="text-color" type="color" value="#334155" aria-label="Text color">
+                        </label>
+                        <div id="theme-colors" class="theme-colors" aria-label="Course theme colors"></div>
+                        <button type="button" class="menu-tool" data-command="unset-color" title="Remove text color" aria-label="Remove text color">×</button>
+                    </div>
+                    <div class="menu-group callout-controls" aria-label="Insert a callout">
+                        <label class="menu-label" for="callout-type">Insert</label>
+                        <select id="callout-type" aria-label="Insert callout">
+                            <option value="">Callout…</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="important">Important</option>
+                        </select>
+                        <button type="button" id="exit-section" class="menu-tool exit-callout" title="Continue below the callout">Exit callout</button>
+                    </div>
+                </div>
+                <div id="announcement-message" class="rich-editor" aria-label="Announcement message"></div>
+                <footer class="tiptap-composer-footer"><span id="editor-selection-state">Paragraph</span><span id="editor-word-count">0 words</span></footer>
+            </section>
+            <p class="hint">Write your message with Tiptap. Insert callouts from the toolbar. Formatting and selection are handled by Tiptap.</p>
+            <details class="optional-link">
+                <summary>Optional action link</summary>
+                <div class="fields-row">
+                    <label>Link label <input id="cta-label" type="text" placeholder="View assignment"></label>
+                    <label>URL <input id="cta-url" type="url" placeholder="https://…"></label>
+                </div>
+            </details>
+        </section>
+
+        <section class="panel preview-panel" aria-label="Announcement preview">
+            <div class="preview-heading"><h2>Live preview</h2><span id="preview-state" class="preview-state"></span></div>
+            <div id="preview" class="preview-area" aria-live="polite"></div>
+            <div class="actions">
+                <button type="button" id="quick-copy" class="primary">Copy HTML</button>
+                <button type="button" id="view-code">View code…</button>
+                <button type="button" id="download-html">Download HTML</button>
+            </div>
+            <p id="action-status" class="action-status" role="status"></p>
+        </section>
+    </div>
+</main>
+<dialog id="code-dialog" aria-label="Generated HTML">
+    <div class="dialog-heading"><h2>Brightspace HTML</h2><button type="button" id="close-code">Close</button></div>
+    <p>Standalone HTML: inline literal styles, no scripts or CSS functions.</p>
+    <textarea id="snippet-code" readonly spellcheck="false"></textarea>
+    <div class="actions">
+        <button type="button" id="select-code">Select all</button>
+        <button type="button" id="copy-code" class="primary">Copy HTML</button>
+    </div>
+</dialog>
+<script type="module" src="announcement-generator.js"></script>
+</body>
+</html>

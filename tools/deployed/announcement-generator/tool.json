@@ -1,0 +1,8 @@
+{
+    "id": "announcement-generator",
+    "name": "Announcement Generator",
+    "description": "Compose announcements with rich text and themed callouts for Brightspace.",
+    "category": "deployed",
+    "version": "1.0.0",
+    "entry": "index.html"
+}

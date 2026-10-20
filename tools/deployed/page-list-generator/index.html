@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Page List Generator — CourseKit Toolkit</title>
+    <link rel="stylesheet" href="page-list-generator.css">
+    <script type="module" src="page-list-generator.js"></script>
+</head>
+<body>
+    <main class="generator">
+        <header class="generator-heading">
+            <h1>Page List Generator</h1>
+            <p>Select and arrange Brightspace pages. Cards use the course's semantic metadata and palette.</p>
+        </header>
+
+        <div id="course-label" class="context-label" aria-live="polite"></div>
+        <div class="catalog-bar">
+            <span id="mapping-summary" class="mapping-summary">No mapping loaded</span>
+            <button id="mapping-button" type="button">Change mapping</button>
+            <button id="refresh-pages" type="button" disabled>Refresh</button>
+        </div>
+        <p id="catalog-status" role="status" aria-live="polite"></p>
+
+        <section aria-label="Pages and Brightspace card preview">
+            <div class="results-header">
+                <h2>Pages</h2>
+                <div class="results-count">
+                    <span id="page-count">0</span>
+                    <span id="selected-count">0 selected</span>
+                </div>
+            </div>
+            <div id="editor-actions" class="editor-actions" hidden>
+                <button id="select-all" type="button">Select all</button>
+                <button id="select-none" type="button">Select none</button>
+            </div>
+            <div id="page-results" class="page-results">
+                <p class="placeholder">Load a mapping table to display its pages.</p>
+            </div>
+        </section>
+
+        <!-- Connected offscreen render tree, shared by editor previews and HTML exporter. -->
+        <section id="preview-section" class="preview-section" aria-label="Export rendering" hidden>
+            <div id="preview-host"></div>
+            <p id="preview-status" role="status"></p>
+        </section>
+
+        <section id="export-section" class="export-section" aria-label="HTML snippet actions" hidden>
+            <h2>Brightspace snippet</h2>
+            <p class="hint">Copy the ready-to-paste HTML or inspect it before use.</p>
+            <div class="export-actions">
+                <button type="button" id="quick-copy">Copy HTML</button>
+                <button type="button" id="view-code">View code…</button>
+                <button type="button" id="download-snippet">Download HTML</button>
+            </div>
+            <p id="export-status" class="hint" role="status" aria-live="polite"></p>
+        </section>
+    </main>
+
+    <dialog id="mapping-dialog" aria-labelledby="mapping-dialog-title">
+        <form id="catalog-form" class="generator-form">
+            <h2 id="mapping-dialog-title">Content mapping table</h2>
+            <label for="table-path">Mapping path</label>
+            <input id="table-path" name="table" type="text" required
+                   placeholder="Path resolved by CourseKit ResourceLoader">
+            <p class="hint">Uses the selected course's VFS resolution hierarchy.</p>
+            <div class="dialog-actions">
+                <button type="button" id="mapping-cancel">Cancel</button>
+                <button type="submit">Load pages</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="code-dialog" aria-labelledby="code-dialog-title">
+        <h2 id="code-dialog-title">Brightspace HTML snippet</h2>
+        <p class="hint">One &lt;div&gt; root, inline literal styles, no CSS or JavaScript functions.</p>
+        <label for="snippet-output">HTML to paste</label>
+        <textarea id="snippet-output" rows="13" readonly spellcheck="false"></textarea>
+        <div class="dialog-actions">
+            <button type="button" id="select-code">Select all</button>
+            <button type="button" id="dialog-copy">Copy HTML</button>
+            <button type="button" id="code-close">Close</button>
+        </div>
+    </dialog>
+</body>
+</html>

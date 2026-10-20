@@ -1,0 +1,144 @@
+/* Toolkit UI only. Exported card styling is generated inline from the course palette. */
+:root {
+    color-scheme: light dark;
+    font-family: system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    color: light-dark(#172033, #e6edf8);
+    background: light-dark(#fff, #131b2a);
+}
+
+.generator {
+    max-width: 1050px;
+    margin: auto;
+    padding: 22px;
+}
+
+.generator-heading h1 {
+    font-size: 1.3rem;
+    margin: 0 0 6px;
+}
+
+.generator-heading p,
+.hint,
+.context-label,
+.placeholder {
+    color: light-dark(#64748b, #a9b6c8);
+}
+
+.hint { font-size: .82rem; margin: 7px 0; }
+.context-label { font-size: .86rem; margin-top: 10px; }
+#catalog-status { font-size: .85rem; overflow-wrap: anywhere; }
+
+button {
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid light-dark(#cbd5e1, #475569);
+    border-radius: 6px;
+    padding: 8px 12px;
+    background: light-dark(#f8fafc, #283449);
+    color: inherit;
+}
+
+button:disabled { opacity: .45; cursor: not-allowed; }
+
+.catalog-bar,
+.results-count,
+.editor-actions,
+.page-reorder,
+.export-actions,
+.dialog-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.catalog-bar { margin-top: 14px; }
+.mapping-summary { flex: 1; min-width: 160px; font-size: .83rem; overflow-wrap: anywhere; }
+
+.results-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+    border-bottom: 1px solid light-dark(#dae1eb, #364052);
+}
+
+.results-header h2,
+.export-section h2 { font-size: 1rem; }
+.results-count { font-size: .85rem; }
+#selected-count { color: light-dark(#64748b, #a9b6c8); }
+.editor-actions { margin-top: 12px; }
+.editor-actions[hidden] { display: none; }
+
+.page-results { display: grid; gap: 12px; padding-top: 14px; }
+.page-editor {
+    border: 1px solid light-dark(#dbe3ec, #475569);
+    border-radius: 8px;
+    padding: 12px;
+    background: light-dark(#f8fafc, #1e293b);
+}
+
+.page-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.page-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; }
+.page-topic { flex: 1; font-size: .75rem; color: light-dark(#64748b, #a9b6c8); }
+.page-reorder button { padding: 5px 10px; }
+.page-inline-preview { margin-bottom: 0 !important; }
+.page-excluded { opacity: .7; }
+.excluded-caption { padding: 12px; font-size: .86rem; }
+
+/* Keep render tree connected and laid out so getComputedStyle works, but offscreen. */
+.preview-section:not([hidden]) {
+    position: absolute;
+    left: -100000px;
+    top: 0;
+    width: 900px;
+    visibility: hidden;
+    pointer-events: none;
+}
+.preview-section[hidden],
+.export-section[hidden] { display: none; }
+
+.export-section {
+    margin-top: 26px;
+    border-top: 1px solid light-dark(#dae1eb, #364052);
+    padding-top: 14px;
+}
+
+.export-actions { margin: 14px 0; }
+.export-actions #quick-copy, .dialog-actions #dialog-copy { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+dialog {
+    width: min(92vw, 680px);
+    max-height: 90vh;
+    overflow: auto;
+    padding: 22px;
+    border: 1px solid light-dark(#cbd5e1, #475569);
+    border-radius: 10px;
+    background: light-dark(#fff, #1e293b);
+    color: inherit;
+}
+
+dialog::backdrop { background: #0008; }
+dialog h2 { margin: 0 0 16px; font-size: 1.12rem; }
+dialog label { display: block; font-weight: 650; margin-bottom: 7px; }
+.generator-form input, #snippet-output {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid light-dark(#94a3b8, #475569);
+    border-radius: 6px;
+    background: light-dark(#fff, #131b2a);
+    color: inherit;
+}
+#snippet-output { font: 12px/1.5 ui-monospace, Consolas, monospace; resize: vertical; }
+.dialog-actions { margin-top: 16px; justify-content: flex-end; }
+@media (max-width: 650px) {
+    .generator { padding: 14px; }
+    .page-toolbar { flex-wrap: wrap; }
+}

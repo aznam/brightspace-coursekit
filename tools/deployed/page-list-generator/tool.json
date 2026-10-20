@@ -1,0 +1,8 @@
+{
+    "id": "page-list-generator",
+    "name": "Page List Generator",
+    "description": "Discover Brightspace topics and their CourseKit semantic XML sources.",
+    "version": "0.1.0",
+    "entry": "index.html",
+    "category": "deployed"
+}

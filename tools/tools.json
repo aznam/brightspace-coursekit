@@ -1,0 +1,5 @@
+{
+    "tools": [
+        "deployed/page-list-generator/tool.json"
+    ]
+}

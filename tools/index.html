@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CourseKit Toolkit</title>
+    <link rel="stylesheet" href="../toolkit/styles/toolkit.css">
+    <script src="bootstrap-config.js"></script>
+    <script type="module" src="../toolkit/scripts/workspace.js"></script>
+</head>
+<body>
+    <div class="toolkit-shell">
+        <header class="toolkit-header">
+            <div class="toolkit-brand">
+                <span class="toolkit-mark" aria-hidden="true">CK</span>
+                <div>
+                    <h1>CourseKit <span>Toolkit</span></h1>
+                    <p>Course utilities and generators</p>
+                </div>
+            </div>
+            <div class="toolkit-course-control">
+                <label for="toolkit-course">Active course</label>
+                <select id="toolkit-course" disabled>
+                    <option>Loading courses…</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="toolkit-layout">
+            <main class="toolkit-main" id="toolkit-main">
+                <div class="toolkit-workspace-heading">
+                    <div>
+                        <h2 id="toolkit-active-tool">Workspace</h2>
+                        <p id="toolkit-active-description">Select an available tool from the menu.</p>
+                    </div>
+                </div>
+                <div class="toolkit-workspace" id="toolkit-workspace">
+                    <div class="toolkit-empty" id="toolkit-empty">
+                        <span aria-hidden="true" class="toolkit-empty-icon">◇</span>
+                        <h3>Toolkit workspace</h3>
+                        <p>Choose a tool from the menu on the right to open it here.</p>
+                    </div>
+                    <iframe id="toolkit-frame" title="Selected CourseKit tool" hidden></iframe>
+                </div>
+                <p id="toolkit-status" class="toolkit-status" role="status" aria-live="polite">Initializing Toolkit…</p>
+            </main>
+
+            <aside class="toolkit-sidebar" aria-labelledby="toolkit-tools-heading">
+                <div class="toolkit-sidebar-heading">
+                    <h2 id="toolkit-tools-heading">Tools</h2>
+                    <span id="toolkit-tools-count" class="toolkit-tools-count">0</span>
+                </div>
+                <nav id="toolkit-tools" aria-label="Available tools"></nav>
+            </aside>
+        </div>
+    </div>
+</body>
+</html>

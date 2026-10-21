@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manual Page List Generator — CourseKit Toolkit</title>
+    <link rel="stylesheet" href="manual-page-list-generator.css">
+    <script type="module" src="manual-page-list-generator.js"></script>
+</head>
+<body>
+    <main class="generator">
+        <header>
+            <h1>Manual Page List Generator</h1>
+            <p>Create a Brightspace page list manually or reopen the HTML exported by a page list generator.</p>
+        </header>
+        <p id="course-label" class="muted" aria-live="polite"></p>
+        <section id="brightspace-autofill" aria-labelledby="autofill-title">
+            <h2 id="autofill-title">Auto-fill from Brightspace</h2>
+            <div class="actions">
+                <button type="button" id="discover-modules">Discover modules</button>
+                <label for="brightspace-module">Module</label>
+                <select id="brightspace-module" disabled>
+                    <option value="">Discover modules first</option>
+                </select>
+                <button type="button" id="populate-module" disabled>Use child pages</button>
+            </div>
+            <p class="muted" id="discovery-status" role="status">Available when the Brightspace Lessons navigation is accessible.</p>
+        </section>
+        <section aria-labelledby="pages-title">
+            <div class="section-heading">
+                <h2 id="pages-title">Pages <span id="page-count">0</span></h2>
+                <div class="actions">
+                    <button id="import-open" type="button">Import HTML…</button>
+                    <button id="add-page" type="button" class="primary">+ Add page</button>
+                </div>
+            </div>
+            <div id="page-results" class="page-results" aria-live="polite"></div>
+            <p id="editor-status" class="muted" role="status"></p>
+        </section>
+        <section id="output-section" aria-labelledby="preview-title">
+            <h2 id="preview-title">Preview</h2>
+            <div id="preview-host" class="preview"></div>
+            <p id="preview-status" class="muted" role="status"></p>
+            <div class="actions export-actions">
+                <button id="copy-html" type="button" class="primary">Copy HTML</button>
+                <button id="view-html" type="button">View code…</button>
+                <button id="download-html" type="button">Download HTML</button>
+            </div>
+            <p id="export-status" class="muted" role="status"></p>
+        </section>
+    </main>
+    <dialog id="import-dialog" aria-labelledby="import-title">
+        <h2 id="import-title">Import an existing page list</h2>
+        <p class="muted">Paste a complete HTML block exported by the Page List Generator or this tool. The import replaces the current rows.</p>
+        <label for="import-source">HTML descriptor</label>
+        <textarea id="import-source" rows="12" spellcheck="false" placeholder="&lt;div style=&quot;...&quot;&gt;...&lt;/div&gt;"></textarea>
+        <p id="import-error" class="error" role="alert"></p>
+        <div class="actions dialog-actions">
+            <button type="button" id="import-cancel">Cancel</button>
+            <button type="button" id="import-confirm" class="primary">Import pages</button>
+        </div>
+    </dialog>
+    <dialog id="code-dialog" aria-labelledby="code-title">
+        <h2 id="code-title">Brightspace HTML snippet</h2>
+        <p class="muted">Self-contained &lt;div&gt; with literal inline styles and Brightspace links.</p>
+        <label for="html-output">HTML</label>
+        <textarea id="html-output" rows="14" readonly spellcheck="false"></textarea>
+        <div class="actions dialog-actions">
+            <button id="select-html" type="button">Select all</button>
+            <button id="close-code" type="button">Close</button>
+        </div>
+    </dialog>
+</body>
+</html>

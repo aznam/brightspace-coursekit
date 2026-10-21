@@ -1,0 +1,8 @@
+{
+    "id": "manual-page-list-generator",
+    "name": "Manual Page List Generator",
+    "description": "Build Brightspace page lists manually or resume editing an exported HTML descriptor.",
+    "version": "1.0.0",
+    "entry": "index.html",
+    "category": "deployed"
+}

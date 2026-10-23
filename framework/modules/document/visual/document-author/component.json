@@ -1,0 +1,13 @@
+{
+    "id": "document-author",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-author/document-author.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-author/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-author/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/modules/document/visual/document-author/document-author.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

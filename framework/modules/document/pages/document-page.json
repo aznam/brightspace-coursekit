@@ -1,0 +1,69 @@
+{
+    "id": "document-page",
+    "schema": "$(frameworkRoot)/modules/document/pages/document-page.xsd",
+    "transform": "$(frameworkRoot)/modules/document/pages/document-page.xslt",
+    "parameters": {
+        "title": {
+            "type": "string",
+            "default": ""
+        },
+        "subtitle": {
+            "type": "string",
+            "default": ""
+        },
+        "kicker": {
+            "type": "string",
+            "default": ""
+        },
+        "date": {
+            "type": "string",
+            "default": ""
+        },
+        "version": {
+            "type": "string",
+            "default": ""
+        },
+        "footer-text": {
+            "type": "string",
+            "default": ""
+        },
+        "style-ref": {
+            "type": "string",
+            "default": ""
+        },
+        "variant": {
+            "type": "string",
+            "default": ""
+        },
+        "cover": {
+            "type": "boolean",
+            "default": true
+        },
+        "institution-name": {
+            "type": "string",
+            "default": ""
+        },
+        "institution-faculty": {
+            "type": "string",
+            "default": ""
+        },
+        "institution-department": {
+            "type": "string",
+            "default": ""
+        },
+        "institution-logo": {
+            "type": "string",
+            "default": ""
+        },
+        "program-name": {
+            "type": "string",
+            "default": ""
+        },
+        "instructor": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "styles": [],
+    "scripts": []
+}

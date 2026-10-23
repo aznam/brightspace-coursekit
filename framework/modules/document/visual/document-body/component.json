@@ -1,0 +1,11 @@
+{
+    "id": "document-body",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-body/document-body.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-body/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-body/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

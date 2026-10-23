@@ -1,0 +1,11 @@
+{
+    "id": "document-blank",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-blank/document-blank.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-blank/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-blank/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

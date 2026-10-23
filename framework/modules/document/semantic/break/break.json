@@ -1,0 +1,5 @@
+{
+    "id": "document-break",
+    "schema": "$(frameworkRoot)/modules/document/semantic/break/break.xsd",
+    "namespace": "urn:coursekit:semantic:document"
+}

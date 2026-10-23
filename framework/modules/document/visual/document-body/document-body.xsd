@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:c="urn:coursekit:visual" targetNamespace="urn:coursekit:visual" elementFormDefault="qualified">
+  <xs:include schemaLocation="$(frameworkRoot)/visual/base-component/base-component.xsd"/>
+  <xs:complexType name="DocumentBodyType">
+    <xs:complexContent>
+      <xs:extension base="c:VisualContainer"/>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

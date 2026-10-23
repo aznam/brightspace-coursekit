@@ -1,0 +1,13 @@
+{
+    "id": "document-break",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-break/document-break.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-break/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-break/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/modules/document/visual/document-break/document-break.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

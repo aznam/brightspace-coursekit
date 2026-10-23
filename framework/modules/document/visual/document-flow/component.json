@@ -1,0 +1,11 @@
+{
+    "id": "document-flow",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-flow/document-flow.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-flow/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-flow/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

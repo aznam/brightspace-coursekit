@@ -1,0 +1,11 @@
+{
+    "id": "document-footer",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-footer/document-footer.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-footer/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-footer/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

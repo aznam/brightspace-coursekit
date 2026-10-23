@@ -1,0 +1,11 @@
+{
+    "id": "document-figure",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-figure/document-figure.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-figure/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-figure/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

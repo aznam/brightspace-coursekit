@@ -1,0 +1,11 @@
+{
+    "id": "document-paragraph",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-paragraph/document-paragraph.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-paragraph/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-paragraph/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

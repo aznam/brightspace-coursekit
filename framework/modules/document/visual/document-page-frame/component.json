@@ -1,0 +1,11 @@
+{
+    "id": "document-page-frame",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-page-frame/document-page-frame.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-page-frame/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-page-frame/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

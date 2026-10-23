@@ -1,0 +1,5 @@
+/* CourseKit — Document Break
+ * Responsibility: visual marker for an explicit semantic pagination boundary.
+ * This component owns no user-configurable style variables.
+ */
+.ck-document-break { display: none; }

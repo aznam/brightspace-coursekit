@@ -1,0 +1,13 @@
+{
+    "id": "document-layout",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-layout/document-layout.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-layout/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-layout/renderer.js",
+    "styles": [
+        "$(frameworkRoot)/modules/document/visual/document-layout/document-layout.css"
+    ],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

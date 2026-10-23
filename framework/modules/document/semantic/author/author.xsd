@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:s="urn:coursekit:semantic"
+           xmlns:d="urn:coursekit:semantic:document"
+           targetNamespace="urn:coursekit:semantic:document"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="urn:coursekit:semantic"/>
+
+    <xs:complexType name="AuthorType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="role" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:element name="author"
+                type="d:AuthorType"
+                substitutionGroup="s:component"/>
+
+</xs:schema>

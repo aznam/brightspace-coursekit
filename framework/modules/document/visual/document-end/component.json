@@ -1,0 +1,11 @@
+{
+    "id": "document-end",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-end/document-end.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-end/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-end/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

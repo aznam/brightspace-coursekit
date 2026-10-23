@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:s="urn:coursekit:semantic"
+           xmlns:d="urn:coursekit:semantic:document"
+           xmlns:xsp="urn:coursekit:preprocessor"
+           targetNamespace="urn:coursekit:semantic:document"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="urn:coursekit:semantic"/>
+
+    <xs:include schemaLocation="$(frameworkRoot)/modules/document/semantic/author/author.xsd"/>
+    <xs:include schemaLocation="$(frameworkRoot)/modules/document/semantic/break/break.xsd"/>
+
+    <!--
+        xsp:inherit copies the effective content model and attributes of
+        s:SectionType, then appends the following alternatives to its choice.
+        It creates a NEW type; it does not mutate s:SectionType.
+
+        xsp:extend is not appropriate here: it requires a named xsp:slot
+        on the locally included target element (the page-schema mechanism).
+    -->
+    <xs:complexType name="DocumentSectionType">
+        <xsp:inherit base="s:SectionType">
+            <xs:element ref="d:author"/>
+            <xs:element ref="d:break"/>
+            <xs:element ref="d:section"/>
+        </xsp:inherit>
+    </xs:complexType>
+
+    <xs:element name="section"
+                type="d:DocumentSectionType"
+                substitutionGroup="s:component"/>
+
+</xs:schema>

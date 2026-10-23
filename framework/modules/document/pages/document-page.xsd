@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:p="urn:coursekit:page" xmlns:c="urn:coursekit:visual" targetNamespace="urn:coursekit:page" elementFormDefault="qualified">
+  
+  <xs:include schemaLocation="$(frameworkRoot)/pages/base/base.xsd"/>
+  <xs:import namespace="urn:coursekit:visual" schemaLocation="virtual_components.xsd"/>
+
+  <xs:element name="document-layout">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentLayoutType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:document-toolbar"/>
+              <xs:element ref="p:document-cover"/>
+              <xs:element ref="p:document-blank"/>
+              <xs:element ref="p:document-sheet"/>
+              <xs:element ref="p:document-flow"/>
+              <xs:element ref="p:document-end"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-toolbar" type="c:DocumentToolbarType"/>
+  <xs:element name="document-cover">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentCoverType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:document-cover-brand"/>
+              <xs:element ref="p:document-cover-title"/>
+              <xs:element ref="p:document-cover-meta"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-cover-brand" type="c:DocumentCoverBrandType"/>
+  <xs:element name="document-cover-title" type="c:DocumentCoverTitleType"/>
+  <xs:element name="document-cover-meta" type="c:DocumentCoverMetaType"/>
+  <xs:element name="document-sheet">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentSheetType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:document-page-frame"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-page-frame">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentPageFrameType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:document-header"/>
+              <xs:element ref="p:document-body"/>
+              <xs:element ref="p:document-footer"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-header" type="c:DocumentHeaderType"/>
+  <xs:element name="document-footer" type="c:DocumentFooterType"/>
+  <xs:element name="document-body">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentBodyType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:document-end"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-flow">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentFlowType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:document-section"/>
+              <xs:element ref="p:document-paragraph"/>
+              <xs:element ref="p:document-note"/>
+              <xs:element ref="p:document-list"/>
+              <xs:element ref="p:document-figure"/>
+              <xs:element ref="p:document-author"/>
+              <xs:element ref="p:document-break"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-section">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentSectionType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:document-paragraph"/>
+              <xs:element ref="p:document-note"/>
+              <xs:element ref="p:document-list"/>
+              <xs:element ref="p:document-figure"/>
+              <xs:element ref="p:document-author"/>
+              <xs:element ref="p:document-section"/>
+              <xs:element ref="p:document-break"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-paragraph">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentParagraphType"/>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-note">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentNoteType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:document-paragraph"/>
+              <xs:element ref="p:document-list"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-list">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="c:DocumentListType">
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="p:item"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="document-figure" type="c:DocumentFigureType"/>
+  <xs:element name="document-end" type="c:DocumentEndType"/>
+  <xs:element name="document-blank" type="c:DocumentBlankType"/>
+  <xs:element name="document-author" type="c:DocumentAuthorType"/>
+  <xs:element name="document-break" type="c:DocumentBreakType"/>
+  <xs:complexType name="DocumentPageType">
+    <xs:complexContent>
+      <xs:extension base="p:PageType">
+        <xs:sequence>
+          <xs:element ref="p:document-layout"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="document-page" type="p:DocumentPageType" substitutionGroup="p:page"/>
+</xs:schema>

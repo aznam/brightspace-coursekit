@@ -1,0 +1,11 @@
+{
+    "id": "document-list",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-list/document-list.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-list/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-list/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

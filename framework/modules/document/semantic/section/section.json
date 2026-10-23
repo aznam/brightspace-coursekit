@@ -1,0 +1,5 @@
+{
+    "id": "document-section",
+    "schema": "$(frameworkRoot)/modules/document/semantic/section/section.xsd",
+    "namespace": "urn:coursekit:semantic:document"
+}

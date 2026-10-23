@@ -1,0 +1,11 @@
+{
+    "id": "document-cover-meta",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-cover-meta/document-cover-meta.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-cover-meta/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-cover-meta/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

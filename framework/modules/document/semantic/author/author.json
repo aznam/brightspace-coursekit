@@ -1,0 +1,5 @@
+{
+    "id": "document-author",
+    "schema": "$(frameworkRoot)/modules/document/semantic/author/author.xsd",
+    "namespace": "urn:coursekit:semantic:document"
+}

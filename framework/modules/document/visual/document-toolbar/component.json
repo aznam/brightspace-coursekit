@@ -1,0 +1,11 @@
+{
+    "id": "document-toolbar",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-toolbar/document-toolbar.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-toolbar/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-toolbar/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

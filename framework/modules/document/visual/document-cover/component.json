@@ -1,0 +1,11 @@
+{
+    "id": "document-cover",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-cover/document-cover.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-cover/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-cover/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

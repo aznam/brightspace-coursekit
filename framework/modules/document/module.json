@@ -1,0 +1,38 @@
+{
+    "id": "document",
+    "name": "Printable documents",
+    "version": "0.4.0",
+    "namespace": "urn:coursekit:semantic:document",
+    "semantic": [
+        "$(frameworkRoot)/modules/document/semantic/author/author.json",
+        "$(frameworkRoot)/modules/document/semantic/break/break.json",
+        "$(frameworkRoot)/modules/document/semantic/section/section.json"
+    ],
+    "pages": [
+        "$(frameworkRoot)/modules/document/pages/document-page.json"
+    ],
+    "components": [
+        "$(frameworkRoot)/modules/document/visual/document-layout/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-toolbar/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-cover/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-cover-brand/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-cover-title/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-cover-meta/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-sheet/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-page-frame/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-header/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-footer/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-body/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-flow/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-section/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-paragraph/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-note/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-list/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-figure/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-end/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-blank/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-author/component.json",
+        "$(frameworkRoot)/modules/document/visual/document-break/component.json"
+    ],
+    "dependsOn": []
+}

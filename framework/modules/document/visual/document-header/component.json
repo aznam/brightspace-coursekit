@@ -1,0 +1,11 @@
+{
+    "id": "document-header",
+    "schema": "$(frameworkRoot)/modules/document/visual/document-header/document-header.xsd",
+    "template": "$(frameworkRoot)/modules/document/visual/document-header/template.xslt",
+    "renderer": "$(frameworkRoot)/modules/document/visual/document-header/renderer.js",
+    "styles": [],
+    "scripts": [],
+    "variants": [
+        "default"
+    ]
+}

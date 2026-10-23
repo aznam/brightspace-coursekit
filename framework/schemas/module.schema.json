@@ -117,6 +117,14 @@
             "items": {
                 "type": "string"
             }
+        },
+        "rootScheme": {
+            "type": "string",
+            "minLength": 1,
+            "description": "XSD file that serves as the entry schema for rootElement."
+        },
+        "rootElement": {
+            "$ref": "#/$defs/rootElement"
         }
     },
     "$defs": {
@@ -149,6 +157,24 @@
                     "additionalProperties": false
                 }
             ]
+        },
+        "rootElement": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "namespace",
+                "localName"
+            ],
+            "properties": {
+                "namespace": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "localName": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_.-]*$"
+                }
+            }
         }
     }
 }

@@ -21,6 +21,16 @@ export class ModulesManager {
             if (loaded.has(module.id)) {
                 throw new Error(`Duplicate module id: ${module.id}`);
             }
+            if ((module.rootScheme === undefined) !== (module.rootElement === undefined)) {
+                throw new Error(`Module ${module.id} must declare rootScheme and rootElement together.`);
+            }
+            if (module.rootScheme) {
+                await this.managers.content.registerRoot({
+                    ...module.rootElement,
+                    schema: resources.relative(module.rootScheme, module.manifestUrl),
+                    owner: module.id
+                });
+            }
             // Verify module resources at initialization; loading belongs to the loaders.
             for (const resource of [
                 ...(module.styles || []),

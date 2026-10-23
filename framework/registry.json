@@ -57,5 +57,10 @@
         "scripts": [],
         "fonts": [],
         "assets": "assets/"
+    },
+    "rootScheme": "$(frameworkRoot)/semantic/content/content.xsd",
+    "rootElement": {
+        "namespace": "urn:coursekit:semantic",
+        "localName": "content"
     }
 }

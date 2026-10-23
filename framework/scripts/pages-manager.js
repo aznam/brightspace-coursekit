@@ -110,29 +110,160 @@ export class PagesManager {
             registeredSchemas.add(key);
         }
 
-        // A synthetic schema gathers the visual component declarations.
-        const virtualKey = '__generated__/virtual_components.xsd';
-        const virtualSchemaDoc = document.implementation.createDocument(NS.xs, 'xs:schema', null);
-        const vSchema = virtualSchemaDoc.documentElement;
-        vSchema.setAttribute('targetNamespace', 'urn:coursekit:visual');
-        vSchema.setAttribute('elementFormDefault', 'qualified');
-        for (const schemaKey of componentSchemas) {
-            const inc = virtualSchemaDoc.createElementNS(NS.xs, 'xs:include');
-            inc.setAttribute('schemaLocation', r.virtualRelative(virtualKey, schemaKey));
-            vSchema.appendChild(inc);
+        // Build an independent visual master for each registered namespace.
+        const componentGroups = new Map();
+        for (const key of componentSchemas) {
+            const item = preprocessor.documents.get(key);
+            const namespace = item.doc.documentElement.getAttribute('targetNamespace');
+            if (!componentGroups.has(namespace)) componentGroups.set(namespace, []);
+            componentGroups.get(namespace).push(key);
         }
-        // Generated references are already VFS-relative; no source URL is required.
-        preprocessor.addSchema(virtualKey, virtualSchemaDoc, 'urn:coursekit:visual');
-        const basePageURL = r.framework('pages/base/base.xsd');
+        const visualMasters = new Map();
+        for (const [namespace, keys] of componentGroups) {
+            const virtualKey = namespace === 'urn:coursekit:visual'
+                ? '__generated__/virtual_components.xsd'
+                : '__generated__/visual_' + namespace.replace(/[^a-zA-Z0-9]/g, '_') + '.xsd';
+            const doc = document.implementation.createDocument(NS.xs, 'xs:schema', null);
+            const schema = doc.documentElement;
+            schema.setAttribute('targetNamespace', namespace);
+            schema.setAttribute('elementFormDefault', 'qualified');
+            for (const key of keys) {
+                const include = doc.createElementNS(NS.xs, 'xs:include');
+                include.setAttribute('schemaLocation', r.virtualRelative(virtualKey, key));
+                schema.append(include);
+            }
+            preprocessor.addSchema(virtualKey, doc, namespace);
+            visualMasters.set(namespace, virtualKey);
+        }
+        const nativePageURL = r.framework('pages/base/base.xsd');
         preprocessor.addSchema(
-            r.virtualKey(basePageURL),
-            parseXML(await r.text(basePageURL), basePageURL),
+            r.virtualKey(nativePageURL),
+            parseXML(await r.text(nativePageURL), nativePageURL),
             'urn:coursekit:page',
-            basePageURL
+            nativePageURL
         );
+        const nativePageMaster = '__generated__/native_page_master.xsd';
+        const nativeDoc = document.implementation.createDocument(NS.xs, 'xs:schema', null);
+        nativeDoc.documentElement.setAttribute('targetNamespace', 'urn:coursekit:page');
+        nativeDoc.documentElement.setAttribute('elementFormDefault', 'qualified');
+        const coursePageKey = r.virtualKey(r.framework('pages/course-page/course-page.xsd'));
+        const nativeInclude = nativeDoc.createElementNS(NS.xs, 'xs:include');
+        nativeInclude.setAttribute('schemaLocation', r.virtualRelative(nativePageMaster, coursePageKey));
+        nativeDoc.documentElement.append(nativeInclude);
+        preprocessor.addSchema(nativePageMaster, nativeDoc, 'urn:coursekit:page');
+        // Group module-owned page declarations into per-namespace masters.
+        const pageMasters = new Map();
+        const pageGroups = new Map();
+        for (const key of registeredSchemas) {
+            const record = preprocessor.documents.get(key);
+            const namespace = record.doc.documentElement.getAttribute('targetNamespace');
+            if (namespace === 'urn:coursekit:page') continue;
+            if (!pageGroups.has(namespace)) pageGroups.set(namespace, []);
+            pageGroups.get(namespace).push(key);
+        }
+        for (const [namespace, keys] of pageGroups) {
+            const masterKey = '__generated__/page_' + namespace.replace(/[^a-zA-Z0-9]/g, '_') + '.xsd';
+            const doc = document.implementation.createDocument(NS.xs, 'xs:schema', null);
+            doc.documentElement.setAttribute('targetNamespace', namespace);
+            doc.documentElement.setAttribute('elementFormDefault', 'qualified');
+            for (const key of keys) {
+                const include = doc.createElementNS(NS.xs, 'xs:include');
+                include.setAttribute('schemaLocation', r.virtualRelative(masterKey, key));
+                doc.documentElement.append(include);
+            }
+            preprocessor.addSchema(masterKey, doc, namespace);
+            pageMasters.set(namespace, masterKey);
+        }
+        // Apply cross-namespace xsp:extend to a validation-only copy of the native
+        // schema. The module's declarations remain in their own namespace.
+        const XSP_NAMESPACE = 'urn:coursekit:preprocessor';
+        for (const [key, record] of preprocessor.documents) {
+            const sourceRoot = record.doc.documentElement;
+            const extensions = [...sourceRoot.getElementsByTagNameNS(XSP_NAMESPACE, 'extend')];
+            for (const extension of extensions) {
+                const [prefix, name] = extension.getAttribute('target').split(':');
+                const namespace = extension.lookupNamespaceURI(prefix);
+                if (namespace === sourceRoot.getAttribute('targetNamespace')) continue;
+                const slotName = extension.getAttribute('slot');
+                const targetSchema = [...preprocessor.documents.values()].find(item =>
+                    item.doc.documentElement.getAttribute('targetNamespace') === namespace &&
+                    [...item.doc.documentElement.children].some(element =>
+                        element.namespaceURI === NS.xs && element.localName === 'element' &&
+                        element.getAttribute('name') === name &&
+                        element.getElementsByTagNameNS(XSP_NAMESPACE, 'slot').length));
+                if (!targetSchema) throw Error(`Unresolved XSD extension target ${namespace}:${name}`);
+                const targetRoot = targetSchema.doc.documentElement;
+                const target = [...targetRoot.children].find(element =>
+                    element.namespaceURI === NS.xs && element.localName === 'element' &&
+                    element.getAttribute('name') === name);
+                const slots = [...target.getElementsByTagNameNS(XSP_NAMESPACE, 'slot')].filter(slot =>
+                    slot.getAttribute('name') === slotName);
+                if (slots.length !== 1) throw Error(`XSD extension slot not found: ${name}/${slotName}`);
+                const moduleNamespace = sourceRoot.getAttribute('targetNamespace');
+                const modulePrefix = 'ckmodule_' + moduleNamespace.replace(/[^a-zA-Z0-9]/g, '_');
+                targetRoot.setAttributeNS('http://www.w3.org/2000/xmlns/',
+                    'xmlns:' + modulePrefix, moduleNamespace);
+                if (![...targetRoot.children].some(node =>
+                    node.namespaceURI === NS.xs && node.localName === 'import' &&
+                    node.getAttribute('namespace') === moduleNamespace)) {
+                    const imported = targetSchema.doc.createElementNS(NS.xs, 'xs:import');
+                    imported.setAttribute('namespace', moduleNamespace);
+                    targetRoot.insertBefore(imported, targetRoot.firstChild);
+                }
+                for (const particle of [...extension.children]) {
+                    const copied = targetSchema.doc.importNode(particle, true);
+                    for (const item of [copied, ...copied.getElementsByTagNameNS(NS.xs, '*')]) {
+                        for (const attribute of ['ref', 'type', 'base']) {
+                            const value = item.getAttribute(attribute);
+                            if (!value || !value.includes(':')) continue;
+                            const [namePrefix, local] = value.split(':');
+                            if (particle.lookupNamespaceURI(namePrefix) === moduleNamespace)
+                                item.setAttribute(attribute, modulePrefix + ':' + local);
+                        }
+                    }
+                    slots[0].appendChild(copied);
+                }
+                extension.remove();
+            }
+        }
         const processedSchemas = preprocessor.processAll();
         for (const [filename, xsdString] of Object.entries(processedSchemas)) {
             files[filename] = xsdString;
+        }
+
+        // Resolve imports to namespace masters in the validation-only graph.
+        for (const [filename, source] of Object.entries(files)) {
+            const xml = parseXML(source);
+            const schema = xml.documentElement;
+            const ownNamespace = schema.getAttribute('targetNamespace');
+            let changed = false;
+            for (const dependency of [...schema.children]) {
+                if (dependency.namespaceURI !== NS.xs || dependency.localName !== 'import') continue;
+                const namespace = dependency.getAttribute('namespace');
+                const target = namespace === 'urn:coursekit:page'
+                    ? nativePageMaster
+                    : (visualMasters.get(namespace) || pageMasters.get(namespace));
+                if (!target || filename === target || ownNamespace === namespace) continue;
+                const path = r.virtualRelative(filename, target);
+                if (dependency.getAttribute('schemaLocation') !== path) {
+                    dependency.setAttribute('schemaLocation', path);
+                    changed = true;
+                }
+            }
+            // Includes must precede imports for the Xerces compilation path.
+            const declarations = [...schema.children].filter(node =>
+                node.namespaceURI === NS.xs && ['include', 'import'].includes(node.localName));
+            const expected = [...declarations].sort((a, b) =>
+                (a.localName === 'include' ? 0 : 1) - (b.localName === 'include' ? 0 : 1));
+            if (expected.some((node, index) => node !== declarations[index])) {
+                const first = declarations[0];
+                for (const node of declarations) node.remove();
+                const anchor = [...schema.children].find(node =>
+                    node.namespaceURI === NS.xs && node.localName !== 'annotation');
+                for (const node of expected) schema.insertBefore(node, anchor || null);
+                changed = true;
+            }
+            if (changed) files[filename] = serialize(xml);
         }
 
         for (const page of this.pages.values()) {

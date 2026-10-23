@@ -290,9 +290,9 @@ export class ContentManager {
                 ])
         );
 
-        const visualRoot = [...pageRoot.children].find(
-            child => child.namespaceURI === NS.page &&
-                    child.localName !== 'meta'
+        const visualRoot = [...pageRoot.children].find(child =>
+            (child.namespaceURI === NS.page && child.localName !== 'meta') ||
+            child.namespaceURI?.startsWith(NS.page + ':')
         );
 
         if (!visualRoot) {

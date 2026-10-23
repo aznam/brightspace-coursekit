@@ -1,0 +1,70 @@
+# `framework/modules/document/visual/document-cover-meta/document-cover-meta.xsd`
+
+**Category:** visual · **Ownership:** module · **Target namespace:** `urn:coursekit:visual:document`
+
+**Source XSD:** `framework/modules/document/visual/document-cover-meta/document-cover-meta.xsd`
+
+## Manifest
+
+| Key | Value |
+| --- | --- |
+| id | `document-cover-meta` |
+| schema | `$(frameworkRoot)/modules/document/visual/document-cover-meta/document-cover-meta.xsd` |
+| template | `$(frameworkRoot)/modules/document/visual/document-cover-meta/template.xslt` |
+| renderer | `$(frameworkRoot)/modules/document/visual/document-cover-meta/renderer.js` |
+| styles |  |
+| scripts |  |
+| variants | default |
+
+
+## Global element declarations
+
+No global element declared in this XSD. The element may be declared by the page composition XSD.
+
+## Named types and inheritance
+
+| Type | Mixed content |
+| --- | --- |
+| `DocumentCoverMetaType` | not declared mixed |
+
+
+**Native XSD derivations:**
+
+| Type | Base |
+| --- | --- |
+| `DocumentCoverMetaType` | `c:VisualNode` |
+
+
+## Directly declared attributes
+
+| Type | Attribute | XSD type | Use | Default |
+| --- | --- | --- | --- | --- |
+| `DocumentCoverMetaType` | `term` | `xs:string` | optional | — |
+| `DocumentCoverMetaType` | `section` | `xs:string` | optional | — |
+| `DocumentCoverMetaType` | `year` | `xs:string` | optional | — |
+| `DocumentCoverMetaType` | `author` | `xs:string` | optional | — |
+| `DocumentCoverMetaType` | `date` | `xs:string` | optional | — |
+| `DocumentCoverMetaType` | `version` | `xs:string` | optional | — |
+
+
+## Child elements / references
+
+No child references declared directly.
+
+## CSS interface (source inventory)
+
+No stylesheet declared in this component folder.
+
+**Important:** Declarations below are observed in the CSS, not automatically an approved public override API. Public status must be verified against the component contract and `CONVENTIONS.md`.
+
+No local `--ck-*` custom-property declarations.
+
+**Custom properties consumed via `var(...)`:** None
+
+**Template output elements (static inventory):** `div`, `span`
+
+## Mapping and scope
+
+Semantic-to-page mappings are defined in the page transformation XSLT, not in this individual XSD. Consult the [mapping index](/reference/xml-mappings) and the [page parameters](/reference/page-parameters).
+
+> This entry is generated from the source schema and associated component assets. It distinguishes direct declarations from inherited/page-level contracts.

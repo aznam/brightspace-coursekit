@@ -1,0 +1,52 @@
+# Page parameters
+
+Extracted directly from the supplied page manifests. Parameters are page selection/metadata contracts; they are not necessarily attributes accepted by every semantic element.
+
+| Page | Parameter | Type | Default | Manifest |
+| --- | --- | --- | --- | --- |
+| `assignment-page` | `title` | `string` | `` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `subtitle` | `string` | `` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `module-name` | `string` | `` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `image` | `string` | `` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `background` | `string` | `theme` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `toc` | `boolean` | `True` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `page-numbered` | `boolean` | `False` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `theme-switch` | `boolean` | `False` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `variant` | `string` | `default` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `style-ref` | `string` | `` | `framework/modules/assignment/pages/assignment-page.json` |
+| `assignment-page` | `assignment-ref` | `string` | `` | `framework/modules/assignment/pages/assignment-page.json` |
+| `document-page` | `title` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `subtitle` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `kicker` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `date` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `version` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `footer-text` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `style-ref` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `variant` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `cover` | `boolean` | `True` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `institution-name` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `institution-faculty` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `institution-department` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `institution-logo` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `program-name` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `document-page` | `instructor` | `string` | `` | `framework/modules/document/pages/document-page.json` |
+| `people-page` | `title` | `string` | `` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `subtitle` | `string` | `` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `module-name` | `string` | `` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `image` | `string` | `` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `background` | `string` | `theme` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `toc` | `boolean` | `True` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `page-numbered` | `boolean` | `False` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `theme-switch` | `boolean` | `False` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `variant` | `string` | `default` | `framework/modules/people/pages/people-page.json` |
+| `people-page` | `style-ref` | `string` | `` | `framework/modules/people/pages/people-page.json` |
+| `course-page` | `title` | `string` | `` | `framework/pages/course-page/page.json` |
+| `course-page` | `subtitle` | `string` | `` | `framework/pages/course-page/page.json` |
+| `course-page` | `module-name` | `string` | `` | `framework/pages/course-page/page.json` |
+| `course-page` | `image` | `string` | `` | `framework/pages/course-page/page.json` |
+| `course-page` | `background` | `string` | `theme` | `framework/pages/course-page/page.json` |
+| `course-page` | `toc` | `boolean` | `True` | `framework/pages/course-page/page.json` |
+| `course-page` | `page-numbered` | `boolean` | `False` | `framework/pages/course-page/page.json` |
+| `course-page` | `theme-switch` | `boolean` | `False` | `framework/pages/course-page/page.json` |
+| `course-page` | `variant` | `string` | `default` | `framework/pages/course-page/page.json` |
+| `course-page` | `style-ref` | `string` | `` | `framework/pages/course-page/page.json` |

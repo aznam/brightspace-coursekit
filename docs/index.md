@@ -18,3 +18,10 @@ Maintaining coherent page markup across a Brightspace course is repetitive. Cour
 ## Writing course XML
 
 Start with the **[semantic component authoring catalogue](./semantic/index.md)**. It documents the actual `s:*` schema contracts (attributes, allowed children, text/mixed content, examples) and the optional `l:*` learning module. The [visual catalogue](./components/index.md) describes implementation components produced later by the page transformer.
+## Documentation by audience
+
+- **Page authors:** [tutorials](/guide/), [semantic XSD catalog](/reference/semantic-xsd), [page parameters](/reference/page-parameters).
+- **Module developers:** [module tutorial](/module-development/tutorial), [namespace rules](/module-development/namespaces), [XSD extensions](/module-development/xsd-extensions), [module CSS inventories](/modules/).
+- **Maintainers:** [framework internals](/maintainers/), [schema generation](/maintainers/schema-pipeline), [font and icon internals](/maintainers/assets-and-icons).
+
+This documentation builds on the existing source pages; auto-generated schema catalogs cite direct declarations and do **not** assert that local CSS declarations are supported public APIs.

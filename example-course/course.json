@@ -11,7 +11,7 @@
     },
     "modules": [
         "$(courseRoot)/modules/learning/module.json",
-        "$(frameworkRoot)/modules/people/module.json",
+        "$(frameworkRoot)/modules/document/module.json",
         "$(frameworkRoot)/modules/fontawesome/module.json"
     ],
     "variables": {},
@@ -72,12 +72,108 @@
     "icons": {
         "info": {
             "type": "font",
-            "classes": ["fa-solid", "fa-circle-info"]
+            "classes": [
+                "fa-solid",
+                "fa-circle-info"
+            ]
         },
         "warning": {
             "type": "font",
-            "classes": ["fa-solid", "fa-triangle-exclamation"]
+            "classes": [
+                "fa-solid",
+                "fa-triangle-exclamation"
+            ]
+        },
+        "assignment-band.deadline-hard": {
+            "type": "font",
+            "classes": [
+                "fa-solid",
+                "fa-circle-exclamation"
+            ]
+        },
+        "assignment-band.deadline-soft": {
+            "type": "font",
+            "classes": [
+                "fa-solid",
+                "fa-clock"
+            ]
+        },
+        "assignment-band.submission-group": {
+            "type": "font",
+            "classes": [
+                "fa-solid",
+                "fa-users"
+            ]
+        },
+        "assignment-band.submission-individual": {
+            "type": "font",
+            "classes": [
+                "fa-solid",
+                "fa-user"
+            ]
+        },
+        "assignment-band.ai-restricted": {
+            "type": "font",
+            "classes": [
+                "fa-solid",
+                "fa-triangle-exclamation"
+            ]
+        },
+        "assignment-band.ai-forbidden": {
+            "type": "font",
+            "classes": [
+                "fa-solid",
+                "fa-ban"
+            ]
+        },
+        "assignment-band.estimated-time": {
+            "type": "font",
+            "classes": [
+                "fa-solid",
+                "fa-hourglass-half"
+            ]
+        },
+        "assignment-band.expand": {
+            "type": "font",
+            "classes": [
+                "fa-solid",
+                "fa-chevron-down"
+            ]
+        },
+        "assignment-band.difficulty-easy": {
+            "type": "text",
+            "value": "🟢"
+        },
+        "assignment-band.difficulty-medium": {
+            "type": "text",
+            "value": "🟡"
+        },
+        "assignment-band.difficulty-hard": {
+            "type": "text",
+            "value": "🔴"
         }
     },
-    "learningOutcomes": []
+    "learningOutcomes": [
+        {
+            "code": "LO1",
+            "description": "Learning outcome 1"
+        },
+        {
+            "code": "LO2",
+            "description": "Learning outcome 2"
+        },
+        {
+            "code": "LO3",
+            "description": "Learning outcome 3"
+        },
+        {
+            "code": "LO4",
+            "description": "Learning outcome 4"
+        },
+        {
+            "code": "LO5",
+            "description": "Learning outcome 5"
+        }
+    ],
+    "contentTable": "content-map.json"
 }

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<s:content xmlns:s="urn:coursekit:semantic" page-type="assignment-page" assignment-ref="$(courseRoot)/content/assignment.json" image="hero-sample.svg" theme-switch="true" title="Assignment 1" subtitle="Instructions" toc="true">
+    <s:summary title="BEFORE YOU START">
+        <s:paragraph>Read the assignment instructions carefully.</s:paragraph>
+    </s:summary>
+    <s:information title="Resources">
+        <s:paragraph>Resources are ordinary information boxes.</s:paragraph>
+    </s:information>
+    <s:section id="instructions" title="Instructions" nav="true">
+        <s:paragraph>Complete the requested deliverables.</s:paragraph>
+    </s:section>
+</s:content>

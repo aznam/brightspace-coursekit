@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<s:content xmlns:s="urn:coursekit:semantic" xmlns:pe="urn:coursekit:semantic:people" page-type="people-page" title="Supervision &amp; Support" subtitle="The team responsible for your academic guidance, technical support, and course coordination throughout the semester." module-name="Getting Started" toc="false" image="hero-sample.svg" theme-switch="true">
+    <s:summary title="📋 Communication Protocols &amp; Policies" variant="important">
+        <s:list>
+            <s:item>
+                <s:important>Subject line:</s:important>
+            Always include [DEMO-101] at the beginning of
+            your subject line.
+        </s:item>
+            <s:item>
+                <s:important>Professional standards:</s:important>
+            To ensure a timely response, messages must include
+            the required subject prefix and maintain a
+            professional tone. Messages that do not meet these
+            standards may not receive a reply.
+        </s:item>
+            <s:item>
+                <s:important>Urgent matters:</s:important>
+            Flag your email as Important (High Priority) to
+            ensure a response within 48 business hours.
+            Reserve this flag for genuinely urgent matters only.
+        </s:item>
+            <s:item>
+                <s:important>Follow-up:</s:important>
+            Do not send a follow-up before 72 business hours
+            have elapsed.
+        </s:item>
+            <s:item>
+                <s:important>Office hours:</s:important>
+            Walk-ins are welcome for questions under 10 minutes.
+            Any exchange requiring more time requires a
+            scheduled appointment.
+        </s:item>
+            <s:item>
+                <s:important>Booking tutorial:</s:important>
+            Please watch the tutorial below before booking
+            any appointment.
+        </s:item>
+        </s:list>
+    </s:summary>
+    <s:details title="How to Book an Appointment">
+        <s:tutorial style-ref="tutorial-two-columns" title="Booking Walkthrough">
+            <s:illustration>
+                <s:video src="https://example.org/media/booking-tutorial.mp4" title="Booking demonstration"/>
+            </s:illustration>
+            <s:paragraph>
+              Follow these instructions to prepare your appointment.
+          </s:paragraph>
+            <s:steps>
+                <s:item>Open the booking platform.</s:item>
+                <s:item>Select an available appointment.</s:item>
+                <s:item>Describe your request and preparation.</s:item>
+                <s:item>Confirm your reservation.</s:item>
+            </s:steps>
+        </s:tutorial>
+    </s:details>
+    <pe:people-section id="leadership" title="Course Leadership" nav="true">
+        <pe:person name="Dr. Alex Morgan" role="Course Instructor" title="Instructor — Department of Computing" photo="instructor-placeholder.svg" email="alex.morgan@example.org" booking-url="https://example.org/appointments/instructor" online-hours="By appointment only">
+            <pe:office-hours location="North Campus" directions-url="https://example.org/locations/north-campus">Tuesdays &amp; Thursdays
+11:30 AM – 1:00 PM</pe:office-hours>
+            <pe:office-hours location="City Campus" directions-url="https://example.org/locations/city-campus">Wednesdays
+11:00 AM – 1:00 PM</pe:office-hours>
+            <pe:description title="Teaching Philosophy" background="hero-sample.svg">
+                <s:paragraph>My teaching approach encourages exploration, constructive feedback, and independent problem solving.</s:paragraph>
+            </pe:description>
+        </pe:person>
+    </pe:people-section>
+    <pe:people-section id="support" title="Operational Support &amp; Teaching Assistants" nav="true">
+        <pe:team>
+            <pe:person name="Taylor Reed" role="Graduate Assistant (GA)" title="Graduate Student — Computing" photo="assistant-placeholder.svg" email="taylor.reed@example.org" booking-url="https://example.org/appointments/support">
+                <pe:office-hours location="City Campus" directions-url="https://example.org/locations/city-campus">Thursdays
+10:00 AM – 12:00 PM</pe:office-hours>
+                <pe:description title="Scope of Support">
+                    <s:paragraph>I can help with:</s:paragraph>
+                    <s:list>
+                        <s:item>Questions about grading and course policies</s:item>
+                        <s:item>Finding course materials and resources</s:item>
+                        <s:item>Working methodology and study approaches</s:item>
+                        <s:item>Preparing before meeting with the instructor</s:item>
+                        <s:item>Bridging the gap between you and the instructor</s:item>
+                        <s:item>Anything you prefer to share in confidence</s:item>
+                    </s:list>
+                    <s:paragraph>I can provide guidance and feedback, but I do not complete assessed work on your behalf.</s:paragraph>
+                </pe:description>
+            </pe:person>
+        </pe:team>
+    </pe:people-section>
+</s:content>

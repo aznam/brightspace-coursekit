@@ -1,9 +1,12 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-           xmlns:p="urn:coursekit:page" 
-           targetNamespace="urn:coursekit:page" 
-           elementFormDefault="qualified">
-
-    <!-- Magique : On importe tout le vocabulaire visuel p:* d'un coup -->
-    <xs:include schemaLocation="$(frameworkRoot)/pages/course-page/course-page.xsd"/>
-
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:p="urn:coursekit:page"
+    xmlns:mp="urn:coursekit:page:learning"
+    xmlns:ms="urn:coursekit:semantic:learning"
+    xmlns:mc="urn:coursekit:visual:learning"
+    targetNamespace="urn:coursekit:page:learning"
+    elementFormDefault="qualified">
+  <xs:import namespace="urn:coursekit:page"/>
+  <!-- Magique : On importe tout le vocabulaire visuel p:* d'un coup -->
 </xs:schema>

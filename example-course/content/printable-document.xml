@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<s:content xmlns:s="urn:coursekit:semantic" xmlns:d="urn:coursekit:semantic:document" page-type="document-page" title="Document Title" subtitle="Optional Subtitle" kicker="Course Document" date="2026-01-15" cover="true" institution-name="Example University" institution-faculty="Faculty of Applied Studies" institution-department="Department of Computing">
+    <d:section id="introduction" title="Introduction">
+        <d:author name="Dr. Alex Morgan" role="Instructor"/>
+        <s:paragraph>Document content goes here.</s:paragraph>
+        <s:note>
+            <s:paragraph>This component keeps the visual language of the course while remaining print-oriented.</s:paragraph>
+        </s:note>
+    </d:section>
+    <s:section id="next" title="Second Section">
+        <s:paragraph>Additional content goes here.</s:paragraph>
+    </s:section>
+</s:content>

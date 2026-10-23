@@ -6,7 +6,8 @@
            elementFormDefault="qualified">
     
     <!-- Référence directe vers l'entrée du namespace urn:coursekit:semantic dans le VFS Xerces -->
-    <xs:import namespace="urn:coursekit:semantic" schemaLocation="$(frameworkRoot)/semantic/content/content.xsd"/>
+    <!--<xs:import namespace="urn:coursekit:semantic"/>-->
+    <xs:import namespace="urn:coursekit:semantic"/>
 
     <!-- 1. Terme survolable en ligne (hoverbox) -->
     <xs:complexType name="TermType" mixed="true">

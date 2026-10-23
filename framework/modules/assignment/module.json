@@ -2,7 +2,7 @@
     "id": "assignment",
     "name": "Assignment page",
     "version": "1.0.0",
-    "namespace": "urn:coursekit:semantic",
+    "namespace": "urn:coursekit:semantic:assignment",
     "semantic": [],
     "pages": [
         "$(frameworkRoot)/modules/assignment/pages/assignment-page.json"

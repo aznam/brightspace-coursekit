@@ -1,6 +1,18 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:c="urn:coursekit:visual" targetNamespace="urn:coursekit:visual" elementFormDefault="qualified">
-<xs:include schemaLocation="$(frameworkRoot)/visual/page-layout/page-layout.xsd"/>
-<xs:complexType name="AssignmentLayoutType"><xs:complexContent><xs:extension base="c:LayoutType">
-<xs:attribute name="assignment-ref" type="xs:string" use="required"/>
-</xs:extension></xs:complexContent></xs:complexType>
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:c="urn:coursekit:visual"
+    xmlns:mp="urn:coursekit:page:assignment"
+    xmlns:ms="urn:coursekit:semantic:assignment"
+    xmlns:mc="urn:coursekit:visual:assignment"
+    targetNamespace="urn:coursekit:visual:assignment"
+    elementFormDefault="qualified">
+  <xs:import namespace="urn:coursekit:visual"/>
+  <xs:complexType name="AssignmentLayoutType">
+    <xs:complexContent>
+      <xs:extension base="c:LayoutType">
+        <xs:attribute name="assignment-ref" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 </xs:schema>

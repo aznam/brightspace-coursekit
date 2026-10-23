@@ -1,17 +1,17 @@
 {
-  "id": "people",
-  "name": "People and teams",
-  "version": "1.0.0",
-  "namespace": "urn:coursekit:semantic",
-  "semantic": [
-    "$(frameworkRoot)/modules/people/semantic/people.json"
-  ],
-  "components": [
-    "$(frameworkRoot)/modules/people/visual/assistant-card/component.json",
-    "$(frameworkRoot)/modules/people/visual/assistant-grid/component.json"
-  ],
-  "pages": [
-    "$(frameworkRoot)/modules/people/pages/people-page.json"
-  ],
-  "dependsOn": []
+    "id": "people",
+    "name": "People and teams",
+    "version": "1.0.0",
+    "namespace": "urn:coursekit:semantic:people",
+    "semantic": [
+        "$(frameworkRoot)/modules/people/semantic/people.json"
+    ],
+    "components": [
+        "$(frameworkRoot)/modules/people/visual/assistant-card/component.json",
+        "$(frameworkRoot)/modules/people/visual/assistant-grid/component.json"
+    ],
+    "pages": [
+        "$(frameworkRoot)/modules/people/pages/people-page.json"
+    ],
+    "dependsOn": []
 }

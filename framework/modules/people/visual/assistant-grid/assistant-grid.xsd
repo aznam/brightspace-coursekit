@@ -1,8 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:c="urn:coursekit:visual"
- targetNamespace="urn:coursekit:visual" elementFormDefault="qualified">
- <xs:include schemaLocation="$(frameworkRoot)/visual/base-component/base-component.xsd"/>
- <xs:complexType name="AssistantGridType"><xs:complexContent>
-  <xs:extension base="c:VisualContainer"/>
- </xs:complexContent></xs:complexType>
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:c="urn:coursekit:visual"
+    xmlns:mp="urn:coursekit:page:people"
+    xmlns:ms="urn:coursekit:semantic:people"
+    xmlns:mc="urn:coursekit:visual:people"
+    targetNamespace="urn:coursekit:visual:people"
+    elementFormDefault="qualified">
+  <xs:import namespace="urn:coursekit:visual"/>
+  <xs:complexType name="AssistantGridType">
+    <xs:complexContent>
+      <xs:extension base="c:VisualContainer"/>
+    </xs:complexContent>
+  </xs:complexType>
 </xs:schema>

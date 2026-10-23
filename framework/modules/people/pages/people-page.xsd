@@ -1,62 +1,62 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:p="urn:coursekit:page"
-           xmlns:c="urn:coursekit:visual"
-           xmlns:xsp="urn:coursekit:preprocessor"
-           targetNamespace="urn:coursekit:page"
-           elementFormDefault="qualified">
-
-    <xs:include schemaLocation="$(frameworkRoot)/pages/course-page/course-page.xsd"/>
-
-    <!-- People module blocks: their nested data is rendered inside assistant-card. -->
-    <xs:element name="office-hours">
-      <xs:complexType mixed="true">
-        <xs:attribute name="location" type="xs:string" use="required"/>
-        <xs:attribute name="directions-url" type="xs:anyURI"/>
-      </xs:complexType>
-    </xs:element>
-    <xs:element name="person-description">
-      <xs:complexType>
-        <xs:choice minOccurs="0" maxOccurs="unbounded">
-          <xs:element ref="p:paragraph"/>
-          <xs:element ref="p:list"/>
-        </xs:choice>
-        <xs:attribute name="title" type="xs:string" use="required"/>
-        <xs:attribute name="background" type="xs:string"/>
-      </xs:complexType>
-    </xs:element>
-    <xs:element name="assistant-card">
-      <xs:complexType>
-        <xs:complexContent>
-          <xs:extension base="c:AssistantCardType">
-            <xs:sequence>
-              <xs:element ref="p:office-hours" minOccurs="0" maxOccurs="unbounded"/>
-              <xs:element ref="p:person-description" minOccurs="0"/>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-      </xs:complexType>
-    </xs:element>
-    <xs:element name="assistant-grid">
-      <xs:complexType>
-        <xs:complexContent>
-          <xs:extension base="c:AssistantGridType">
-            <xs:sequence>
-              <xs:element ref="p:assistant-card" minOccurs="1" maxOccurs="unbounded"/>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-      </xs:complexType>
-    </xs:element>
-
-
-    <xsp:extend target="p:section" slot="content">
-        <xs:element ref="p:assistant-card"/>
-        <xs:element ref="p:assistant-grid"/>
-    </xsp:extend>
-
-    <xsp:extend target="p:central-content" slot="content">
-        <xs:element ref="p:assistant-card"/>
-        <xs:element ref="p:assistant-grid"/>
-    </xsp:extend>
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:p="urn:coursekit:page"
+    xmlns:c="urn:coursekit:visual"
+    xmlns:xsp="urn:coursekit:preprocessor"
+    xmlns:mp="urn:coursekit:page:people"
+    xmlns:ms="urn:coursekit:semantic:people"
+    xmlns:mc="urn:coursekit:visual:people"
+    targetNamespace="urn:coursekit:page:people"
+    elementFormDefault="qualified">
+  <xs:import namespace="urn:coursekit:visual:people"/>
+  <xs:import namespace="urn:coursekit:page"/>
+  <!-- People module blocks: their nested data is rendered inside assistant-card. -->
+  <xs:element name="office-hours">
+    <xs:complexType mixed="true">
+      <xs:attribute name="location" type="xs:string" use="required"/>
+      <xs:attribute name="directions-url" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="person-description">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="p:paragraph"/>
+        <xs:element ref="p:list"/>
+      </xs:choice>
+      <xs:attribute name="title" type="xs:string" use="required"/>
+      <xs:attribute name="background" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="assistant-card">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="mc:AssistantCardType">
+          <xs:sequence>
+            <xs:element ref="mp:office-hours" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="mp:person-description" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="assistant-grid">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="mc:AssistantGridType">
+          <xs:sequence>
+            <xs:element ref="mp:assistant-card" minOccurs="1" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xsp:extend target="p:section" slot="content">
+    <xs:element ref="mp:assistant-card"/>
+    <xs:element ref="mp:assistant-grid"/>
+  </xsp:extend>
+  <xsp:extend target="p:central-content" slot="content">
+    <xs:element ref="mp:assistant-card"/>
+    <xs:element ref="mp:assistant-grid"/>
+  </xsp:extend>
 </xs:schema>

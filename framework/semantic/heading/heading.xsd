@@ -6,7 +6,7 @@
     <xs:include schemaLocation="$(frameworkRoot)/semantic/inline/inline.xsd"/>
 
     <xs:complexType name="HeadingType">
-        <xs:complexContent>
+        <xs:complexContent mixed="true">
             <xs:extension base="s:Text">
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element ref="s:link"/>
